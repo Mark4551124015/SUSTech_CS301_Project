@@ -134,6 +134,11 @@ void dpo::update(display_object* father, pii axis) {
                 a->update(this, this->my_axis);
                 break;
             }
+            case (S_TEXT): {
+                stext* a = (stext*)son;
+                a->update(this, this->my_axis);
+                break;
+            }
             default:
                 son->update(this, this->my_axis);
         }
@@ -212,7 +217,7 @@ void vtext::render_cursor(int index, pii axis, uint16_t color) {
 void vtext::move_cursor(int index, pii axis) {
     index = index < 0 ? 0 : index;
     index = index > this->len ? this->len : index;
-    if (index==this->max_len) index--;
+    if (index == this->max_len) index--;
     // this->render_cursor(-1, axis, this->backgroud);
     this->render_cursor(this->cursor, axis, this->backgroud);
     this->render_char(this->cursor - 1, axis, 0);
@@ -275,8 +280,8 @@ void vtext::update(dpo* father, pii axis) {
         for (int i = 0; i < this->len; i++) {
             this->render_char(i, this->my_axis, 0);
         }
-           
-        if (this->choosing)  this->render_cursor(this->len, my_axis, BLACK);
+
+        if (this->choosing) this->render_cursor(this->len, my_axis, BLACK);
     }
 
     // Click
@@ -301,7 +306,7 @@ void vtext::update(dpo* father, pii axis) {
             this->render_cursor(this->len, my_axis, BLACK);
         }
         this->cursor = this->len;
-        if (this->cursor==this->max_len) this->cursor--;
+        if (this->cursor == this->max_len) this->cursor--;
     }
 
     dpo::update(father, axis);
@@ -466,4 +471,46 @@ char keyboard::typing() {
         return 32;
     }
     return 0;
+}
+
+stext::static_text(string name, pii pos, pii shape, char* str)
+    : dpo(name, pos, shape) {
+    memset(this->str, 0, 256);
+    strcpy(this->str, str);
+    this->font_color = BLACK;
+    this->font_size = 16;
+    this->type = S_TEXT;
+}
+
+pii stext::get_pos(int index, pii axis) {
+    pii target;
+    target = {(index % this->max_col) * (this->font_size / 2),
+              (index / this->max_col) * this->font_size};
+    target = adding(target, this->start);
+    target = adding(target, axis);
+    return target;
+}
+void stext::render_char(int index, pii axis, bool clean) {
+    if (!(index >= 0 && index < this->len)) return;
+    pii pos = get_pos(index, axis);
+    int width = this->font_size / 2;
+    int height = this->font_size;
+    POINT_COLOR = this->font_color;
+    BACK_COLOR = this->backgroud;
+    if (clean || !(this->str[index]))
+        LCD_Fill(pos.x_p, pos.y_p, pos.x_p + width, pos.y_p + height,
+                 BACK_COLOR);
+    else
+        LCD_ShowChar(pos.x_p, pos.y_p, this->str[index], this->font_size, 1);
+}
+
+void stext::update(dpo* father, pii axis) {
+    this->my_axis = adding(axis, this->pos);
+    if (this->need_render) {
+        for (int i = 0; i < this->len; i++) {
+            this->render_char(i, this->my_axis, 1);
+            this->render_char(i, this->my_axis, 0);
+        }
+    }
+    dpo::update(father, axis);
 }

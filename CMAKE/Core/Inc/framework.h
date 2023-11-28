@@ -31,7 +31,7 @@ extern "C" {
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD };
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT };
 
 typedef class display_object {
    public:
@@ -146,6 +146,25 @@ typedef class keyboard : public dpo {
     void update(display_object *father, pii axis);
     // void setVisbility(bool flag);
 } keyboard;
+
+typedef class static_text : public dpo {
+   public:
+    char str[255];
+    uint16_t len;
+    uint16_t font_color;
+    uint16_t backgroud;
+    uint8_t font_size;
+    pii start;
+    uint8_t max_col;
+    uint8_t max_row;
+    uint8_t max_len;
+   public:
+    static_text(string name, pii pos, pii shape, char *str);
+    pii get_pos(int index, pii axis);
+    void update(display_object *father, pii axis);
+    
+    void render_char(int index, pii axis, bool clean);
+} stext;
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 }

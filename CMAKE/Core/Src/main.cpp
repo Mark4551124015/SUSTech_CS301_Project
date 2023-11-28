@@ -22,7 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-#include <stdio.h>
+#include <cstdio>
 #include <string.h>
 
 #include <cstring>
