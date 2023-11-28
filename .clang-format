@@ -1,0 +1,4 @@
+Language: Cpp
+BasedOnStyle: google
+IndentWidth: 4
+BreakBeforeBraces: Attach
