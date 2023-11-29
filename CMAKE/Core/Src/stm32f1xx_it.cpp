@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +45,7 @@
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
 int8_t rxBuffer[20];
+extern LED leddev;
 
 /* USER CODE END PV */
 
@@ -343,6 +345,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
             uRx_Data[uLength] = rxBuffer[0];
             uLength++;
         }
+    }
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == TIM3) {
+        leddev.tick();
     }
 }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

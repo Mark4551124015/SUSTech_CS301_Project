@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 
-#define TICK_MS 200
+#define TICK_MS 50
 #define WAKE0 0
 #define KILL0 1
 #define WAKE1 2
@@ -19,7 +19,7 @@
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 extern "C" {
 #endif
-enum led_op { BLINK_0, BLINK_1, BLINK_BOTH_TWICE, ERROR_ENCODE, ERROR_DECODE };
+enum led_op { BLINK_0, BLINK_1, BLINK_BOTH, ERROR_ENCODE, ERROR_DECODE };
 
 class LED {
    public:

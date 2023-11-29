@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <cstdint>
 #include <cstring>
 #include <string>
 #include <utility>
@@ -31,7 +32,7 @@ extern "C" {
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT };
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE };
 
 typedef class display_object {
    public:
@@ -111,6 +112,7 @@ typedef class button : public dpo {
     uint8_t font_size;
     bool click;
     int click_cnt;
+
    public:
     button(string name, pii pos, pii shape, string str);
     bool isClicked();
@@ -159,14 +161,34 @@ typedef class static_text : public dpo {
     uint8_t max_col;
     uint8_t max_row;
     uint8_t max_len;
+
    public:
     static_text(string name, pii pos, pii shape, char *str, uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis);
-    void update_str(char *str, uint8_t font_size, uint16_t font_color, uint16_t backgroud);
+    void update_str(char *str, uint8_t font_size, uint16_t font_color,
+                    uint16_t backgroud);
     void render_char(int index, pii axis, bool clean);
     void clear();
 } stext;
+
+typedef class image : public dpo {
+   public:
+    bool touching;
+    string str;
+    uint16_t backgroud;
+    uint16_t font_color;
+    uint8_t font_size;
+    bool click;
+    int click_cnt;
+    const unsigned short *img;
+
+   public:
+    image(string name, pii pos, pii shape, const unsigned short *img,string str);
+    bool isClicked();
+    void update(display_object *father, pii axis);
+
+} image;
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 }

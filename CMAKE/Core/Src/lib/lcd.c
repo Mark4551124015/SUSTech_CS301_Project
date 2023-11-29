@@ -437,7 +437,8 @@ void LCD_Clear(uint16_t color) {
 
     LCD_SetCursor(0x00, 0x0000);  // 设置光标位置
     LCD_WriteRAM_Prepare();       // 开始写入GRAM
-    for (index = 0; index < totalpoint; index++) LCD_WR_DATA(LCD_BGR2RGB(color));
+    for (index = 0; index < totalpoint; index++)
+        LCD_WR_DATA(LCD_BGR2RGB(color));
 }
 // Fill the area with color
 // :(xend-xsta+1)*(yend-ysta+1)
@@ -449,9 +450,10 @@ void LCD_Fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey,
 
     xlen = ex - sx + 1;
     for (i = sy; i <= ey; i++) {
-        LCD_SetCursor(sx, i);                           // 设置光标位置
-        LCD_WriteRAM_Prepare();                         // 开始写入GRAM
-        for (j = 0; j < xlen; j++) LCD_WR_DATA(LCD_BGR2RGB(color));  // 设置光标位置
+        LCD_SetCursor(sx, i);    // 设置光标位置
+        LCD_WriteRAM_Prepare();  // 开始写入GRAM
+        for (j = 0; j < xlen; j++)
+            LCD_WR_DATA(LCD_BGR2RGB(color));  // 设置光标位置
     }
 }
 // Fill the area with color
@@ -583,7 +585,7 @@ void LCD_ShowChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
                 LCD_Fast_DrawPoint(x, y, (POINT_COLOR));
             else if (mode == 0)
                 LCD_Fast_DrawPoint(x, y, BACK_COLOR);
-                
+
             temp <<= 1;
             y++;
             if (y >= lcddev.height) return;  // 超区域了
@@ -597,7 +599,7 @@ void LCD_ShowChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
     }
 }
 void LCD_ShowRawChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
-                  uint8_t mode) {
+                     uint8_t mode) {
     uint8_t temp, t1, t;
     uint16_t y0 = y;
     uint8_t csize = (size / 8 + ((size % 8) ? 1 : 0)) *
@@ -616,9 +618,10 @@ void LCD_ShowRawChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
         for (t1 = 0; t1 < 8; t1++) {
             if (temp & 0x80)
                 LCD_Fast_DrawPoint(x, y, (POINT_COLOR));
-            else if (mode == 0){}
-                // LCD_Fast_DrawPoint(x, y, BACK_COLOR);
-                
+            else if (mode == 0) {
+            }
+            // LCD_Fast_DrawPoint(x, y, BACK_COLOR);
+
             temp <<= 1;
             y++;
             if (y >= lcddev.height) return;  // 超区域了
@@ -711,7 +714,7 @@ void LCD_ShowString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 }
 
 void LCD_ShowRawString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
-                    uint8_t size, uint8_t *p) {
+                       uint8_t size, uint8_t *p) {
     uint8_t x0 = x;
     width += x;
     height += y;
@@ -725,5 +728,18 @@ void LCD_ShowRawString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
         LCD_ShowChar(x, y, *p, size, 0);
         x += size / 2;
         p++;
+    }
+}
+
+void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+                     const unsigned short *pic) {
+    uint16_t m, h;
+    uint16_t *data = (uint16_t *)pic;
+    for (h = 0 + y; h < row + y; h++)  // 60
+    {
+        for (m = 0 + x; m < column + x; m++)  // 180
+        {
+            LCD_Fast_DrawPoint(m, h, *data++);
+        }
     }
 }

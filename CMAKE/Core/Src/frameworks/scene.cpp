@@ -5,6 +5,8 @@
 main_menu::main_menu(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->add_son(&this->btn);
     this->add_son(&this->test);
+    this->add_son(&this->test_img);
+    
     test.backgroud = WHITE;
     test.font_color = BLACK;
 }

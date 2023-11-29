@@ -22,13 +22,14 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-#include <string>
 
+#include <string>
 #include <utility>
 
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
+
 
 /* USER CODE END Includes */
 
@@ -81,7 +82,7 @@ pii touch;
 bool button_click[8];
 LED leddev = LED();  // led_dev
 char *tmp = new char[1];
-vtext * choosed;
+vtext *choosed;
 /* USER CODE END 0 */
 
 /**
@@ -125,7 +126,10 @@ int main(void) {
     LCD_Init();
     // MX_I2C1_Init();
     LCD_Clear(WHITE);
+    HAL_TIM_Base_Start_IT(&htim3);
     tp_dev.init();
+    leddev.append(BLINK_BOTH);
+    leddev.append(BLINK_BOTH);
 
     /* USER CODE END 2 */
 

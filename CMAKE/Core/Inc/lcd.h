@@ -139,6 +139,8 @@ void LCD_WriteRAM(uint16_t RGB_Code);
 void LCD_Scan_Dir(uint8_t dir); // Set the scan direction
 void LCD_Display_Dir(uint8_t dir); // Set the display direction
 void LCD_Set_Window(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height);
+void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+                    const unsigned short *pic);
 
 //写数据函数
 #define LCD_WR_DATA(data){\

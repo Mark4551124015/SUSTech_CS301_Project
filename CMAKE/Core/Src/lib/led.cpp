@@ -16,7 +16,6 @@ void LED::Init() {
     this->counter = 0;
     HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, DEAD);
     HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
-
 }
 void LED::append(led_op operand) {
     switch (operand) {
@@ -28,11 +27,7 @@ void LED::append(led_op operand) {
             this->op.push(WAKE1);
             this->op.push(KILL1);
             break;
-        case BLINK_BOTH_TWICE:
-            this->op.push(WAKEALL);
-            this->op.push(KILLALL);
-            this->op.push(WAKEALL);
-            this->op.push(KILLALL);
+        case BLINK_BOTH:
             this->op.push(WAKEALL);
             this->op.push(KILLALL);
             break;

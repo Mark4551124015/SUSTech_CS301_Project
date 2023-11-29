@@ -1,11 +1,10 @@
 
 #include "framework.h"
+
 #include <cstdint>
 #include <cstdio>
-#include <string>
 #include <cstring>
-#include <cstdint>
-
+#include <string>
 
 extern pii touch;
 extern vtext* choosed;
@@ -132,6 +131,11 @@ void dpo::update(display_object* father, pii axis) {
             }
             case (S_TEXT): {
                 stext* a = (stext*)son;
+                a->update(this, this->my_axis);
+                break;
+            }
+            case (IMAGE): {
+                image* a = (image*)son;
                 a->update(this, this->my_axis);
                 break;
             }
@@ -360,7 +364,7 @@ void button::update(dpo* father, pii axis) {
 
     dpo::update(father, axis);
 }
-bool button::isClicked() { return this->click_cnt > 0 ? this->click : false; }
+bool button::isClicked() { return this->click; }
 
 pii keyboard_size = {230, 320 / 2};
 pii keyboard_pos = {0, 300 / 4};
@@ -555,3 +559,55 @@ void stext::update(dpo* father, pii axis) {
     }
     dpo::update(father, axis);
 }
+
+image::image(string name, pii pos, pii shape, const unsigned short* img, string str)
+    : dpo(name, pos, shape) {
+    this->str = str;
+    this->font_color = BLACK;
+    this->font_size = 16;
+    this->backgroud = YELLOW;
+    this->touching = false;
+    this->type = BUTTON;
+    this->click_cnt = 0;
+}
+void image::update(dpo* father, pii axis) {
+    this->my_axis = adding(axis, this->pos);
+    if (father != nullptr) {
+    }
+    pii p1 = {this->my_axis.x_p - this->shape.x_p / 2,
+              this->my_axis.y_p - this->shape.y_p / 2};
+    pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
+              this->my_axis.y_p + this->shape.y_p / 2};
+
+    if (this->need_render && this->isVisible) {
+        POINT_COLOR = BLACK;
+        LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
+                        this->img);
+        int width = this->font_size / 2 * this->str.length();
+        int height = this->font_size;
+        POINT_COLOR = this->font_color;
+        BACK_COLOR = this->backgroud;
+        LCD_ShowString(this->my_axis.x_p - width / 2,
+                       this->my_axis.y_p - height / 2, width, height,
+                       this->font_size, (uint8_t*)this->str.c_str());
+    }
+
+    // Click
+    bool fly = equal_pii(touch, {65535, 65535});
+    if (this->isVisible) {
+        this->click = false;
+        if (this->touching && fly) this->click = true;
+        if (IN(p1, p2, touch))
+            this->touching = true;
+        else
+            this->touching = false;
+    }
+
+    if (this->click) {
+        this->click_cnt++;
+        printf("[clicked] \"%s\"\n", this->name.c_str());
+    }
+
+    dpo::update(father, axis);
+}
+bool image::isClicked() { return this->click; }
