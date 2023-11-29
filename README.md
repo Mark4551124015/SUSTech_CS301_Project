@@ -23,3 +23,9 @@
 * 组件仅当`need_render`为true时刷新，刷新时会覆盖原来位置组件，因此刷新策略为刷新组件及其子组件，刷新后会自动置false
 * 仅当`isVisible`为True时，组件拥有功能
 * 组件之间的pos为相对其父组中心的位置，我们显示屏的大小为`(240,360)`
+
+* 初始屏幕组建为`canvas`，已经实例化在main里，是组件树的根
+
+### 场景组件
+
+场景均由Class组成，基于dpo（display_object）我们需要重写其`update`来编写组件操作逻辑，并且在`framework.cpp`中的update部分增加其实例化的update方法（参考以前）
