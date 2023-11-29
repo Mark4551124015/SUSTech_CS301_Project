@@ -32,7 +32,7 @@ extern "C" {
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE };
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR };
 
 typedef class display_object {
    public:

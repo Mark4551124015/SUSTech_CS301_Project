@@ -1,5 +1,6 @@
 
 #include "framework.h"
+#include "scene.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -138,6 +139,10 @@ void dpo::update(display_object* father, pii axis) {
                 image* a = (image*)son;
                 a->update(this, this->my_axis);
                 break;
+            }
+            case (BAR): {
+                bar * a = (bar *) son;
+                a->update(this, this->my_axis);
             }
             default:
                 son->update(this, this->my_axis);

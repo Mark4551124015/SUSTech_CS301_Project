@@ -22,14 +22,14 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-
+#include <cstdint>
+#include <cstdio>
 #include <string>
 #include <utility>
 
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
-
 
 /* USER CODE END Includes */
 
@@ -83,6 +83,8 @@ bool button_click[8];
 LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
+uint8_t EVENT[32];
+
 /* USER CODE END 0 */
 
 /**
@@ -135,16 +137,26 @@ int main(void) {
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
+
+    // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
-    main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
-    canvas.add_son(&m);
+
+    bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
+    dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
+
+    // canvas.add_son(&m);
+    canvas.add_son(&bottom_bar);
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         canvas.update(nullptr, {0, 0});
+        
+        if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
+        if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
+        
         /* USER CODE END WHILE */
-
+        
         /* USER CODE BEGIN 3 */
     }
     /* USER CODE END 3 */
