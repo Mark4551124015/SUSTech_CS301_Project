@@ -22,10 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-#include <string.h>
+#include <string>
 
-#include <cstdio>
-#include <cstring>
 #include <utility>
 
 #include "framework.h"

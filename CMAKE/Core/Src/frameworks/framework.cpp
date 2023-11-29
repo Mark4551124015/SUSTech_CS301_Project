@@ -1,17 +1,11 @@
 
 #include "framework.h"
-
-#include <ctype.h>
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <algorithm>
+#include <cstdint>
+#include <cstdio>
+#include <string>
+#include <cstring>
 #include <cstdint>
 
-#include "main.h"
-#include "scene.h"
 
 extern pii touch;
 extern vtext* choosed;
