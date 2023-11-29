@@ -85,6 +85,7 @@ typedef class var_text : public dpo {
     bool touching;
     bool choosing;
     bool click;
+    int click_cnt;
     uint8_t cursor;
 
    public:
@@ -109,7 +110,7 @@ typedef class button : public dpo {
     uint16_t font_color;
     uint8_t font_size;
     bool click;
-
+    int click_cnt;
    public:
     button(string name, pii pos, pii shape, string str);
     bool isClicked();
@@ -159,11 +160,12 @@ typedef class static_text : public dpo {
     uint8_t max_row;
     uint8_t max_len;
    public:
-    static_text(string name, pii pos, pii shape, char *str);
+    static_text(string name, pii pos, pii shape, char *str, uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis);
-    
+    void update_str(char *str, uint8_t font_size, uint16_t font_color, uint16_t backgroud);
     void render_char(int index, pii axis, bool clean);
+    void clear();
 } stext;
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。

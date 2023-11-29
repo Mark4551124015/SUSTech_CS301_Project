@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 
-#define TICK_MS 100
+#define TICK_MS 200
 #define WAKE0 0
 #define KILL0 1
 #define WAKE1 2

@@ -22,7 +22,6 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -331,20 +330,20 @@ void EXTI15_10_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-    if (huart->Instance == USART1) {
-        static unsigned char uRx_Data[1024] = {0};
-        static unsigned char uLength = 0;
-        if (rxBuffer[0] == '\n') {
-            LCD_Clear(WHITE);
-            uLength = 0;
-            memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
-        } else {
-            uRx_Data[uLength] = rxBuffer[0];
-            uLength++;
-        }
-    }
-}
+// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//     if (huart->Instance == USART1) {
+//         static unsigned char uRx_Data[1024] = {0};
+//         static unsigned char uLength = 0;
+//         if (rxBuffer[0] == '\n') {
+//             LCD_Clear(WHITE);
+//             uLength = 0;
+//             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
+//         } else {
+//             uRx_Data[uLength] = rxBuffer[0];
+//             uLength++;
+//         }
+//     }
+// }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 // {
 // 	HAL_Delay(500);

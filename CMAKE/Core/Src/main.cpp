@@ -22,14 +22,15 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-#include <cstdio>
 #include <string.h>
 
+#include <cstdio>
 #include <cstring>
 #include <utility>
 
 #include "framework.h"
 #include "led.h"
+#include "scene.h"
 
 /* USER CODE END Includes */
 
@@ -51,6 +52,8 @@
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
+TIM_HandleTypeDef htim3;
+
 UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
@@ -65,6 +68,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -79,41 +83,13 @@ pii touch;
 bool button_click[8];
 LED leddev = LED();  // led_dev
 char *tmp = new char[1];
-
-// void ctp_test(void) {
-//     u8 t = 0;
-//     u8 i = 0;
-//     char str1[30];
-//     char str2[30];
-//     int last_len1 = 0, last_len2 = 0;
-//     while (1) {
-//         delay_ms(5);
-
-//         // if (tp_dev.x[t] == 0xffff && tp_dev.y[t] == 0xffff) continue;
-
-//         sprintf(str1, "%d", tp_dev.x[t]);
-//         sprintf(str2, "%d", tp_dev.y[t]);
-//         if (strlen(str1) < last_len1)
-//             LCD_ShowString(30, 70, 200, 16, 16, (uint8_t *)"      ");
-//         LCD_ShowString(30, 70, 200, 16, 16, (uint8_t *)str1);
-//         if (strlen(str2) < last_len2)
-//             LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"      ");
-//         LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)str2);
-//         printf(" Touch Point on %s, %s\n", str1, str2);
-//         last_len1 = strlen(str1);
-//         last_len2 = strlen(str2);
-
-//         // if(i%20==0)LED0=!LED0;
-//     }
-// }
+vtext * choosed;
 /* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
  * @retval int
  */
-vtext *choosed = nullptr;
-
 int main(void) {
     /* USER CODE BEGIN 1 */
 
@@ -123,8 +99,7 @@ int main(void) {
      * Configuration--------------------------------------------------------*/
 
     /* Reset of all peripherals, Initializes the Flash interface and the
-     * Systick.
-     */
+     * Systick. */
     HAL_Init();
 
     /* USER CODE BEGIN Init */
@@ -144,14 +119,15 @@ int main(void) {
     MX_GPIO_Init();
     MX_DMA_Init();
     MX_USART1_UART_Init();
-
+    MX_I2C1_Init();
+    MX_TIM3_Init();
     /* USER CODE BEGIN 2 */
     //   printf("LCD shape %u %u", lcddev.height, lcddev.width);
-    tp_dev.init();
     leddev.Init();
     LCD_Init();
     // MX_I2C1_Init();
     LCD_Clear(WHITE);
+    tp_dev.init();
 
     /* USER CODE END 2 */
 
@@ -159,64 +135,17 @@ int main(void) {
     /* USER CODE BEGIN WHILE */
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
-    dpo input_binary = dpo("input_binary", {0, 0}, {lcddev.width, lcddev.height});
-    // button
-    button zero = button("0 button", {-90, 90}, {30, 40}, "0");
-    zero.font_size = 24;
-    zero.backgroud = LIGHTBLUE;
-
-    button one = button("1 button", {-30, 90}, {30, 40}, "1");
-    one.font_size = 24;
-    one.backgroud = LIGHTBLUE;
-
-    button left = button("<<", {30, 90}, {30, 40}, "<<");
-    left.font_size = 24;
-    left.backgroud = LIGHTBLUE;
-
-    button right = button(">>", {90, 90}, {30, 40}, ">>");
-    right.font_size = 24;
-    right.backgroud = LIGHTBLUE;
-
-    button backspace = button("backspace", {-90, 135}, {30, 40}, "-");
-    backspace.font_size = 24;
-    backspace.backgroud = LIGHTBLUE;
-
-    button encrypt = button("encrypt", {-60, -80}, {90, 30}, "encrypt");
-    encrypt.font_size = 24;
-    encrypt.backgroud = LIGHTBLUE;
-    button decrypt = button("decrypt", {60, -80}, {90, 30}, "decrypt");
-    decrypt.font_size = 24;
-    decrypt.backgroud = LIGHTBLUE;
-
-    // Input Box
-    vtext plain_text = vtext("Decrypted", {0, -120}, {210, 40});
-    vtext secret_text = vtext("Encrypted", {0, 0}, {210, 120});
-
-    keyboard default_keyboard = keyboard();
-
-    plain_text.backgroud = YELLOW;
-    secret_text.backgroud = YELLOW;
-    strcpy(plain_text.str, "WTF What Are you doing?");
-    plain_text.len = 23;
-    canvas.add_son(&input_binary);
-    input_binary.add_son(&zero);
-    input_binary.add_son(&one);
-    input_binary.add_son(&left);
-    input_binary.add_son(&right);
-    input_binary.add_son(&backspace);
-    canvas.add_son(&plain_text);
-    canvas.add_son(&secret_text);
-    canvas.add_son(&encrypt);
-    canvas.add_son(&decrypt);
-    canvas.add_son(&default_keyboard);
-    default_keyboard.init_keys();
-    default_keyboard.isVisible = false;
-    bool error=false;
-
+    main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
+    canvas.add_son(&m);
     while (1) {
-    
-    }
+        tp_dev.scan(0);
+        touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
+        canvas.update(nullptr, {0, 0});
+        /* USER CODE END WHILE */
 
+        /* USER CODE BEGIN 3 */
+    }
+    /* USER CODE END 3 */
 }
 
 /**
@@ -284,6 +213,47 @@ static void MX_I2C1_Init(void) {
 
     /* USER CODE END I2C1_Init 2 */
 }
+
+/**
+ * @brief TIM3 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_TIM3_Init(void) {
+    /* USER CODE BEGIN TIM3_Init 0 */
+
+    /* USER CODE END TIM3_Init 0 */
+
+    TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+    TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+    /* USER CODE BEGIN TIM3_Init 1 */
+
+    /* USER CODE END TIM3_Init 1 */
+    htim3.Instance = TIM3;
+    htim3.Init.Prescaler = 7199;
+    htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htim3.Init.Period = 9;
+    htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    if (HAL_TIM_Base_Init(&htim3) != HAL_OK) {
+        Error_Handler();
+    }
+    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+    if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK) {
+        Error_Handler();
+    }
+    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) !=
+        HAL_OK) {
+        Error_Handler();
+    }
+    /* USER CODE BEGIN TIM3_Init 2 */
+
+    /* USER CODE END TIM3_Init 2 */
+}
+
 /**
  * @brief USART1 Initialization Function
  * @param None
@@ -343,6 +313,7 @@ static void MX_GPIO_Init(void) {
     __HAL_RCC_GPIOD_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);

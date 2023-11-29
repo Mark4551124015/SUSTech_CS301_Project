@@ -8,8 +8,10 @@
 #include <string.h>
 
 #include <algorithm>
+#include <cstdint>
 
 #include "main.h"
+#include "scene.h"
 
 extern pii touch;
 extern vtext* choosed;
@@ -154,8 +156,10 @@ vtext::var_text(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->font_size = 16;
     this->type = V_TEXT;
     this->choosing = false;
+    this->touching = false;
     this->cursor = 0;
     this->start = {(-this->shape.x_p + 4) / 2, (-this->shape.y_p + 4) / 2};
+    this->click_cnt = 0;
 
     // except the boarder
     this->max_col = (this->shape.x_p - 4) / (this->font_size / 2);
@@ -294,6 +298,7 @@ void vtext::update(dpo* father, pii axis) {
             this->touching = false;
     }
     if (this->click) {
+        this->click_cnt++;
         if (this->choosing) {
             printf("[unchoosed]\"%s\"\n", this->name.c_str());
             this->choosing = false;
@@ -318,7 +323,9 @@ button::button(string name, pii pos, pii shape, string str)
     this->font_color = BLACK;
     this->font_size = 16;
     this->backgroud = YELLOW;
+    this->touching = false;
     this->type = BUTTON;
+    this->click_cnt = 0;
 }
 void button::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
@@ -353,12 +360,13 @@ void button::update(dpo* father, pii axis) {
     }
 
     if (this->click) {
+        this->click_cnt++;
         printf("[clicked] \"%s\"\n", this->name.c_str());
     }
 
     dpo::update(father, axis);
 }
-bool button::isClicked() { return this->click; }
+bool button::isClicked() { return this->click_cnt > 0 ? this->click : false; }
 
 pii keyboard_size = {230, 320 / 2};
 pii keyboard_pos = {0, 300 / 4};
@@ -473,15 +481,53 @@ char keyboard::typing() {
     return 0;
 }
 
-stext::static_text(string name, pii pos, pii shape, char* str)
+stext::static_text(string name, pii pos, pii shape, char* str,
+                   uint8_t font_size)
     : dpo(name, pos, shape) {
-    memset(this->str, 0, 256);
+    this->type = S_TEXT;
+    this->need_render = true;
+    this->backgroud = WHITE;
+    this->isVisible = true;
+
+    memset(this->str, 0, 255);
     strcpy(this->str, str);
     this->font_color = BLACK;
-    this->font_size = 16;
-    this->type = S_TEXT;
-}
+    this->len = strlen(str);
+    this->font_size = font_size;
+    this->max_col = (this->shape.x_p) / (this->font_size / 2);
+    this->max_row = (this->shape.y_p) / this->font_size;
+    this->max_len = this->max_row * this->max_col;
 
+    pii font_shape = {
+        font_size / 2 * (this->len > this->max_col ? this->max_col : this->len),
+        font_size * ((this->len - 1) / this->max_col + 1)};
+    if (this->len == 0) font_shape = {0, 0};
+    this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
+}
+void stext::clear() {
+    for (int i = 0; i < this->len; i++) {
+        this->render_char(i, this->my_axis, 1);
+    }
+}
+void stext::update_str(char* str, uint8_t font_size, uint16_t font_color,
+                       uint16_t backgroud) {
+    this->clear();
+    memset(this->str, 0, 255);
+    strcpy(this->str, str);
+    this->font_color = BLACK;
+    this->len = strlen(str);
+    this->font_size = font_size;
+    this->max_col = (this->shape.x_p) / (this->font_size / 2);
+    this->max_row = (this->shape.y_p) / this->font_size;
+    this->max_len = this->max_row * this->max_col;
+
+    pii font_shape = {
+        font_size / 2 * (this->len > this->max_col ? this->max_col : this->len),
+        font_size * ((this->len - 1) / this->max_col + 1)};
+    if (this->len == 0) font_shape = {0, 0};
+    this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
+    this->backgroud = backgroud;
+}
 pii stext::get_pos(int index, pii axis) {
     pii target;
     target = {(index % this->max_col) * (this->font_size / 2),
@@ -490,6 +536,7 @@ pii stext::get_pos(int index, pii axis) {
     target = adding(target, axis);
     return target;
 }
+
 void stext::render_char(int index, pii axis, bool clean) {
     if (!(index >= 0 && index < this->len)) return;
     pii pos = get_pos(index, axis);
