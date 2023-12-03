@@ -94,7 +94,7 @@ bool dpo::getVisbility() { return this->isVisible; }
 
 int dpo::get_id() { return this->id; }
 
-void dpo::move(pair<int, int> pos) { this->pos = {pos.x_p, pos.y_p}; }
+void dpo::move(pii pos) { this->pos = {pos.x_p, pos.y_p}; }
 
 void dpo::update(display_object* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
