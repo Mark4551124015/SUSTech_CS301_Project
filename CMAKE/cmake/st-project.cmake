@@ -97,6 +97,7 @@ target_sources(
     "Core\\Src\\syscalls.c"
     "Core\\Src\\sysmem.c"
     "Core\\Src\\system_stm32f1xx.c"
+    "Core\\Src\\calc_algo.cpp"
     "Core\\Startup\\startup_stm32f103rctx.s"
     "Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_cortex.c"
     "Drivers\\STM32F1xx_HAL_Driver\\Src\\stm32f1xx_hal_dma.c"
