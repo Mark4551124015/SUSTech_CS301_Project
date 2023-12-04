@@ -1,11 +1,10 @@
 
 #include "framework.h"
+
 #include <cstdint>
 #include <cstdio>
-#include <string>
 #include <cstring>
-#include <cstdint>
-
+#include <string>
 
 extern pii touch;
 extern vtext* choosed;
