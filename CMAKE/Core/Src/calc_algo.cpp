@@ -1,19 +1,126 @@
 #include "calc_algo.hpp"
 
-#include <bitset>
 #include <cmath>
-#include <stack>
+#include <cstdio>
 #include <string>
-#include <utility>
-
-using std::stack;
-using std::string;
 
 using std::isnan;
 using std::nan;
+using std::string;
 using std::to_string;
 
+using ll = long long;
 using pdd = std::pair<double, double>;
+
+int find_ch(string s, char ch) {
+    for (int i = 0; i < s.size(); ++i) {
+        if (s[i] == ch) return i;
+    }
+    return -1;
+}
+
+int find_ch_rev(string s, char ch) {
+    for (int i = s.size() - 1; i >= 0; --i) {
+        if (s[i] == ch) return i;
+    }
+    return -1;
+}
+
+int findSubstring(string str, string subStr) {
+    int strLen = str.length();
+    int subStrLen = subStr.length();
+
+    for (int i = 0; i <= strLen - subStrLen; i++) {
+        int j;
+        for (j = 0; j < subStrLen; j++) {
+            if (str[i + j] != subStr[j]) {
+                break;
+            }
+        }
+        if (j == subStrLen) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+ll binary2Decimal(string binaryStr) {
+    ll decimal = 0;
+    ll power = 1;
+
+    for (int i = binaryStr.length() - 1; i >= 0; i--) {
+        if (binaryStr[i] == '1') {
+            decimal += power;
+        }
+        power <<= 1;
+    }
+
+    return decimal;
+}
+
+string double2String(double value) {
+    string res;
+    if (value < 0) {
+        res += "-";
+        value = -value;
+    }
+    if (value > 1e63 - 1) {
+        return "TOO BIG ABS";
+    }
+
+    ll Head = (ll)value;
+    res += to_string(Head);
+    int point_cnt = 0;
+    int precision = 3;
+    double Point = (value - Head) * 10.0;
+    int temp = (int)Point;
+
+    while (point_cnt < precision && temp != 0) {
+        if (point_cnt == 0) res += ".";
+        res += to_string(temp);
+        point_cnt++;
+        Point = (Point - temp) * 10.0;
+        temp = (int)Point;
+    }
+
+    return res;
+}
+
+template <typename T>
+class MyStack {
+   private:
+    T *data;
+    int max_size;
+    int top_p;
+
+   public:
+    MyStack() : max_size(100), top_p(-1) { data = new T[max_size]; }
+
+    ~MyStack() { delete[] data; }
+
+    void push(const T &element) { data[++top_p] = element; }
+
+    void pop() {
+        if (top_p == -1) {
+            printf("Stack Empty .pop() Error!\n");
+            return;
+        }
+        top_p--;
+    }
+
+    T &top() {
+        if (top_p == -1) {
+            printf("Stack Empty .top() Error!\n");
+            return data[0];
+        }
+        return data[top_p];
+    }
+
+    bool empty() { return top_p == -1; }
+
+    int size() { return top_p + 1; }
+};
 
 char pre_arr[9][9] = {
     {'>', '>', '<', '<', '<', '<', '>', '>', ' '},  // +
@@ -152,8 +259,8 @@ double operate(double num1, double num2, char op) {
  * @return The result of the evaluation, or "ERROR" for illegal input
  */
 double evaluateExpression(string ex) {
-    stack<char> ops;
-    stack<double> ovs;
+    MyStack<char> ops;
+    MyStack<double> ovs;
     ops.push('\n');
 
     if (ex[0] == '-' || ex[0] == '+') {
@@ -259,7 +366,7 @@ string getExRes(string expression) {
     if (isnan(res)) {
         return "ERROR";
     }
-    return to_string(res);
+    return double2String(res);
 }
 
 /**
@@ -272,24 +379,23 @@ string getExRes(string expression) {
 pdd solveQuadraticEquation(string eq) {
     pdd null_res = {nan(""), nan("")};
     pdd res;
-
-    size_t pos_a = eq.find_first_of('=');
-    size_t pos_b = eq.find_last_of('=');
-    if (pos_a == string::npos || pos_a != pos_b ||
+    int pos_a = find_ch(eq, '=');
+    int pos_b = find_ch_rev(eq, '=');
+    if (pos_a == -1 || pos_a != pos_b ||
         eq.substr(pos_a, eq.size() - pos_a) != "=0") {
         return null_res;
     }
-    size_t x_p = eq.find('x');
-    size_t y_p = eq.find('y');
-    if ((x_p == string::npos) == (y_p == string::npos)) {
+    int x_pp = find_ch(eq, 'x');
+    int y_pp = find_ch(eq, 'y');
+    if ((x_pp == -1) == (y_pp == -1)) {
         return null_res;
     }
-    string sym = (x_p == string::npos ? "y" : "x");
+    string sym = (x_pp == -1 ? "y" : "x");
     string qu = sym + "^2";
     string le = eq.substr(0, pos_a);
     double a = 0, b = 0, c = 0;
-    if (le.find(qu) != string::npos) {
-        size_t pos = le.find(qu);
+    if (findSubstring(le, qu) != -1) {
+        int pos = findSubstring(le, qu);
         string coe;
         if (pos == 0 || (pos == 1 && (le[0] == '+' || le[0] == '-'))) {
             coe += le.substr(0, pos) + "1";
@@ -299,8 +405,8 @@ pdd solveQuadraticEquation(string eq) {
         a = evaluateExpression(coe);
         le.erase(0, pos + 3);
     }
-    if (le.find(sym) != string::npos) {
-        size_t pos = le.find(sym);
+    if (findSubstring(le, sym) != -1) {
+        int pos = findSubstring(le, sym);
         string coe;
         if (pos == 0 || (pos == 1 && (le[0] == '+' || le[0] == '-'))) {
             coe += le.substr(0, pos) + "1";
@@ -361,14 +467,14 @@ string getEqRes(string equation) {
     if (isnan(res.first) && res.second == 0) {
         return "No Solution In R";
     }
-    size_t x_p = equation.find('x');
-    size_t y_p = equation.find('y');
-    string sym_eq = (x_p == string::npos ? "y=" : "x=");
-    string rtn = sym_eq + to_string(res.first);
+    int x_pp = find_ch(equation, 'x');
+    int y_pp = find_ch(equation, 'y');
+    string sym_eq = (x_pp == -1 ? "y=" : "x=");
+    string rtn = sym_eq + double2String(res.first);
     if (isnan(res.second)) {
         return rtn;
     }
-    return rtn + " || " + sym_eq + to_string(res.second);
+    return rtn + " || " + sym_eq + double2String(res.second);
 }
 
 /**
@@ -398,8 +504,7 @@ string getBinRes(string binaryExperssion) {
             binBuff += ch;
         } else if (is_op(ch)) {
             if (!binBuff.empty()) {
-                std::bitset<64> binaryNumber(binBuff);
-                dec += to_string(binaryNumber.to_ullong());
+                dec += to_string(binary2Decimal(binBuff));
                 binBuff = "";
             }
             dec += ch;
@@ -408,8 +513,7 @@ string getBinRes(string binaryExperssion) {
         }
     }
     if (!binBuff.empty()) {
-        std::bitset<64> binaryNumber(binBuff);
-        dec += to_string(binaryNumber.to_ullong());
+        dec += to_string(binary2Decimal(binBuff));
         binBuff = "";
     }
     return getExRes(dec);
@@ -438,7 +542,7 @@ int main() {
     eqs.emplace_back("-x-200/2=0");
     eqs.emplace_back("(2^2-4)y^2+y+4=0");
     eqs.emplace_back("4y^2+4y-12=0");
-    eqs.emplace_back("x^2-3x+2=0");
+    eqs.emplace_back("-x^2+3x-2=0");
     eqs.emplace_back("-x-200/2=2");        // right not =0 error
     eqs.emplace_back("(2^2)y^2+4x-12=0");  // x&y mix error
     for (string eq : eqs) {
