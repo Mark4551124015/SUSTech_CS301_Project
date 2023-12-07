@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstdio>
+
 #include <cstring>
 #include <string>
 #include <utility>
@@ -32,7 +33,8 @@ bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 pii adding(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, CV_TEXT };
+
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, CV_TEXT };
 
 class display_object {
    public:
@@ -167,12 +169,31 @@ class static_text : public dpo {
     static_text(string name, pii pos, pii shape, char *str, uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis) override;
+
     void update_str(char *str, uint8_t font_size, uint16_t font_color,
                     uint16_t backgroud);
     void render_char(int index, pii axis, bool clean);
     void clear();
 };
 using stext = static_text;
+
+typedef class image : public dpo {
+   public:
+    bool touching;
+    string str;
+    uint16_t backgroud;
+    uint16_t font_color;
+    uint8_t font_size;
+    bool click;
+    int click_cnt;
+    const unsigned short *img;
+
+   public:
+    image(string name, pii pos, pii shape, const unsigned short *img,string str);
+    bool isClicked();
+    void update(display_object *father, pii axis);
+
+} image;
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 }

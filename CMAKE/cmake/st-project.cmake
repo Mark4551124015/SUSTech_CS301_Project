@@ -80,6 +80,7 @@ target_link_options(
 target_sources(
     ${TARGET_NAME} PRIVATE
     "Core\\Src\\config.c"
+    "Core\\Src\\image_source.cpp"
     "Core\\Src\\frameworks\\framework.cpp"
     "Core\\Src\\frameworks\\scene.cpp"
     "Core\\Src\\frameworks\\calc_scene.cpp"
