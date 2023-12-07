@@ -1,10 +1,9 @@
 #ifndef __FRAMWORK_H
 #define __FRAMWORK_H
 
-#include <stdint.h>
-#include <stdio.h>
-
 #include <cstdint>
+#include <cstdio>
+
 #include <cstring>
 #include <string>
 #include <utility>
@@ -13,16 +12,17 @@
 #include "lcd.h"
 #include "stm32f1xx.h"
 
-using namespace std;
+using std::pair;
+using std::string;
+using std::vector;
+
+using pii = std::pair<int, int>;
 
 #ifndef x_p
 #define x_p first
 #endif
 #ifndef y_p
 #define y_p second
-#endif
-#ifndef pii
-#define pii pair<int, int>
 #endif
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
@@ -31,10 +31,12 @@ extern "C" {
 
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
+pii adding(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR };
 
-typedef class display_object {
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, CV_TEXT };
+
+class display_object {
    public:
     int id;
     dpo_type type;
@@ -68,11 +70,12 @@ typedef class display_object {
     bool getVisbility();
 
     int get_id();
-    void move(pair<int, int> pos);
+    void move(pii pos);
     virtual void update(display_object *father, pii axis);
-} dpo;
+};
+using dpo = display_object;
 
-typedef class var_text : public dpo {
+class var_text : public dpo {
    public:
     char str[255];
     uint16_t len;
@@ -100,10 +103,11 @@ typedef class var_text : public dpo {
     void render_char(int index, pii axis, bool clean);
     void render_cursor(int index, pii axis, uint16_t color);
     void update_char(int start, int end);
-    void update(display_object *father, pii axis);
-} vtext;
+    void update(display_object *father, pii axis) override;
+};
+using vtext = var_text;
 
-typedef class button : public dpo {
+class button : public dpo {
    public:
     bool touching;
     string str;
@@ -116,11 +120,10 @@ typedef class button : public dpo {
    public:
     button(string name, pii pos, pii shape, string str);
     bool isClicked();
-    void update(display_object *father, pii axis);
+    void update(display_object *father, pii axis) override;
+};
 
-} button;
-
-typedef class keyboard : public dpo {
+class keyboard : public dpo {
    public:
     button *keys[26];
     button *shift;
@@ -146,11 +149,11 @@ typedef class keyboard : public dpo {
     void init_keys();
     char typing();
     pii get_pos(int index);
-    void update(display_object *father, pii axis);
+    void update(display_object *father, pii axis) override;
     // void setVisbility(bool flag);
-} keyboard;
+};
 
-typedef class static_text : public dpo {
+class static_text : public dpo {
    public:
     char str[255];
     uint16_t len;
@@ -165,12 +168,14 @@ typedef class static_text : public dpo {
    public:
     static_text(string name, pii pos, pii shape, char *str, uint8_t font_size);
     pii get_pos(int index, pii axis);
-    void update(display_object *father, pii axis);
+    void update(display_object *father, pii axis) override;
+
     void update_str(char *str, uint8_t font_size, uint16_t font_color,
                     uint16_t backgroud);
     void render_char(int index, pii axis, bool clean);
     void clear();
-} stext;
+};
+using stext = static_text;
 
 typedef class image : public dpo {
    public:
