@@ -4,6 +4,7 @@ RemoteSystemsTempFiles/
 .settings/
 Debug/
 build/
+.cache/
 *.launch
 
 # STM32 git ignore

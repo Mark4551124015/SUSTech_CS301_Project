@@ -30,6 +30,7 @@
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
+#include "lvgl/lvgl.h"
 
 /* USER CODE END Includes */
 
@@ -84,6 +85,8 @@ LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
+static lv_disp_buf_t disp_buf;
+static lv_color_t buf[LV_HOR_RES_MAX * LV_VER_RES_MAX / 10];                     /*Declare a buffer for 1/10 screen size*/
 
 /* USER CODE END 0 */
 
@@ -91,6 +94,38 @@ uint8_t EVENT[32];
  * @brief  The application entry point.
  * @retval int
  */
+
+ static void event_handler(lv_obj_t * obj, lv_event_t event)
+{
+    if(event == LV_EVENT_CLICKED) {
+        printf("Clicked\n");
+    }
+    else if(event == LV_EVENT_VALUE_CHANGED) {
+        printf("Toggled\n");
+    }
+}
+
+void lv_ex_btn_1(void)
+{
+    lv_obj_t * label;
+
+    lv_obj_t * btn1 = lv_btn_create(lv_scr_act(), NULL);
+    lv_obj_set_event_cb(btn1, event_handler);
+    lv_obj_align(btn1, NULL, LV_ALIGN_CENTER, 0, -40);
+
+    label = lv_label_create(btn1, NULL);
+    lv_label_set_text(label, "Button");
+
+    lv_obj_t * btn2 = lv_btn_create(lv_scr_act(), NULL);
+    lv_obj_set_event_cb(btn2, event_handler);
+    lv_obj_align(btn2, NULL, LV_ALIGN_CENTER, 0, 40);
+    lv_btn_set_checkable(btn2, true);
+    lv_btn_toggle(btn2);
+    lv_btn_set_fit2(btn2, LV_FIT_NONE, LV_FIT_TIGHT);
+
+    label = lv_label_create(btn2, NULL);
+    lv_label_set_text(label, "Toggled");
+}
 int main(void) {
     /* USER CODE BEGIN 1 */
 
@@ -102,6 +137,9 @@ int main(void) {
     /* Reset of all peripherals, Initializes the Flash interface and the
      * Systick. */
     HAL_Init();
+    lv_init();
+    lv_disp_buf_init(&disp_buf, buf, NULL, LV_HOR_RES_MAX * LV_VER_RES_MAX / 10);    /*Initialize the display buffer*/
+
 
     /* USER CODE BEGIN Init */
 
@@ -139,22 +177,24 @@ int main(void) {
     /* USER CODE BEGIN WHILE */
 
     // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
-    dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
-                     {lcddev.width, lcddev.height});
+    // dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
+    //                  {lcddev.width, lcddev.height});
 
-    bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
-    dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
+    // bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
+    // dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
 
     // canvas.add_son(&m);
-    canvas.add_son(&bottom_bar);
-    canvas.add_son(&window_view);
+    // canvas.add_son(&bottom_bar);
+    // canvas.add_son(&window_view);
+    // lv_ex_btn_1();
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
-        canvas.update(nullptr, {0, 0});
         
-        if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
-        if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
+        // canvas.update(nullptr, {0, 0});
+        
+        // if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
+        // if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
 
         /* USER CODE END WHILE */
         
