@@ -1,0 +1,6 @@
+make.exe --dry-run --keep-going --print-directory
+make.exe: *** û��ָ��Ŀ�겢���Ҳ��� makefile�� ֹͣ��
+
+make.exe: Entering directory `d:/WORKSPACE_WIN/SUSTech_CS301_Project/CMAKE'
+make.exe: Leaving directory `d:/WORKSPACE_WIN/SUSTech_CS301_Project/CMAKE'
+ 

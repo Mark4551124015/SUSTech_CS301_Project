@@ -8,7 +8,7 @@
         "-D STM32F103xE", // 项目根目录
         "-D USE_HAL_DRIVER",
         "-D _CRT_SECURE_NO_WARNINGS",
-        "-D offset",
+
         "-D __GNUC__",
         "-I${workspaceFolder}/Core/Inc",
         "-I${workspaceFolder}/Drivers/CMSIS/Include", // 第三方依赖的头文件目录

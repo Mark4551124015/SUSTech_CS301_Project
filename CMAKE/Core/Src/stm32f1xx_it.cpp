@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "string.h"
 #include "led.h"
+#include "lvgl/lvgl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -352,6 +353,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM3) {
         leddev.tick();
+        lv_tick_inc(1);//lvgl 的 1ms 心跳
     }
 }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

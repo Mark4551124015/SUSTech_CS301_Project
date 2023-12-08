@@ -147,6 +147,7 @@ int main(void) {
 
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
+    canvas.add_son(&window_view);
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
@@ -154,7 +155,7 @@ int main(void) {
         
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
         if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
-        
+
         /* USER CODE END WHILE */
         
         /* USER CODE BEGIN 3 */
