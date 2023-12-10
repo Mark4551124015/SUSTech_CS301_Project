@@ -2,7 +2,7 @@
 #include "lcd.h"
 
 #include "font.h"
-#include "main.h"
+#include "framework.h"
 
 // #include "stdlib.h"
 // #include "usart.h"
@@ -598,8 +598,9 @@ void LCD_ShowChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
         }
     }
 }
-void LCD_ShowRawChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
-                     uint8_t mode) {
+void LCD_ShowRotateChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
+                        uint16_t angle, uint8_t mode) {
+    pii center = {x + size / 4, y + size / 2};
     uint8_t temp, t1, t;
     uint16_t y0 = y;
     uint8_t csize = (size / 8 + ((size % 8) ? 1 : 0)) *
@@ -616,8 +617,10 @@ void LCD_ShowRawChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
         else
             return;  // 没有的字库
         for (t1 = 0; t1 < 8; t1++) {
+            pii p = {x, y};
+            p = rotate_pos(p, center, angle);
             if (temp & 0x80)
-                LCD_Fast_DrawPoint(x, y, (POINT_COLOR));
+                LCD_Fast_DrawPoint(p.first, p.second, (POINT_COLOR));
             else if (mode == 0) {
             }
             // LCD_Fast_DrawPoint(x, y, BACK_COLOR);
@@ -742,4 +745,36 @@ void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
             LCD_Fast_DrawPoint(m, h, *data++);
         }
     }
+}
+
+// void LCD_ShowPic_Part(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+//                       uint16_t pa_x, uint16_t pa_y, uint16_t pa_w,
+//                       uint16_t pa_h, unsigned short *pic) {
+//     uint16_t m, h;
+//     uint16_t *data = (uint16_t *)pic;
+//     for (h = 0; h < row; h++) {
+//         for (m = 0; m < column; m++) {
+//             if (h >= pa_y && h < pa_y + pa_h && m >= pa_x && m < pa_x + pa_w)
+//             {
+//                 LCD_Fast_DrawPoint(x + m - pa_x, y + h - pa_y, *data);
+//             }
+//             *data++;
+//         }
+//     }
+//     LCD_DrawRectangle(x, y, x + pa_w, y + pa_h);
+// }
+
+void LCD_ShowPic_Part(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+                      uint16_t p1_x, uint16_t p1_y, uint16_t p2_x,
+                      uint16_t p2_y, const unsigned short *pic) {
+    uint16_t m, h;
+    uint16_t *data = (uint16_t *)pic;
+    for (h = p1_y; h < p2_y; h++) {
+        for (m = p1_x; m < p2_x; m++) {
+            uint32_t shift = h * column + m;
+            // uint32_t shift = m*column + h;
+            LCD_Fast_DrawPoint(x + m - p1_x, y + h - p1_y, *(data + shift));
+        }
+    }
+    LCD_DrawRectangle(x, y, x + p2_x - p1_x - 1, y + p2_y - p1_y - 1);
 }
