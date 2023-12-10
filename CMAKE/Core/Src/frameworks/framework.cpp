@@ -1,15 +1,25 @@
 
 #include "framework.h"
 
-
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
+
+#include "scene.h"
 
 extern pii touch;
 extern vtext* choosed;
 
+pii rotate_pos(pii pos, pii axis, int angle) {
+    float x = pos.x_p - axis.x_p;
+    float y = pos.y_p - axis.y_p;
+    float rad = angle * 3.1415926 / 180;
+    float x1 = x * cos(rad) - y * sin(rad);
+    float y1 = x * sin(rad) + y * cos(rad);
+    return {x1 + axis.x_p, y1 + axis.y_p};
+}
 bool IN(pii p1, pii p2, pii p3) {
     int x1 = p1.x_p, x2 = p2.x_p, x = p3.x_p;
     int y1 = p1.y_p, y2 = p2.y_p, y = p3.y_p;
@@ -19,6 +29,13 @@ bool IN(pii p1, pii p2, pii p3) {
 }
 pii adding(pii a, pii b) { return {a.x_p + b.x_p, a.y_p + b.y_p}; }
 bool equal_pii(pii a, pii b) { return (a.x_p == b.x_p) && (a.y_p == b.y_p); }
+
+pii randPII(pii x_range, pii y_range) {
+    srand(SysTick->VAL);
+    int x = rand() % (x_range.y_p - x_range.x_p) + x_range.x_p;
+    int y = rand() % (y_range.y_p - y_range.x_p) + y_range.x_p;
+    return {x, y};
+}
 
 // Display object
 unsigned int dpo::cnt = 0;
@@ -30,7 +47,8 @@ dpo::display_object(string name, pii pos, pii shape) {
     this->pos = {pos.x_p, pos.y_p};
     this->shape = {shape.x_p, shape.y_p};
     this->isVisible = true;
-    this->sub_object.clear();
+    this->sub_object_cnt = 0;
+    memset(this->sub_object, 0, sizeof(this->sub_object));
     this->need_render = true;
     this->name = name;
     this->type = DPO;
@@ -62,10 +80,10 @@ bool dpo::add_son(dpo* son) {
             printf("bad unique\n");
             return false;
         };
-    this->sub_object.push_back(son);
+    this->sub_object[this->sub_object_cnt++] = son;
     return true;
 }
-vector<display_object*> dpo::get_son() { return this->sub_object; }
+display_object** dpo::get_son() { return this->sub_object; }
 
 void dpo::setAlpha(float alpha) {
     alpha = alpha > 1.0 ? 1.0 : alpha;
@@ -75,9 +93,6 @@ void dpo::setAlpha(float alpha) {
 float dpo::getAlpha() { return this->alpha; }
 
 void dpo::setVisbility(bool flag) {
-    for (dpo* obj : this->sub_object) {
-        obj->setVisbility(flag);
-    }
     this->isVisible = flag;
     if (flag) {
         this->need_render = true;
@@ -94,20 +109,22 @@ bool dpo::getVisbility() { return this->isVisible; }
 
 int dpo::get_id() { return this->id; }
 
-void dpo::move(pii pos) { this->pos = {pos.x_p, pos.y_p}; }
+void dpo::move(pair<int, int> pos) { this->pos = {pos.x_p, pos.y_p}; }
 
 void dpo::update(display_object* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
     // printf("updating %s\n", this->name.c_str());
     if (this->need_render) {
-        for (dpo* son : this->get_son()) {
+        for (int i = 0; i < this->sub_object_cnt; i++) {
+            dpo* son = this->sub_object[i];
             if (!son->getVisbility()) continue;
             son->need_render = true;
         }
         this->need_render = false;
     }
 
-    for (dpo* son : this->get_son()) {
+    for (int i = 0; i < this->sub_object_cnt; i++) {
+        dpo* son = this->sub_object[i];
         if (!son->getVisbility()) continue;
         // printf("son type: %d\n", (int)son->type);
         switch (son->type) {
@@ -141,8 +158,24 @@ void dpo::update(display_object* father, pii axis) {
                 break;
             }
             case (BAR): {
-                bar * a = (bar *) son;
+                bar* a = (bar*)son;
                 a->update(this, this->my_axis);
+                break;
+            }
+            case (MOVIMG): {
+                mov_img* a = (mov_img*)son;
+                a->update(this, this->my_axis);
+                break;
+            }
+            case (RECT): {
+                rect* a = (rect*)son;
+                a->update(this, this->my_axis);
+                break;
+            }
+            case (MARKER): {
+                marker* a = (marker*)son;
+                a->update(this, this->my_axis);
+                break;
             }
             default:
                 son->update(this, this->my_axis);
@@ -292,8 +325,8 @@ void vtext::update(dpo* father, pii axis) {
     }
 
     // Click
+    this->click = false;
     if (this->isVisible) {
-        this->click = false;
         if (this->touching && fly) this->click = true;
         if (IN(p1, p2, touch))
             this->touching = true;
@@ -329,6 +362,7 @@ button::button(string name, pii pos, pii shape, string str)
     this->touching = false;
     this->type = BUTTON;
     this->click_cnt = 0;
+    this->click = false;
 }
 void button::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
@@ -353,8 +387,8 @@ void button::update(dpo* father, pii axis) {
     }
     bool fly = equal_pii(touch, {65535, 65535});
     // Click
+    this->click = false;
     if (this->isVisible) {
-        this->click = false;
         if (this->touching && fly) this->click = true;
         if (IN(p1, p2, touch))
             this->touching = true;
@@ -371,6 +405,10 @@ void button::update(dpo* father, pii axis) {
 }
 bool button::isClicked() { return this->click; }
 
+void button::reset() {
+    this->click_cnt = 0;
+    this->click = false;
+}
 pii keyboard_size = {230, 320 / 2};
 pii keyboard_pos = {0, 300 / 4};
 
@@ -492,7 +530,7 @@ stext::static_text(string name, pii pos, pii shape, char* str,
     this->backgroud = WHITE;
     this->isVisible = true;
 
-    memset(this->str, 0, 255);
+    this->str = (char*)calloc(255, sizeof(char));
     strcpy(this->str, str);
     this->font_color = BLACK;
     this->len = strlen(str);
@@ -530,6 +568,7 @@ void stext::update_str(char* str, uint8_t font_size, uint16_t font_color,
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
     this->backgroud = backgroud;
+    this->need_render = true;
 }
 pii stext::get_pos(int index, pii axis) {
     pii target;
@@ -556,16 +595,18 @@ void stext::render_char(int index, pii axis, bool clean) {
 
 void stext::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
-    if (this->need_render) {
+    if (this->need_render && this->isVisible) {
         for (int i = 0; i < this->len; i++) {
             this->render_char(i, this->my_axis, 1);
             this->render_char(i, this->my_axis, 0);
         }
+        printf("rendered %s len: %d\n", this->name.c_str(), this->len);
     }
     dpo::update(father, axis);
 }
 
-image::image(string name, pii pos, pii shape, const unsigned short* img, string str)
+image::image(string name, pii pos, pii shape, const unsigned short* img,
+             string str)
     : dpo(name, pos, shape) {
     this->str = str;
     this->font_color = BLACK;
@@ -599,8 +640,8 @@ void image::update(dpo* father, pii axis) {
 
     // Click
     bool fly = equal_pii(touch, {65535, 65535});
+    this->click = false;
     if (this->isVisible) {
-        this->click = false;
         if (this->touching && fly) this->click = true;
         if (IN(p1, p2, touch))
             this->touching = true;
@@ -616,3 +657,25 @@ void image::update(dpo* father, pii axis) {
     dpo::update(father, axis);
 }
 bool image::isClicked() { return this->click; }
+
+rect::rectangle(string name, pii pos, pii shape, uint16_t backgroud)
+    : dpo(name, pos, shape) {
+    this->backgroud = backgroud;
+}
+
+void rect::update(dpo* father, pii axis) {
+    this->my_axis = adding(axis, this->pos);
+    if (father != nullptr) {
+    }
+    pii p1 = {this->my_axis.x_p - this->shape.x_p / 2,
+              this->my_axis.y_p - this->shape.y_p / 2};
+    pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
+              this->my_axis.y_p + this->shape.y_p / 2};
+
+    if (this->need_render && this->isVisible) {
+        POINT_COLOR = BLACK;
+        LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, this->backgroud);
+        LCD_DrawRectangle(p1.x_p, p1.y_p, p2.x_p, p2.y_p);
+    }
+    dpo::update(father, axis);
+}
