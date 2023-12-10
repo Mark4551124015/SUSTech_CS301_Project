@@ -9,6 +9,7 @@
 #ifdef __cplusplus   //使用C语言的方式编译方法名。
 extern "C" {
 #endif
+
 //LCD重要参数集
 typedef struct  
 {										    
@@ -125,7 +126,7 @@ void LCD_DrawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);	// D
 void LCD_Fill(uint16_t sx,uint16_t sy,uint16_t ex,uint16_t ey,uint16_t color);	// Fill the area with color
 void LCD_Color_Fill(uint16_t sx,uint16_t sy,uint16_t ex,uint16_t ey,uint16_t *color);	// Fill the area with color
 void LCD_ShowChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size,uint8_t mode);	// Display a char
-void LCD_ShowRawChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size,uint8_t mode);	// Display a char
+void LCD_ShowRotateChar(uint16_t x,uint16_t y,uint8_t num,uint8_t size, uint16_t angle, uint8_t mode);	// Display a char
 void LCD_ShowNum(uint16_t x,uint16_t y,uint32_t num,uint8_t len,uint8_t size); // Display number without the leading zeros
 void LCD_ShowxNum(uint16_t x,uint16_t y,uint32_t num,uint8_t len,uint8_t size,uint8_t mode); // Display number with the leading zeros
 void LCD_ShowString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
@@ -141,7 +142,10 @@ void LCD_Display_Dir(uint8_t dir); // Set the display direction
 void LCD_Set_Window(uint16_t sx,uint16_t sy,uint16_t width,uint16_t height);
 void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
                     const unsigned short *pic);
-
+void LCD_ShowPic_Part(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+                      uint16_t p1_x, uint16_t p1_y, uint16_t p2_x,
+                      uint16_t p2_y, const unsigned short *pic);
+uint16_t LCD_BGR2RGB(uint16_t c);
 //写数据函数
 #define LCD_WR_DATA(data){\
 LCD_RS_SET;\
