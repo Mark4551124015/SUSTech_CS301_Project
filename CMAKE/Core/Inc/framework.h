@@ -3,10 +3,8 @@
 
 #include <cstdint>
 #include <cstdio>
-
 #include <cstring>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "lcd.h"
@@ -25,15 +23,13 @@ using pii = std::pair<int, int>;
 #define y_p second
 #endif
 
+pii adding(pii a, pii b);
+
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 extern "C" {
 #endif
-
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
-pii adding(pii a, pii b);
-
-
 enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, CV_TEXT };
 
 class display_object {
@@ -189,7 +185,8 @@ typedef class image : public dpo {
     const unsigned short *img;
 
    public:
-    image(string name, pii pos, pii shape, const unsigned short *img,string str);
+    image(string name, pii pos, pii shape, const unsigned short *img,
+          string str);
     bool isClicked();
     void update(display_object *father, pii axis);
 

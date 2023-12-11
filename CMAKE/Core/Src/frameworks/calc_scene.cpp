@@ -188,11 +188,9 @@ void cvtext::update(dpo *father, pii axis) {
         if (this->choosing) {
             printf("[unchoosed]\"%s\"\n", this->name.c_str());
             this->choosing = false;
-            cv_choosed = nullptr;
             this->render_cursor(this->cursor, my_axis, this->backgroud);
         } else {
             printf("[choosed] \"%s\"\n", this->name.c_str());
-            cv_choosed = this;
             this->choosing = true;
             this->render_cursor(this->len, my_axis, BLACK);
         }
