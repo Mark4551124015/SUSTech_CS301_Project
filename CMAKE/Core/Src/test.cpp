@@ -17,21 +17,18 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "fatfs.h"
 #include "main.h"
+#include "exfuns.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
 
 #include <cstdint>
-#include <cstdio>
-#include <string>
-#include <utility>
 
 #include "framework.h"
 #include "led.h"
-#include "scene.h"
+#include "mmc_sd.h"
 
 /* USER CODE END Includes */
 
@@ -56,6 +53,8 @@ I2C_HandleTypeDef hi2c1;
 SD_HandleTypeDef hsd;
 DMA_HandleTypeDef hdma_sdio;
 
+SPI_HandleTypeDef hspi1;
+
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart1;
@@ -74,6 +73,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_SDIO_SD_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -91,103 +91,6 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 
-FATFS fs;                             // 工作空间
-FIL fil;                              // 文件项目
-uint32_t file_byte = 0;               // 文件大小（字节数）
-uint32_t byteswritten = 0;            // 写文件计数
-uint32_t bytesread = 0;               // 读文件计数
-uint8_t wtext[] = "I m the SD card";  // 写的内容
-uint8_t rtext[1024];                  // 读取的buff,1024bytes
-
-char filename[] = "log.txt";  // 文件名
-extern uint8_t retSD;         /* Return value for SD */
-__weak uint8_t BSP_SD_IsDetected(void)
-{
-  __IO uint8_t status = SD_PRESENT;
-
-//  if (BSP_PlatformIsDetected() == 0x0)
-//  {
-//    status = SD_NOT_PRESENT;
-//  }
-
-  return status;
-}
-
-void TFcard_test(void) {
-    printf("\r\n ****** FileSystem ******\r\n\r\n");
-
-    /*-1- 挂载文件系统*/
-    retSD = f_mount(&fs, "", 0);
-    // retSD = f_mount(&fs, "0:", 1);
-    printf("Mount Result: %d\r\n", retSD);
-    if (retSD) {
-        printf(" mount error : %d \r\n", retSD);
-        Error_Handler();
-    } else
-        printf(" mount sucess!!! \r\n");
-
-    /*-2-创建新的文件并写入数据*/
-    retSD = f_open(
-        &fil, filename,
-        FA_CREATE_ALWAYS |
-            FA_WRITE);  // 打开文件，权限包括创建、写（如果没有该文件，会创建该文件）
-    if (retSD)          // 返回值不为0（出现问题）
-        printf(" open file error : %d\r\n", retSD);  // 打印问题代码
-    else
-        printf(" open file sucess!!! \r\n");
-
-    /*-3- 在txt文件中写入数据*/
-    //	for(uint32_t i=0;i<7000;i++)
-    {
-        retSD = f_write(&fil, wtext, sizeof(wtext),
-                        (UINT *)&byteswritten);  // 在文件内写入wtext内的内容
-        // printf(" this is  %d  bytes\r\n",i);
-    }
-    if (retSD)  // 返回值不为0（出现问题）
-        printf(" write file error : %d\r\n", retSD);  // 打印问题代码
-    else {
-        printf(" write file sucess!!! \r\n");
-        printf(" write Data : %s\r\n", wtext);  // 打印写入的内容
-    }
-
-    /*-4- 关闭txt文件*/
-    retSD = f_close(&fil);  // 关闭该文件
-    if (retSD)              // 返回值不为0（出现问题）
-        printf(" close error : %d\r\n", retSD);  // 打印问题代码
-    else
-        printf(" close sucess!!! \r\n");
-
-    /*-5- 打开文件读取数据*/
-    retSD = f_open(&fil, filename, FA_READ);  // 打开文件，权限为只读
-    if (retSD)  // 返回值不为0（出现问题）
-        printf(" open file error : %d\r\n", retSD);  // 打印问题代码
-    else
-        printf(" open file sucess!!! \r\n");
-
-    /*-6- 读取txt文件数据*/
-    retSD = f_read(&fil, rtext, sizeof(rtext),
-                   (UINT *)&bytesread);  // 读取文件内容放到rtext中
-    if (retSD)                           // 返回值不为0（出现问题）
-        printf(" read error!!! %d\r\n", retSD);  // 打印问题代码
-    else {
-        printf(" read sucess!!! \r\n");
-        printf(" read Data : %s\r\n", rtext);  // 打印读取到的数据
-    }
-
-    /*-7- 关闭文件*/
-    retSD = f_close(&fil);  // 关闭该文件
-    if (retSD)              // 返回值不为0（出现问题）
-        printf(" close error!!! %d\r\n", retSD);  // 打印问题代码
-    else
-        printf(" close sucess!!! \r\n");
-
-    /*##-8- 读写一致性检测 ############*/
-    if (bytesread == byteswritten)  // 如果读写位数一致
-    {
-        printf(" FatFs is working well!!!\r\n");  // 打印文件系统工作正常
-    }
-}
-
 /* USER CODE END 0 */
 
 /**
@@ -196,7 +99,9 @@ void TFcard_test(void) {
  */
 int main(void) {
     /* USER CODE BEGIN 1 */
-
+    u32 total, free;
+    u8 t = 0;
+    u8 res = 0;
     /* USER CODE END 1 */
 
     /* MCU
@@ -226,7 +131,7 @@ int main(void) {
     MX_I2C1_Init();
     MX_TIM3_Init();
     MX_SDIO_SD_Init();
-    MX_FATFS_Init();
+    MX_SPI1_Init();
     /* USER CODE BEGIN 2 */
     //   printf("LCD shape %u %u", lcddev.height, lcddev.width);
     leddev.Init();
@@ -238,18 +143,58 @@ int main(void) {
     leddev.append(BLINK_BOTH);
     leddev.append(BLINK_BOTH);
 
-    /* USER CODE END 2 */
-
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    TFcard_test();
-
-    while (1) {
-        /* USER CODE END WHILE */
-
-        /* USER CODE BEGIN 3 */
+    POINT_COLOR = RED;
+    LCD_ShowString(30, 50, 200, 16, 16, (uint8_t *)"Mini STM32");
+    LCD_ShowString(30, 70, 200, 16, 16, (uint8_t *)"FATFS TEST");
+    LCD_ShowString(30, 90, 200, 16, 16, (uint8_t *)"ATOM@ALIENTEK");
+    LCD_ShowString(30, 110, 200, 16, 16, (uint8_t *)"2019/11/18");
+    LCD_ShowString(30, 130, 200, 16, 16, (uint8_t *)"Use USMART for test");
+    while (SD_Init())  // 检测不到SD卡
+    {
+        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"SD Card Error!");
+        delay_ms(5000);
+        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"Please Check! ");
+        delay_ms(5000);
     }
-    /* USER CODE END 3 */
+    exfuns_init();                  // 为fatfs相关变量申请内存
+    f_mount(fs[0], "0:", 1);        // 挂载SD卡
+    res = f_mount(fs[1], "1:", 1);  // 挂载FLASH.
+    if (res == 0X0D)  // FLASH磁盘,FAT文件系统错误,重新格式化FLASH
+    {
+        LCD_ShowString(30, 150, 200, 16, 16,
+                       (uint8_t *)"Flash Disk Formatting...");  // 格式化FLASH
+        res = f_mkfs("1:", 1,
+                     4096);  // 格式化FLASH,1,盘符;1,不需要引导区,8个扇区为1个簇
+        if (res == 0) {
+            f_setlabel((
+                const TCHAR *)"1:ALIENTEK");  // 设置Flash磁盘的名字为：ALIENTEK
+            LCD_ShowString(
+                30, 150, 200, 16, 16,
+                (uint8_t *)"Flash Disk Format Finish");  // 格式化完成
+        } else
+            LCD_ShowString(
+                30, 150, 200, 16, 16,
+                (uint8_t *)"Flash Disk Format Error ");  // 格式化失败
+        delay_ms(1000);
+    }
+    LCD_Fill(30, 150, 240, 150 + 16, WHITE);  // 清除显示
+    while (exf_getfree((uint8_t *)"0:", &total, &free))  // 得到SD卡的总容量和剩余容量
+    {
+        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"SD Card Fatfs Error!");
+        delay_ms(200);
+        LCD_Fill(30, 150, 240, 150 + 16, WHITE);  // 清除显示
+        delay_ms(200);
+    }
+    POINT_COLOR = BLUE;  // 设置字体为蓝色
+    LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
+    LCD_ShowString(30, 170, 200, 16, 16, (uint8_t *)"SD Total Size:     MB");
+    LCD_ShowString(30, 190, 200, 16, 16, (uint8_t *)"SD  Free Size:     MB");
+    LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
+    LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5, 16);  // 显示SD卡剩余容量 MB
+    while (1) {
+        t++;
+        delay_ms(200);
+    }
 }
 
 /**
@@ -341,6 +286,40 @@ static void MX_SDIO_SD_Init(void) {
     /* USER CODE BEGIN SDIO_Init 2 */
 
     /* USER CODE END SDIO_Init 2 */
+}
+
+/**
+ * @brief SPI1 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_SPI1_Init(void) {
+    /* USER CODE BEGIN SPI1_Init 0 */
+
+    /* USER CODE END SPI1_Init 0 */
+
+    /* USER CODE BEGIN SPI1_Init 1 */
+
+    /* USER CODE END SPI1_Init 1 */
+    /* SPI1 parameter configuration*/
+    hspi1.Instance = SPI1;
+    hspi1.Init.Mode = SPI_MODE_MASTER;
+    hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
+    hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
+    hspi1.Init.NSS = SPI_NSS_SOFT;
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi1.Init.CRCPolynomial = 10;
+    if (HAL_SPI_Init(&hspi1) != HAL_OK) {
+        Error_Handler();
+    }
+    /* USER CODE BEGIN SPI1_Init 2 */
+
+    /* USER CODE END SPI1_Init 2 */
 }
 
 /**
@@ -457,6 +436,12 @@ static void MX_GPIO_Init(void) {
     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
     HAL_GPIO_Init(KEY_WK_GPIO_Port, &GPIO_InitStruct);
 
+    /*Configure GPIO pin : PA3 */
+    GPIO_InitStruct.Pin = GPIO_PIN_3;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
     /*Configure GPIO pin : KEY0_Pin */
     GPIO_InitStruct.Pin = KEY0_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -469,12 +454,6 @@ static void MX_GPIO_Init(void) {
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED0_GPIO_Port, &GPIO_InitStruct);
-
-    /*Configure GPIO pin : PA15 */
-    GPIO_InitStruct.Pin = GPIO_PIN_15;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /* EXTI interrupt init*/
     HAL_NVIC_SetPriority(EXTI0_IRQn, 1, 0);
