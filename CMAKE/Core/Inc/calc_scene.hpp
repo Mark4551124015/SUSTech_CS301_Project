@@ -46,6 +46,56 @@ class calc_var_text : public dpo {
 };
 using cvtext = class calc_var_text;
 
+class calc_main : public dpo {
+   public:
+    enum calc_mode { IDLE, EX, EQ, BIN };
+    pii key_sz = {40, 30};
+    // pii key_big_sz = {60, 20};
+    int max_col = 5;
+
+    calc_mode cmode;
+    cvtext input = cvtext("cv", {0, -130}, {200, 30});
+    stext res = stext("res", {0, -100}, {200, 30}, (char *)"", 16);
+    stext ex_mode_s = stext("ex", get_key_pos(2), {85, 30}, (char *)"EXPESSISON", 12);
+    stext eq_mode_s = stext("eq", get_key_pos(2), {85, 30}, (char *)"EQUATION", 12);
+    stext bin_mode_s =
+        stext("bin", get_key_pos(2), {85, 30}, (char *)"BINARY", 16);
+    // button exit = button("exit", {60, 80}, {120, 80}, "Exit");
+    button *num_keys[10];
+    button *op_keys[7];
+    button *eq_keys[3];
+    button *del;
+    button *equal;
+    button *clear;
+    button *mov_l;
+    button *mov_r;
+    button *mode_btn;
+
+   public:
+    calc_main(string name, pii pos, pii shape);
+    pii get_key_pos(int index);
+    void set_mode(calc_mode mode);
+    void update(display_object *father, pii axis) override;
+};
+
+// class calc_ex : public dpo {
+//    public:
+//     calc_ex(string name, pii pos, pii shape);
+//     stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", 24);
+//     button btn = button("test", {0, 80}, {120, 80}, "test");
+//     void update(display_object *father, pii axis) override;
+// };
+
+// class calc_bin : public dpo {
+//    public:
+//     calc_bin(string name, pii pos, pii shape);
+//     stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", 24);
+//     button btn = button("test", {0, 80}, {120, 80}, "test");
+//     void update(display_object *father, pii axis) override;
+// };
+
+// v_text
+
 #ifdef __cplusplus
 }
 #endif
