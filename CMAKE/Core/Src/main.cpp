@@ -155,11 +155,11 @@ int main(void) {
 
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
-    calc_var_text test = calc_var_text("test", {0, 0}, {lcddev.width, 280});
+    // calc_var_text test = calc_var_text("test", {0, 0}, {lcddev.width, 280});
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
     canvas.add_son(&window_view);
-    window_view.add_son(&test);
+    // window_view.add_son(&test);
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
