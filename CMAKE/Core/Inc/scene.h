@@ -3,7 +3,8 @@
 
 #include "framework.h"
 #include "calc_scene.hpp"
-
+#include "chat_select_scene.hpp"
+#include "chat_scene.hpp"
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 extern "C" {

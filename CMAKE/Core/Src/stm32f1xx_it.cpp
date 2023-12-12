@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "string.h"
 #include "led.h"
+#include "scene.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,7 +70,7 @@ extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
-
+extern chat_scene_main chat_sc;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -352,10 +353,9 @@ void DMA2_Channel4_5_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        static unsigned char uRx_Data[1024] = {0};
-        static unsigned char uLength = 0;
+        static char uRx_Data[1024] = {0};
+        static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            LCD_Clear(WHITE);
             uLength = 0;
             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
         } else {

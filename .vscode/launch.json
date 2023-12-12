@@ -24,6 +24,25 @@
       },
       "preLaunchTask": "Build",
       "svdPath": "${command:vscode-embedded.st.svd}/STM32F103.svd"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/Zacky/VSCodeProjects/SUSTech_CS301_Project/CMAKE/Core/Src",
+      "program": "c:/Users/Zacky/VSCodeProjects/SUSTech_CS301_Project/CMAKE/Core/Src/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
     }
   ]
 }

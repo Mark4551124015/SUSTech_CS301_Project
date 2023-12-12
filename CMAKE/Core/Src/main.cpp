@@ -81,8 +81,8 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-unsigned char RX_DATA[1024] = {0};
-unsigned char uLength = 0;
+char RX_DATA[1024] = "test";
+char uLength = 0;
 // extern unsigned char Rx_Data[1024];
 
 pii touch;
@@ -152,17 +152,19 @@ int main(void)
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
     calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
-
+    chat_select_main chat_sel_sc = chat_select_main("chat_select_main", {0, 0}, {lcddev.width, 280});
+    chat_scene_main chat_sc = chat_scene_main("chat_scene_main", {0, 0}, {lcddev.width, 280});
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
     canvas.add_son(&window_view);
-    window_view.add_son(&cal_sc);
+    window_view.add_son(&chat_sc);
 
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
+        chat_sc.message.update_str(RX_DATA, 16, BLACK, WHITE);
         if(!fly) HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_SET);
         else HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
