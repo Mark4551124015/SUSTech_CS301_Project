@@ -531,6 +531,7 @@ void stext::update_str(char* str, uint8_t font_size, uint16_t font_color,
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
     this->backgroud = backgroud;
+    this->need_render = 1;
 }
 pii stext::get_pos(int index, pii axis) {
     pii target;

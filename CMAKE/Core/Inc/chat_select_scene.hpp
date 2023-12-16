@@ -19,12 +19,12 @@ class chat_select_main : public dpo{
         button *invite_key[2];
         button *group_key;
         stext userName[2] = {
-            stext("userName_0", {-80, -90}, {200, 30}, "User0", 16),
-            stext("userName_1", {-80, -50}, {200, 30}, "User1", 16)
+            stext("userName_0", {-80, -90}, {200, 30}, (char *)"User0", 16),
+            stext("userName_1", {-80, -50}, {200, 30}, (char *)"User1", 16)
         };
         stext status[2] = {
-            stext("status_0", {0, -90}, {200, 30}, "online", 16),
-            stext("status_1", {0, -50}, {200, 30}, "offline", 16)
+            stext("status_0", {0, -90}, {200, 30}, (char *)"online", 16),
+            stext("status_1", {0, -50}, {200, 30}, (char*)"offline", 16)
         };
 
     public:

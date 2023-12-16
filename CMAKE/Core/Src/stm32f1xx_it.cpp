@@ -46,9 +46,9 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
-int8_t rxBuffer[20];
+unsigned char rxBuffer[20];
 extern LED leddev;
-
+bool rx_flag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -318,7 +318,7 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
   /* USER CODE END USART1_IRQn 1 */
 }
 
@@ -356,8 +356,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
         static char uRx_Data[1024] = {0};
         static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            uLength = 0;
+            uRx_Data[--uLength] = '\0';
             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
+            uLength = 0;
+            rx_flag = 1;
         } else {
             uRx_Data[uLength] = rxBuffer[0];
             uLength++;

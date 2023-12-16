@@ -120,6 +120,7 @@ target_sources(
     "Core/Src/lib/myiic.c"
     "Core/Src/lib/spi.c"
     "Core/Src/lib/touch.c"
+    "Core/Src/lib/24l01.c"
     "Core/Src/stm32f1xx_hal_msp.c"
     "Core/Src/stm32f1xx_it.cpp"
     "Core/Src/syscalls.c"

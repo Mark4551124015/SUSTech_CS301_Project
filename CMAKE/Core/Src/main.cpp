@@ -83,8 +83,8 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN 0 */
 char RX_DATA[1024] = "test";
 char uLength = 0;
-// extern unsigned char Rx_Data[1024];
-
+extern unsigned char rxBuffer[1024];
+extern bool rx_flag;
 pii touch;
 bool button_click[8];
 LED leddev = LED();  // led_dev
@@ -110,7 +110,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  NRF24L01_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -148,23 +148,27 @@ int main(void)
     // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
-
+    char* users[3] = {(char *)"User0", (char *)"User1", (char *)"User2"};
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
     calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
     chat_select_main chat_sel_sc = chat_select_main("chat_select_main", {0, 0}, {lcddev.width, 280});
-    chat_scene_main chat_sc = chat_scene_main("chat_scene_main", {0, 0}, {lcddev.width, 280});
+    chat_scene_main chat_sc = chat_scene_main("chat_scene_main", {0, 0}, {lcddev.width, 280}, users);
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
     canvas.add_son(&window_view);
     window_view.add_son(&chat_sc);
-
+    HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
-        chat_sc.message.update_str(RX_DATA, 16, BLACK, WHITE);
+        if(rx_flag)
+        {
+          chat_sc.message.update_str(RX_DATA, 16, BLACK, WHITE);
+          rx_flag = 0;
+        }
         if(!fly) HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_SET);
         else HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
@@ -298,14 +302,14 @@ static void MX_SPI1_Init(void)
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
-  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 10;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;
+  hspi1.Init.CRCPolynomial = 7;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();

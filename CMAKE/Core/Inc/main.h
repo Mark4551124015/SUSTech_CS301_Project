@@ -35,6 +35,7 @@ extern "C" {
 #include "myiic.h"
 #include "stdio.h"
 #include "touch.h"
+#include "24l01.h"
 
 #define RETURN_BACK 0
 #define RETURN_HOME 1
