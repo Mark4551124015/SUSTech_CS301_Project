@@ -160,9 +160,10 @@ class static_text : public dpo {
     uint8_t max_col;
     uint8_t max_row;
     uint8_t max_len;
+    bool text_aligned;
 
    public:
-    static_text(string name, pii pos, pii shape, char *str, uint8_t font_size);
+    static_text(string name, pii pos, pii shape, char *str, bool text_aligned, uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis) override;
 

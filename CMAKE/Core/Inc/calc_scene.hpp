@@ -55,11 +55,11 @@ class calc_main : public dpo {
 
     calc_mode cmode;
     cvtext input = cvtext("cv", {0, -120}, {200, 30});
-    stext res = stext("res", {0, -90}, {200, 30}, (char *)"", 16);
-    stext ex_mode_s = stext("ex", get_key_pos(2), {85, 30}, (char *)"EXPESSISON", 12);
-    stext eq_mode_s = stext("eq", get_key_pos(2), {85, 30}, (char *)"EQUATION", 12);
+    stext res = stext("res", {0, -90}, {200, 30}, (char *)"", true, 16);
+    stext ex_mode_s = stext("ex", get_key_pos(2), {85, 30}, (char *)"EXPESSISON", true, 12);
+    stext eq_mode_s = stext("eq", get_key_pos(2), {85, 30}, (char *)"EQUATION", true, 12);
     stext bin_mode_s =
-        stext("bin", get_key_pos(2), {85, 30}, (char *)"BINARY", 16);
+        stext("bin", get_key_pos(2), {85, 30}, (char *)"BINARY",  true, 16);
     // button exit = button("exit", {60, 80}, {120, 80}, "Exit");
     button *num_keys[10];
     button *op_keys[7];

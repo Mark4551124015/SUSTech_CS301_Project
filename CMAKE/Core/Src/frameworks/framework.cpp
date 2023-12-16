@@ -486,13 +486,13 @@ char keyboard::typing() {
 }
 
 stext::static_text(string name, pii pos, pii shape, char* str,
-                   uint8_t font_size)
+                   bool text_aligned, uint8_t font_size)
     : dpo(name, pos, shape) {
     this->type = S_TEXT;
     this->need_render = true;
     this->backgroud = WHITE;
     this->isVisible = true;
-
+    this->text_aligned = text_aligned;
     memset(this->str, 0, 255);
     strcpy(this->str, str);
     this->font_color = BLACK;
@@ -507,6 +507,7 @@ stext::static_text(string name, pii pos, pii shape, char* str,
         font_size * ((this->len - 1) / this->max_col + 1)};
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
+    if(text_aligned) this->start = {(-this->shape.x_p)/2, (-this->shape.y_p)/2};
 }
 void stext::clear() {
     for (int i = 0; i < this->len; i++) {
@@ -530,6 +531,7 @@ void stext::update_str(char* str, uint8_t font_size, uint16_t font_color,
         font_size * ((this->len - 1) / this->max_col + 1)};
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
+    if(this->text_aligned) this->start = {(-this->shape.x_p)/2, (-this->shape.y_p)/2};
     this->backgroud = backgroud;
     this->need_render = 1;
 }

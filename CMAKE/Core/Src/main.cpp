@@ -144,11 +144,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+    char* users[3] = {(char *)"User0", (char *)"User1", (char *)""};
     // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
-    char* users[3] = {(char *)"User0", (char *)"User1", (char *)"User2"};
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
     calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
@@ -159,6 +158,7 @@ int main(void)
     canvas.add_son(&window_view);
     window_view.add_son(&chat_sc);
     HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
+
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
@@ -166,7 +166,8 @@ int main(void)
         canvas.update(nullptr, {0, 0});
         if(rx_flag)
         {
-          chat_sc.message.update_str(RX_DATA, 16, BLACK, WHITE);
+          chat_sc.updateMessage(RX_DATA);
+          chat_sc.addMessageToPage(RX_DATA);
           rx_flag = 0;
         }
         if(!fly) HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_SET);
