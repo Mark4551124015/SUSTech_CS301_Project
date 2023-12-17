@@ -57,7 +57,7 @@ class display_object {
     pii shape;
     bool need_render;
     // vector<display_object *> sub_object ;
-    display_object * sub_object [20];
+    display_object * sub_object [32];
     size_t sub_object_cnt;
 
     float alpha;

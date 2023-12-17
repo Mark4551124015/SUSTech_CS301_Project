@@ -111,7 +111,7 @@ target_sources(
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
     "Core/Src/lib/delay.c"
-    "Core/Src/lib/lcd.c"
+    "Core/Src/lib/lcd.cpp"
     "Core/Src/lib/led.cpp"
     "Core/Src/lib/malloc.c"
     "Core/Src/lib/mmc_sd.c"
