@@ -1,5 +1,6 @@
 
 #include "framework.h"
+#include "scene.h"
 
 #include <cstdint>
 #include <cstdio>

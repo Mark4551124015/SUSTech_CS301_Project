@@ -8,12 +8,22 @@
         "-D STM32F103xE", // 项目根目录
         "-D USE_HAL_DRIVER",
         "-D _CRT_SECURE_NO_WARNINGS",
-        "-D offset",
+        // "-D offset",
+        "-D _ARM64EC_",
+        "-U _WIN32",
         "-D __GNUC__",
         "-I${workspaceFolder}/Core/Inc",
         "-I${workspaceFolder}/Drivers/CMSIS/Include", // 第三方依赖的头文件目录
         "-I${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include", // 第三方依赖的头文件目录
         "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc", // 第三方依赖的头文件目录
         "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy", // 第三方依赖的头文件目录
+        // "-I${workspaceFolder}/FATFS/App", // FATFS
+        // "-I${workspaceFolder}/FATFS/Target", // FATFS
+        "-I${workspaceFolder}/FATFS/src", // FATFS
+        "-I${workspaceFolder}/FATFS/exfuns", // FATFS
+        "-I${workspaceFolder}/Middlewares/Third_Party/FatFs/src", // FATFS
+        "-I${workspaceFolder}/Middlewares/Third_Party/FatFs/src/drivers", // FATFS
+        "-I${workspaceFolder}/Middlewares/Third_Party/FatFs/src/option", // FATFS
+
     ]
 }

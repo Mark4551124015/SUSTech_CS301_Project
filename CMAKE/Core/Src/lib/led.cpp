@@ -9,13 +9,13 @@
 LED::LED() {
     this->counter = 0;
     HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, DEAD);
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
+    // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
 }
 
 void LED::Init() {
     this->counter = 0;
     HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, DEAD);
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
+    // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
 }
 void LED::append(led_op operand) {
     switch (operand) {
@@ -65,18 +65,18 @@ void LED::tick() {
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, DEAD);
             break;
         case WAKE1:
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, WAKE);
+            // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, WAKE);
             break;
         case KILL1:
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
+            // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
             break;
         case WAKEALL:
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, WAKE);
+            // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, WAKE);
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, WAKE);
             break;
         case KILLALL:
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, DEAD);
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
+            // HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, DEAD);
             break;
         default:
             break;

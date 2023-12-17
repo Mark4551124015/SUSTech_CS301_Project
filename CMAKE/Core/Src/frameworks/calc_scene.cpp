@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cstdio>
 
+#include "calc_algo.hpp"
+
 using std::max;
 using std::min;
 
@@ -144,7 +146,7 @@ void cvtext::clear() {
     this->need_render = true;
 }
 
-void cvtext::update(dpo *father, pii axis) {
+void cvtext::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
     if (father != nullptr) {
     }
@@ -188,11 +190,9 @@ void cvtext::update(dpo *father, pii axis) {
         if (this->choosing) {
             printf("[unchoosed]\"%s\"\n", this->name.c_str());
             this->choosing = false;
-            cv_choosed = nullptr;
             this->render_cursor(this->cursor, my_axis, this->backgroud);
         } else {
             printf("[choosed] \"%s\"\n", this->name.c_str());
-            cv_choosed = this;
             this->choosing = true;
             this->render_cursor(this->len, my_axis, BLACK);
         }
@@ -202,3 +202,285 @@ void cvtext::update(dpo *father, pii axis) {
 
     dpo::update(father, axis);
 }
+
+pii calc_main::get_key_pos(int index) {
+    pii target;
+    target = {(index % this->max_col) * (this->key_sz.x_p + 6) + 2,
+              (index / this->max_col) * (this->key_sz.y_p + 2) + 2};
+    target = adding(target, {-95, -50});
+    return target;
+}
+
+calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
+    // initail for stext
+    pii key_pos, temp_pos;
+    key_pos = this->get_key_pos(2);
+    temp_pos = this->get_key_pos(3);
+    key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
+    key_pos.y_p = (key_pos.y_p + temp_pos.y_p) / 2;
+    this->ex_mode_s = stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", 12);
+    this->eq_mode_s = stext("eq", key_pos, {80, 30}, (char*)"EQUATION", 12);
+    this->bin_mode_s = stext("eq", key_pos, {80, 30}, (char*)"BINARY", 12);
+
+    for (int i = 0; i <= 9; ++i) {
+        char c = '0' + i;
+        string name = "key_";
+        name += c;
+        string show = "";
+        show += c;
+        this->num_keys[i] =
+            new button(name, this->get_key_pos(i + 10), this->key_sz, show);
+    }
+
+    this->op_keys[0] =
+        new button("key_add", this->get_key_pos(20), this->key_sz, "+");
+    this->op_keys[1] =
+        new button("key_sub", this->get_key_pos(21), this->key_sz, "-");
+    this->op_keys[2] =
+        new button("key_mul", this->get_key_pos(22), this->key_sz, "*");
+    this->op_keys[3] =
+        new button("key_div", this->get_key_pos(23), this->key_sz, "/");
+    this->op_keys[4] =
+        new button("key_exp", this->get_key_pos(24), this->key_sz, "^");
+    this->op_keys[5] =
+        new button("left_pa", this->get_key_pos(25), this->key_sz, "(");
+    this->op_keys[6] =
+        new button("right_pa", this->get_key_pos(26), this->key_sz, ")");
+    this->eq_keys[0] =
+        new button("key_x", this->get_key_pos(27), this->key_sz, "x");
+    this->eq_keys[1] =
+        new button("key_y", this->get_key_pos(28), this->key_sz, "y");
+    this->eq_keys[2] =
+        new button("confirm", this->get_key_pos(7), this->key_sz, "CFM");
+
+    key_pos = this->get_key_pos(29);
+    this->equal = new button("equal", this->get_key_pos(29), this->key_sz, "=");
+
+    // temp_pos = this->get_key_pos(1);
+    // key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
+    this->mov_l = new button("mov_l", this->get_key_pos(0), this->key_sz, "<<");
+    // temp_pos = this->get_key_pos(5);
+    // key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
+    this->mov_r = new button("mov_r", this->get_key_pos(4), this->key_sz, ">>");
+
+    this->mode_btn =
+        new button("mode", this->get_key_pos(1), this->key_sz, "MD");
+
+    this->clear = new button("clear", this->get_key_pos(6), this->key_sz, "C");
+    this->del = new button("delete", this->get_key_pos(8), this->key_sz, "del");
+
+    /*
+        add all sons
+    */
+    // add buttons
+    for (size_t i = 0; i <= 9; ++i) {
+        this->add_son(this->num_keys[i]);
+    }
+    for (size_t i = 0; i < 7; i++) {
+        this->add_son(this->op_keys[i]);
+    }
+    for (size_t i = 0; i < 3; i++) {
+        this->add_son(this->eq_keys[i]);
+    }
+    this->add_son(this->equal);
+    this->add_son(this->mov_l);
+    this->add_son(this->mov_r);
+    this->add_son(this->clear);
+    this->add_son(this->del);
+    this->add_son(this->mode_btn);
+    // add stexts
+
+    this->add_son(&this->ex_mode_s);
+    this->add_son(&this->bin_mode_s);
+    this->add_son(&this->eq_mode_s);
+
+    this->add_son(&this->input);
+    this->add_son(&this->res);
+
+    // set_mode(EX);
+    this->cmode = EX;
+}
+
+void calc_main::set_mode(calc_mode mode) {
+    printf("set to %d\n", (int)mode);
+    this->input.clear();
+    switch (mode) {
+        case EX: {
+            this->cmode = EX;
+            this->ex_mode_s.setVisbility(true);
+            this->eq_mode_s.setVisbility(false);
+            this->bin_mode_s.setVisbility(false);
+
+            for (size_t i = 0; i < 10; ++i) {
+                this->num_keys[i]->setVisbility(true);
+            }
+            for (size_t i = 0; i < 7; ++i) {
+                this->op_keys[i]->setVisbility(true);
+            }
+            for (size_t i = 0; i < 3; ++i) {
+                this->eq_keys[i]->setVisbility(false);
+            }
+            this->del->setVisbility(true);
+            this->equal->setVisbility(true);
+            this->clear->setVisbility(true);
+            this->mov_l->setVisbility(true);
+            this->mov_r->setVisbility(true);
+            this->mode_btn->setVisbility(true);
+            this->input.clear();
+            this->res.clear();
+            this->input.setVisbility(true);
+            this->res.setVisbility(true);
+            break;
+        }
+        case EQ: {
+            this->cmode = EQ;
+            this->ex_mode_s.setVisbility(false);
+            this->eq_mode_s.setVisbility(true);
+            this->bin_mode_s.setVisbility(false);
+
+            for (size_t i = 0; i < 10; ++i) {
+                this->num_keys[i]->setVisbility(true);
+            }
+            for (size_t i = 0; i < 7; ++i) {
+                this->op_keys[i]->setVisbility(true);
+            }
+            for (size_t i = 0; i < 3; ++i) {
+                this->eq_keys[i]->setVisbility(true);
+            }
+            this->del->setVisbility(true);
+            this->equal->setVisbility(true);
+            this->clear->setVisbility(true);
+            this->mov_l->setVisbility(true);
+            this->mov_r->setVisbility(true);
+            this->mode_btn->setVisbility(true);
+            this->input.clear();
+            this->res.clear();
+            this->input.setVisbility(true);
+            this->res.setVisbility(true);
+            break;
+        }
+        case BIN: {
+            this->cmode = BIN;
+            this->ex_mode_s.setVisbility(false);
+            this->eq_mode_s.setVisbility(false);
+            this->bin_mode_s.setVisbility(true);
+
+            for (size_t i = 0; i < 10; ++i) {
+                this->num_keys[i]->setVisbility((i <= 1 ? true : false));
+            }
+            for (size_t i = 0; i < 7; ++i) {
+                this->op_keys[i]->setVisbility(true);
+            }
+            for (size_t i = 0; i < 3; ++i) {
+                this->eq_keys[i]->setVisbility(false);
+            }
+            this->del->setVisbility(true);
+            this->equal->setVisbility(true);
+            this->clear->setVisbility(true);
+            this->mov_l->setVisbility(true);
+            this->mov_r->setVisbility(true);
+            this->mode_btn->setVisbility(true);
+            this->input.clear();
+            this->res.clear();
+            this->input.setVisbility(true);
+            this->res.setVisbility(true);
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void calc_main::update(display_object* father, pii axis) {
+    // if (this->getVisbility() && this->cmode == IDLE) {
+    //     this->need_render = true;
+    //     set_mode(EX);
+    // }
+    if (this->mode_btn->isClicked()) {
+        printf("set mode\n");
+        this->need_render = true;
+        if (this->cmode == IDLE) {
+            set_mode(EX);
+        } else if (this->cmode == EX) {
+            set_mode(EQ);
+        } else if (this->cmode == EQ) {
+            set_mode(BIN);
+        } else if (this->cmode == BIN) {
+            set_mode(EX);
+        }
+    }
+    if (this->equal->isClicked()) {
+        if (this->cmode == EQ) {
+            this->input.add_on_cursor('=');
+            dpo::update(father, axis);
+            return;
+        }
+        this->res.clear();
+        string res_str;
+        string ex_str(this->input.str, this->input.len);
+        printf("%sEnd\n", ex_str.c_str());
+        if (this->cmode == EX) {
+            res_str = getExRes(ex_str);
+        }
+        if (this->cmode == BIN) {
+            res_str = getBinRes(ex_str);
+        }
+        printf("res: %s\n", (char*)res_str.c_str());
+        this->res.need_render = true;
+        this->res.update_str((char*)res_str.c_str(), 24, BLACK, WHITE);
+    }
+    for (size_t i = 0; i < 10; i++) {
+        if (this->num_keys[i]->isClicked()) {
+            this->input.add_on_cursor('0' + i);
+        }
+    }
+    for (size_t i = 0; i < 7; i++) {
+        if (this->op_keys[i]->isClicked()) {
+            this->input.add_on_cursor(this->op_keys[i]->str[0]);
+        }
+    }
+    if (this->mov_l->isClicked()) {
+        this->input.move_cursor_update_char(this->input.cursor - 1,
+                                            this->input.my_axis);
+    }
+    if (this->mov_r->isClicked()) {
+        this->input.move_cursor_update_char(this->input.cursor + 1,
+                                            this->input.my_axis);
+    }
+    if (this->del->isClicked()) {
+        this->input.delete_on_cursor();
+    }
+    if (this->clear->isClicked()) {
+        this->input.clear();
+        this->res.clear();
+    }
+    if (this->cmode == EQ) {
+        if (this->eq_keys[0]->isClicked()) {
+            this->input.add_on_cursor('x');
+        }
+        if (this->eq_keys[1]->isClicked()) {
+            this->input.add_on_cursor('y');
+        }
+        if (this->eq_keys[2]->isClicked()) {
+            string ex_str(this->input.str, this->input.len);
+            string res_str = getEqRes(ex_str);
+            printf("res: %s\n", (char*)res_str.c_str());
+            this->res.need_render = true;
+            this->res.update_str((char*)res_str.c_str(), 24, BLACK, WHITE);
+        }
+    }
+
+    dpo::update(father, axis);
+}
+
+// void calc_var_text::move_cursor(int index, pii axis) {}
+
+// calc_eq::calc_eq(string name, pii pos, pii shape) {}
+
+// calc_bin::calc_bin(string name, pii pos, pii shape) {}
+
+// calc_ex::void update(display_object *father, pii axis) override {}
+
+// calc_eq::void update(display_object *father, pii axis) override {}
+
+// calc_bin::void update(display_object *father, pii axis) override {}

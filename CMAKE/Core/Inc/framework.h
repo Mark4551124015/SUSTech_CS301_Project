@@ -1,14 +1,15 @@
 #ifndef __FRAMWORK_H
 #define __FRAMWORK_H
 
+
 #include <stdint.h>
 #include <stdio.h>
 
 #include <cstddef>
 #include <cstdint>
+
 #include <cstring>
 #include <string>
-#include <utility>
 #include <vector>
 #include <cmath>
 
@@ -29,6 +30,8 @@ using namespace std;
 
 
 
+pii adding(pii a, pii b);
+
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 
 pii adding(pii a, pii b);
@@ -37,13 +40,14 @@ pii rotate_pos(pii pos, pii axis, int angle);
 
 extern "C" {
 #endif
-
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, SLD, MOVIMG, RECT, MARKER, CANVAS };
+
+enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, SLD, MOVIMG, RECT, MARKER, CANVAS,CV_TEXT };
 
 typedef class display_object {
+
    public:
     int id;
     dpo_type type;
@@ -196,7 +200,8 @@ typedef class image : public dpo {
     const unsigned short *img;
 
    public:
-    image(string name, pii pos, pii shape, const unsigned short *img,string str);
+    image(string name, pii pos, pii shape, const unsigned short *img,
+          string str);
     bool isClicked();
     void update(display_object *father, pii axis);
 } image;

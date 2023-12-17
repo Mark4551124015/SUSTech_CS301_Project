@@ -22,6 +22,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "string.h"
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,6 +45,7 @@
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
 int8_t rxBuffer[20];
+extern LED leddev;
 
 /* USER CODE END PV */
 
@@ -58,6 +61,8 @@ int8_t rxBuffer[20];
 
 /* External variables --------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
+extern DMA_HandleTypeDef hdma_sdio;
+extern SD_HandleTypeDef hsd;
 extern TIM_HandleTypeDef htim3;
 extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
@@ -316,34 +321,55 @@ void USART1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line[15:10] interrupts.
+  * @brief This function handles SDIO global interrupt.
   */
-void EXTI15_10_IRQHandler(void)
+void SDIO_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+  /* USER CODE BEGIN SDIO_IRQn 0 */
 
-  /* USER CODE END EXTI15_10_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(KEY1_Pin);
-  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+  /* USER CODE END SDIO_IRQn 0 */
+  HAL_SD_IRQHandler(&hsd);
+  /* USER CODE BEGIN SDIO_IRQn 1 */
 
-  /* USER CODE END EXTI15_10_IRQn 1 */
+  /* USER CODE END SDIO_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 channel4 and channel5 global interrupts.
+  */
+void DMA2_Channel4_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel4_5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_sdio);
+  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel4_5_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
-// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-//     if (huart->Instance == USART1) {
-//         static unsigned char uRx_Data[1024] = {0};
-//         static unsigned char uLength = 0;
-//         if (rxBuffer[0] == '\n') {
-//             LCD_Clear(WHITE);
-//             uLength = 0;
-//             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
-//         } else {
-//             uRx_Data[uLength] = rxBuffer[0];
-//             uLength++;
-//         }
-//     }
-// }
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == USART1) {
+        static unsigned char uRx_Data[1024] = {0};
+        static unsigned char uLength = 0;
+        if (rxBuffer[0] == '\n') {
+            LCD_Clear(WHITE);
+            uLength = 0;
+            memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
+        } else {
+            uRx_Data[uLength] = rxBuffer[0];
+            uLength++;
+        }
+    }
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    if (htim->Instance == TIM3) {
+        leddev.tick();
+    }
+}
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 // {
 // 	HAL_Delay(500);
