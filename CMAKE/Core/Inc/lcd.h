@@ -11,6 +11,7 @@
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 extern "C" {
 #endif
+
 // LCD重要参数集
 typedef struct {
     uint16_t width;    // LCD 宽度
@@ -33,6 +34,7 @@ extern uint16_t BACK_COLOR;   // 背景颜色.默认为白色
 // IO口操作宏定义
 
 //////////////////////////////////////////////////////////////////////
+
 // 扫描方向定义
 #define L2R_U2D 0  // 从左到右,从上到下
 #define L2R_D2U 1  // 从左到右,从下到上
@@ -114,6 +116,7 @@ void LCD_ShowNum(uint16_t x, uint16_t y, uint32_t num, uint8_t len,
 void LCD_ShowxNum(uint16_t x, uint16_t y, uint32_t num, uint8_t len,
                   uint8_t size,
                   uint8_t mode);  // Display number with the leading zeros
+
 void LCD_ShowString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
                     uint8_t size, uint8_t *p);  // Display a string
 void LCD_ShowRawString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
@@ -126,6 +129,7 @@ void LCD_Scan_Dir(uint8_t dir);     // Set the scan direction
 void LCD_Display_Dir(uint8_t dir);  // Set the display direction
 void LCD_Set_Window(uint16_t sx, uint16_t sy, uint16_t width, uint16_t height);
 void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
+
                      const unsigned short *pic);
 
 // 写数据函数
@@ -154,6 +158,7 @@ void LCD_ShowPicture(uint16_t x, uint16_t y, uint16_t column, uint16_t row,
 #define SSD_HT (SSD_HOR_RESOLUTION + SSD_HOR_BACK_PORCH + SSD_HOR_FRONT_PORCH)
 #define SSD_HPS (SSD_HOR_BACK_PORCH)
 #define SSD_VT (SSD_VER_RESOLUTION + SSD_VER_BACK_PORCH + SSD_VER_FRONT_PORCH)
+
 #define SSD_VPS (SSD_VER_BACK_PORCH)
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
