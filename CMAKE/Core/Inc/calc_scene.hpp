@@ -54,8 +54,8 @@ class calc_main : public dpo {
     int max_col = 5;
 
     calc_mode cmode;
-    cvtext input = cvtext("cv", {0, -130}, {200, 30});
-    stext res = stext("res", {0, -100}, {200, 30}, (char *)"", 16);
+    cvtext input = cvtext("cv", {0, -120}, {200, 30});
+    stext res = stext("res", {0, -90}, {200, 30}, (char *)"", 16);
     stext ex_mode_s = stext("ex", get_key_pos(2), {85, 30}, (char *)"EXPESSISON", 12);
     stext eq_mode_s = stext("eq", get_key_pos(2), {85, 30}, (char *)"EQUATION", 12);
     stext bin_mode_s =
