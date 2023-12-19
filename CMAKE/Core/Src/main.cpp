@@ -148,7 +148,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    char* users[3] = {(char *)"User0", (char *)"User1", (char *)""};
+    char* users[3] = {(char *)"User0: ", (char *)"User1: ", (char *)""};
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
@@ -179,7 +179,7 @@ int main(void)
         canvas.update(nullptr, {0, 0});
         if(rx_flag)
         {
-          chat_sc.addMessageToPage(RX_DATA);
+          chat_sc.addMessageToPage(RX_DATA, 1);
           rx_flag = 0;
         }
         if (!fly)
@@ -199,7 +199,7 @@ int main(void)
             printf("[EVENT] Emoji Selected\n");
             emoji_sc.setVisbility(false);
             chat_sc.setVisbility(true);
-            chat_sc.addImageToPage(emoji_sc.emoji_num);
+            chat_sc.addImageToPage(emoji_sc.emoji_num, 1);
             printf("emoji name: %d\n", emoji_sc.emoji_num);
             EVENT[EMOJI_SELECTED] = 0;
             canvas.need_render = true;

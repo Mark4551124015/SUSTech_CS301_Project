@@ -17,19 +17,25 @@ page :: page(string name, pii pos, pii shape) : dpo(name, pos, shape)
     
 }
 
-bool page :: addMessage(char * str){
+bool page :: addMessage(char * str, char * userName){
     if(this->cnt >= 6) return false;
+    int len = strlen(str);
+    for(int i=len - 1; i >= 0; i--)
+        str[i + 7] = str[i];
+    for(int i=0; i<7; i++)
+        str[i] = userName[i];
+    str[len + 7] = '\0';
     this->messages[this->cnt++].update_str(str, 16, BLACK, WHITE);
-    this->messages[this->cnt].need_render = true;
     return true;
 }
 
-bool page :: addImage(int num){
+bool page :: addImage(int num, char * userName){
     if(this->cnt >= 6) return false;
     this->emojis[this->cnt].update_img((unsigned short *)emoji_arr[num-1]);
     this->emojis[this->cnt].setVisbility(true);
     printf("set emoji %d\n", num);//arrived
     printf("%d", this->emojis[this->cnt].isVisible);
+    this->messages[this->cnt].update_str(userName, 16, BLACK, WHITE);
     this->cnt++;
     return true;
 }
@@ -73,23 +79,23 @@ chat_scene_main :: chat_scene_main(string name, pii pos, pii shape, char* users[
 //    message.update_str(RX_DATA, 16, BLACK, WHITE);
 //}
 
-void chat_scene_main :: addMessageToPage(char * message){
-    if(!this->pages[page_cnt]->addMessage(message)){
+void chat_scene_main :: addMessageToPage(char * message, int user_num){
+    if(!this->pages[page_cnt]->addMessage(message, this->users[user_num])){
         if(page_cnt >= 6) return;
         this->pages[page_cnt]->setVisbility(false);
         now_page = ++page_cnt;
         this->pages[page_cnt]->setVisbility(true);
-        this->pages[page_cnt]->addMessage(message);
+        this->pages[page_cnt]->addMessage(message, this->users[user_num]);
     }
 }
 
-void chat_scene_main :: addImageToPage(int num){
-    if(!this->pages[page_cnt]->addImage(num)){
+void chat_scene_main :: addImageToPage(int num, int user_num){
+    if(!this->pages[page_cnt]->addImage(num, this->users[user_num])){
         if(page_cnt >= 6) return;
         this->pages[page_cnt]->setVisbility(false);
         now_page = ++page_cnt;
         this->pages[page_cnt]->setVisbility(true);
-        this->pages[page_cnt]->addImage(num);
+        this->pages[page_cnt]->addImage(num, this->users[user_num]);
     }
 }
 
