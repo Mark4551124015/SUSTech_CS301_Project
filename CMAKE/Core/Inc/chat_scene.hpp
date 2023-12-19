@@ -14,20 +14,20 @@ class page : public dpo {
         int cnt;
 //        static const int max_message = 6;
         image emojis[6] = {
-            image("image1", {0, -50}, {30, 30}, NULL, ""),
-            image("image2", {0, -20}, {30, 30}, NULL, ""),
-            image("image3", {0, 10}, {30, 30}, NULL, ""),
-            image("image4", {0, 40}, {30, 30}, NULL, ""),
-            image("image5", {0, 70}, {30, 30}, NULL, ""),
-            image("image6", {0, 100}, {30, 30}, NULL, "")
+            image("image1", {0, -75}, {30, 30}, NULL, ""),
+            image("image2", {0, -45}, {30, 30}, NULL, ""),
+            image("image3", {0, -15}, {30, 30}, NULL, ""),
+            image("image4", {0, 15}, {30, 30}, NULL, ""),
+            image("image5", {0, 45}, {30, 30}, NULL, ""),
+            image("image6", {0, 75}, {30, 30}, NULL, "")
         };
         stext messages[6] = {
-            stext("message1", {0, -50}, {240, 30}, (char *)"", true, 16),
-            stext("message2", {0, -20}, {240, 30}, (char *)"", true, 16),
-            stext("message3", {0, 10}, {240, 30}, (char *)"", true, 16),
-            stext("message4", {0, 40}, {240, 30}, (char *)"", true, 16),
-            stext("message5", {0, 70}, {240, 30}, (char *)"", true, 16),
-            stext("message6", {0, 100}, {240, 30}, (char *)"", true, 16)
+            stext("message1", {0, -75}, {240, 30}, (char *)"", true, 16),
+            stext("message2", {0, -45}, {240, 30}, (char *)"", true, 16),
+            stext("message3", {0, -15}, {240, 30}, (char *)"", true, 16),
+            stext("message4", {0, 15}, {240, 30}, (char *)"", true, 16),
+            stext("message5", {0, 45}, {240, 30}, (char *)"", true, 16),
+            stext("message6", {0, 75}, {240, 30}, (char *)"", true, 16)
         };
 
     public:

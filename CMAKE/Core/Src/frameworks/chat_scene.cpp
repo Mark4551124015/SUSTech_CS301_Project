@@ -9,32 +9,29 @@ page :: page(string name, pii pos, pii shape) : dpo(name, pos, shape)
 {
     this->cnt = 0;
     for(int i=0; i<6; i++)
+    {
         this->add_son(&this->messages[i]);
+        this->emojis[i].isVisible = false;
+        this->add_son(&this->emojis[i]);
+    }
+    
 }
 
 bool page :: addMessage(char * str){
     if(this->cnt >= 6) return false;
-    printf("%d\n", this->cnt);
     this->messages[this->cnt++].update_str(str, 16, BLACK, WHITE);
-    this->need_render = true;
+    this->messages[this->cnt].need_render = true;
     return true;
 }
 
 bool page :: addImage(int num){
     if(this->cnt >= 6) return false;
-    this->messages[this->cnt].setVisbility(false);
-
     this->emojis[this->cnt].update_img((unsigned short *)emoji_arr[num-1]);
     this->emojis[this->cnt].setVisbility(true);
     printf("set emoji %d\n", num);//arrived
+    printf("%d", this->emojis[this->cnt].isVisible);
     this->cnt++;
-    this->need_render = true;
     return true;
-}
-
-void page :: clear(){
-    for(int i=0; i<6; i++)
-    this->messages[i].clear();
 }
 
 void page :: update(display_object *father, pii axis){
@@ -45,7 +42,7 @@ chat_scene_main :: chat_scene_main(string name, pii pos, pii shape, char* users[
 
     char* newStr = new char[30];
     for(int i = 0; i < 3; i++)
-    this->users[i] = users[i];
+        this->users[i] = users[i];
     strcpy(newStr, userInfo.str);
     strcat(newStr, users[1]);
     if(strcmp(users[2], ""))
@@ -56,11 +53,11 @@ chat_scene_main :: chat_scene_main(string name, pii pos, pii shape, char* users[
     userInfo.update_str((char *)newStr, 16, BLACK, WHITE);
     this->page_cnt = 0;
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < 6; ++i) {
         char c = '0' + i;
         string name = "page_";
         name += c;
-        this->pages[i] = new page(name, {0, -45}, {240, 140});
+        this->pages[i] = new page(name, {0, -20}, {240, 180});
         this->add_son(this->pages[i]);
         this->pages[i]->setVisbility(false);
     }

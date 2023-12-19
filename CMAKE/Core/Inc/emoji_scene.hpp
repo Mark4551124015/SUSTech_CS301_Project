@@ -20,7 +20,6 @@ class emoji_scene_main : public dpo {
       image emoji2 = image("emoji2", {-30, -120}, {30, 30}, NULL, "");
       image emoji3 = image("emoji3", {30, -120}, {30, 30}, NULL, "");
       image emoji4 = image("emoji4", {90, -120}, {30, 30}, NULL, "");
-      button *emoji = new button("emoji", {90, 40}, {60, 30}, "Emoji");
       int emoji_num = 0;
    public:
     emoji_scene_main(string name, pii pos, pii shape);

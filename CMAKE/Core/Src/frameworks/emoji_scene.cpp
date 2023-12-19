@@ -12,7 +12,6 @@ emoji_scene_main :: emoji_scene_main(string name, pii pos, pii shape) : dpo(name
     this->add_son(&this->emoji2);
     this->add_son(&this->emoji3);
     this->add_son(&this->emoji4);
-    this->add_son(emoji);
 }
 
 void emoji_scene_main :: update(display_object *father, pii axis){

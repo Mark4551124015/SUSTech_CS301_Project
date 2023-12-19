@@ -95,7 +95,6 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 bool fly = false;
-int emoji_number = 0;
 /* USER CODE END 0 */
 
 /**
@@ -191,8 +190,8 @@ int main(void)
         if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
          if (EVENT[EMOJI_SELECT]) {
             printf("[EVENT] Press Emoji\n");
-            emoji_sc.setVisbility(true);
             chat_sc.setVisbility(false);
+            emoji_sc.setVisbility(true);
             EVENT[EMOJI_SELECT] = 0;
             canvas.need_render = true;
         }
@@ -200,8 +199,8 @@ int main(void)
             printf("[EVENT] Emoji Selected\n");
             emoji_sc.setVisbility(false);
             chat_sc.setVisbility(true);
-            chat_sc.addImageToPage(emoji_number);
-            printf("emoji name: %d\n", emoji_number);
+            chat_sc.addImageToPage(emoji_sc.emoji_num);
+            printf("emoji name: %d\n", emoji_sc.emoji_num);
             EVENT[EMOJI_SELECTED] = 0;
             canvas.need_render = true;
         }

@@ -73,6 +73,7 @@ bool dpo::add_son(dpo* son) {
         return false;
     }
     if (!son->set_parent(this)) {
+        printf("%s", son->name.c_str());
         printf("bad parent\n");
         return false;
     }
