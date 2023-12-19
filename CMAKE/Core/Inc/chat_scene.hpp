@@ -32,8 +32,8 @@ class page : public dpo {
 
     public:
         page(string name, pii pos, pii shape);
-        bool addMessage(char * str);
-        bool addImage(int num);
+        bool addMessage(char * str, char * userName);
+        bool addImage(int num, char * userName);
         void clear();
         void update(display_object *father, pii axis);
 
@@ -54,8 +54,8 @@ class chat_scene_main : public dpo {
         page *pages[5];
     public:
         chat_scene_main(string name, pii pos, pii shape, char* users[3]);
-        void addMessageToPage(char* message);
-        void addImageToPage(int num);
+        void addMessageToPage(char* message, int user_num);
+        void addImageToPage(int num, int user_num);
         void update(display_object *father, pii axis) override;
 };
 
