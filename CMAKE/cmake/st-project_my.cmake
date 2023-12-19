@@ -103,12 +103,15 @@ target_link_options(
 
 target_sources(
     ${TARGET_NAME} PRIVATE
-    "Core/Src/tests/test_24.cpp"
+    "Core/Src/main.cpp"
     "Core/Src/config.c"
     "Core/Src/calc_algo.cpp"
     "Core/Src/frameworks/calc_scene.cpp"
     "Core/Src/frameworks/framework.cpp"
     "Core/Src/frameworks/scene.cpp"
+    "Core/Src/frameworks/chat_scene.cpp"
+    "Core/Src/frameworks/chat_select_scene.cpp"
+    "Core/Src/frameworks/emoji_scene.cpp"
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
     "Core/Src/lib/delay.c"

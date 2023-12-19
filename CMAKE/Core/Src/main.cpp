@@ -32,7 +32,7 @@
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
-
+#include "24l01.h"
 
 /* USER CODE END Includes */
 
@@ -95,6 +95,7 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 bool fly = false;
+int emoji_number = 0;
 /* USER CODE END 0 */
 
 /**
@@ -131,7 +132,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
-  MX_SDIO_SD_Init();
+  //MX_SDIO_SD_Init();
   MX_FATFS_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
@@ -153,15 +154,25 @@ int main(void)
                      {lcddev.width, lcddev.height});
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
-    calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
+    //calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
     chat_select_main chat_sel_sc = chat_select_main("chat_select_main", {0, 0}, {lcddev.width, 280});
     chat_scene_main chat_sc = chat_scene_main("chat_scene_main", {0, 0}, {lcddev.width, 280}, users);
+    emoji_scene_main emoji_sc = emoji_scene_main("emoji_scene_main", {0, 0}, {lcddev.width, 280});
+
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
     canvas.add_son(&window_view);
+    // window_view.add_son(&chat_sc);
+//    chat_sc.setVisbility(true);
     window_view.add_son(&chat_sc);
+    // chat_sel_sc.setVisbility(false);
+//
+//    window_view.add_son(&cal_sc);
+//    cal_sc.setVisbility(false);
+    // printf("Start\n");'
+    window_view.add_son(&emoji_sc);
+    emoji_sc.setVisbility(false);
     HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
-
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
@@ -169,7 +180,6 @@ int main(void)
         canvas.update(nullptr, {0, 0});
         if(rx_flag)
         {
-          chat_sc.updateMessage(RX_DATA);
           chat_sc.addMessageToPage(RX_DATA);
           rx_flag = 0;
         }
@@ -179,7 +189,22 @@ int main(void)
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
         if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
-
+         if (EVENT[EMOJI_SELECT]) {
+            printf("[EVENT] Press Emoji\n");
+            emoji_sc.setVisbility(true);
+            chat_sc.setVisbility(false);
+            EVENT[EMOJI_SELECT] = 0;
+            canvas.need_render = true;
+        }
+        if (EVENT[EMOJI_SELECTED]){
+            printf("[EVENT] Emoji Selected\n");
+            emoji_sc.setVisbility(false);
+            chat_sc.setVisbility(true);
+            chat_sc.addImageToPage(emoji_number);
+            printf("emoji name: %d\n", emoji_number);
+            EVENT[EMOJI_SELECTED] = 0;
+            canvas.need_render = true;
+        }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -666,6 +666,11 @@ rect::rectangle(string name, pii pos, pii shape, uint16_t backgroud)
     this->backgroud = backgroud;
 }
 
+void image::update_img(const unsigned short* img) {
+    this->img = img;
+    this->need_render = 1;
+}
+
 void rect::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
     if (father != nullptr) {

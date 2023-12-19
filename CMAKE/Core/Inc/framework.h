@@ -206,6 +206,7 @@ typedef class image : public dpo {
           string str);
     bool isClicked();
     void update(display_object *father, pii axis);
+    void update_img(const unsigned short *img);
 } image;
 
 typedef class rectangle : public dpo {

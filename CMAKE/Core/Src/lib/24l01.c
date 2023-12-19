@@ -89,7 +89,7 @@ u8 NRF24L01_Write_Reg(u8 reg,u8 value)
 //reg:要读的寄存器
 u8 NRF24L01_Read_Reg(u8 reg)
 {
-	  u8 reg_val;	    
+	u8 reg_val;	    
    	NRF24L01_CSN=0;             //使能SPI传输		
   	SPI1_ReadWriteByte(reg);    //发送寄存器号
   	reg_val=SPI1_ReadWriteByte(0XFF);//读取寄存器内容
