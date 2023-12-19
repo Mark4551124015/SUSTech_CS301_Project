@@ -148,7 +148,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-    char* users[3] = {(char *)"User0: ", (char *)"User1: ", (char *)""};
+    char* users[3] = {(char *)"User0", (char *)"User1", (char *)""};
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});

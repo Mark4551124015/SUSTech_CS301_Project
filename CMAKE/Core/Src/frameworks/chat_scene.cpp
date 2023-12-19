@@ -19,12 +19,15 @@ page :: page(string name, pii pos, pii shape) : dpo(name, pos, shape)
 
 bool page :: addMessage(char * str, char * userName){
     if(this->cnt >= 6) return false;
-    int len = strlen(str);
-    for(int i=len - 1; i >= 0; i--)
-        str[i + 7] = str[i];
-    for(int i=0; i<7; i++)
+    int str_len = strlen(str);
+    int name_len = strlen(userName);
+    for(int i=str_len - 1; i >= 0; i--)
+        str[i + name_len + 2] = str[i];
+    for(int i=0; i<name_len; i++)
         str[i] = userName[i];
-    str[len + 7] = '\0';
+    str[name_len] = ':';
+    str[name_len + 1] = ' ';
+    str[str_len + name_len + 2] = '\0';
     this->messages[this->cnt++].update_str(str, 16, BLACK, WHITE);
     return true;
 }
