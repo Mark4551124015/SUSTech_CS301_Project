@@ -101,6 +101,10 @@ target_link_options(
     "$<$<NOT:$<CONFIG:Debug>>:${PROJECT_SOURCE_DIR}/STM32F103RCTX_FLASH.ld>"
 )
 
+
+FILE(GLOB_RECURSE LIBS
+"${PROJECT_SOURCE_DIR}/Core/Src/lib/*"
+)
 target_sources(
     ${TARGET_NAME} PRIVATE
     "Core/Src/main.cpp"
@@ -112,6 +116,7 @@ target_sources(
     "Core/Src/frameworks/chat_scene.cpp"
     "Core/Src/frameworks/chat_select_scene.cpp"
     "Core/Src/frameworks/emoji_scene.cpp"
+
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
     "Core/Src/lib/delay.c"
@@ -124,6 +129,12 @@ target_sources(
     "Core/Src/lib/touch.c"
     "Core/Src/lib/fatfs.cpp"
     "Core/Src/lib/24l01.c"
+    "Core/Src/lib/piclib.c"
+    # "Core/Src/lib/gif.c"
+    # "Core/Src/lib/bmp.c"
+    # "Core/Src/lib/tjpgd.c"
+    "Core/Src/lib/bmp.c"
+    
     "Core/Src/stm32f1xx_hal_msp.c"
     "Core/Src/stm32f1xx_it.cpp"
     "Core/Src/syscalls.c"
@@ -134,7 +145,7 @@ target_sources(
     "FATFS/src/ff.c"
     "FATFS/src/diskio.c"
     "FATFS/exfuns/exfuns.c"
-    "FATFS/exfuns/fattester.c"
+    # "FATFS/exfuns/fattester.c"
     "FATFS/src/option/cc936.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c"
@@ -147,13 +158,13 @@ target_sources(
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c"
-    "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_sd.c"
+    # "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_sd.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c"
     "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c"
-    "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_sdmmc.c"
+    # "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_sdmmc.c"
 )
 
 add_custom_command(

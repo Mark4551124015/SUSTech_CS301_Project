@@ -2,7 +2,7 @@
 #include "emoji.hpp"
 #include <string.h>
 #include "cstring"
-const unsigned char* emoji_arr[4] = {gImage_emoji1, gImage_emoji2, gImage_emoji3, gImage_emoji4};
+// const unsigned char* emoji_arr[4] = {gImage_emoji1, gImage_emoji2, gImage_emoji3, gImage_emoji4};
 extern uint8_t EVENT[32];
 extern int emoji_number;
 page :: page(string name, pii pos, pii shape) : dpo(name, pos, shape)
@@ -34,7 +34,7 @@ bool page :: addMessage(char * str, char * userName){
 
 bool page :: addImage(int num, char * userName){
     if(this->cnt >= 6) return false;
-    this->emojis[this->cnt].update_img((unsigned short *)emoji_arr[num-1]);
+    // this->emojis[this->cnt].update_img((unsigned short *)emoji_arr[num-1]);
     this->emojis[this->cnt].setVisbility(true);
     printf("set emoji %d\n", num);//arrived
     printf("%d", this->emojis[this->cnt].isVisible);

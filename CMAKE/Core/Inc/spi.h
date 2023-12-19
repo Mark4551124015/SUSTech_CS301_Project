@@ -4,8 +4,15 @@
 #include "main.h"
 
 extern SPI_HandleTypeDef SPI1_Handler; 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void SPI1_Init(void);
 void SPI1_SetSpeed(u8 SPI_BaudRatePrescaler);
 u8 SPI1_ReadWriteByte(u8 TxData);
 #endif
+#ifdef __cplusplus
+}
+#endif
+

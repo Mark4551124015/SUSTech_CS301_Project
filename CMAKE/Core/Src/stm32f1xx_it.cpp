@@ -47,7 +47,7 @@
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
 unsigned char rxBuffer[20];
-extern LED leddev;
+// extern LED leddev;
 bool rx_flag;
 /* USER CODE END PV */
 
@@ -325,16 +325,16 @@ void USART1_IRQHandler(void)
 /**
   * @brief This function handles SDIO global interrupt.
   */
-void SDIO_IRQHandler(void)
-{
-  /* USER CODE BEGIN SDIO_IRQn 0 */
+// void SDIO_IRQHandler(void)
+// {
+//   /* USER CODE BEGIN SDIO_IRQn 0 */
 
-  /* USER CODE END SDIO_IRQn 0 */
-  HAL_SD_IRQHandler(&hsd);
-  /* USER CODE BEGIN SDIO_IRQn 1 */
+//   /* USER CODE END SDIO_IRQn 0 */
+//   HAL_SD_IRQHandler(&hsd);
+//   /* USER CODE BEGIN SDIO_IRQn 1 */
 
-  /* USER CODE END SDIO_IRQn 1 */
-}
+//   /* USER CODE END SDIO_IRQn 1 */
+// }
 
 /**
   * @brief This function handles DMA2 channel4 and channel5 global interrupts.
@@ -370,7 +370,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM3) {
-        leddev.tick();
+        // leddev.tick();
     }
 }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

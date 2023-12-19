@@ -45,7 +45,7 @@
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
 int8_t rxBuffer[20];
-extern LED leddev;
+// extern LED leddev;
 
 /* USER CODE END PV */
 
@@ -354,7 +354,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
         static unsigned char uRx_Data[1024] = {0};
         static unsigned char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            LCD_Clear(WHITE);
+            // LCD_Clear(WHITE);
             uLength = 0;
             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
         } else {
@@ -367,7 +367,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM3) {
-        leddev.tick();
+        // leddev.tick();
     }
 }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

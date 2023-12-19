@@ -86,7 +86,7 @@ unsigned char uLength = 0;
 
 pii touch;
 bool button_click[8];
-LED leddev = LED();  // led_dev
+// LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
@@ -134,14 +134,14 @@ int main(void) {
     MX_SPI1_Init();
     /* USER CODE BEGIN 2 */
     //   printf("LCD shape %u %u", lcddev.height, lcddev.width);
-    leddev.Init();
+    // leddev.Init();
     LCD_Init();
     // MX_I2C1_Init();
     LCD_Clear(WHITE);
     HAL_TIM_Base_Start_IT(&htim3);
     tp_dev.init();
-    leddev.append(BLINK_BOTH);
-    leddev.append(BLINK_BOTH);
+    // leddev.append(BLINK_BOTH);
+    // leddev.append(BLINK_BOTH);
 
     POINT_COLOR = RED;
     LCD_ShowString(30, 50, 200, 16, 16, (uint8_t *)"Mini STM32");

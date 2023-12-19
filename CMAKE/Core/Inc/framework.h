@@ -5,23 +5,29 @@
 #include <stdio.h>
 
 #include <cstddef>
-#include <cstdint>
-#include <cstdio>
-#include <cstring>
+// #include <cstdint>
+// #include <cstdio>
+#include <string.h>
 #include <string>
-#include <vector>
+// #include <pair>
+// #include <vector>
 #include <cmath>
 
 #include "lcd.h"
 #include "stm32f1xx.h"
-
+// #include "ff.h"
+// #include "piclib.h"
 using namespace std;
 
-using std::pair;
+// using std::pair;
 using std::string;
-using std::vector;
+// using std::vector;
 
-using pii = std::pair<int, int>;
+struct pii {
+    int first;
+    int second;
+};
+// using pii = std::pair<int, int>;
 
 #ifndef x_p
 #define x_p first
@@ -137,35 +143,35 @@ typedef class button : public dpo {
     void reset();
 } button;
 
-typedef class keyboard : public dpo {
-   public:
-    button *keys[26];
-    button *shift;
-    button *del;
-    button *left;
-    button *right;
-    button *space;
+// typedef class keyboard : public dpo {
+//    public:
+//     button *keys[26];
+//     button *shift;
+//     button *del;
+//     button *left;
+//     button *right;
+//     button *space;
 
-    uint16_t backgroud;
-    uint16_t key_color;
-    uint16_t font_color;
-    pii key_shape;
-    pii start;
+//     uint16_t backgroud;
+//     uint16_t key_color;
+//     uint16_t font_color;
+//     pii key_shape;
+//     pii start;
 
-    uint8_t max_col;
-    uint8_t max_row;
-    bool shifting;
-    char output;
+//     uint8_t max_col;
+//     uint8_t max_row;
+//     bool shifting;
+//     char output;
 
-   public:
-    keyboard();
-    bool isClicked();
-    void init_keys();
-    char typing();
-    pii get_pos(int index);
-    void update(display_object *father, pii axis);
-    // void setVisbility(bool flag);
-} keyboard;
+//    public:
+//     keyboard();
+//     bool isClicked();
+//     void init_keys();
+//     char typing();
+//     pii get_pos(int index);
+//     void update(display_object *father, pii axis);
+//     // void setVisbility(bool flag);
+// } keyboard;
 
 typedef class static_text : public dpo {
    public:
@@ -201,9 +207,12 @@ typedef class image : public dpo {
     int click_cnt;
     const unsigned short *img;
 
+    // FILINFO * picfileinfo;
+    char * image_path;
+
    public:
     image(string name, pii pos, pii shape, const unsigned short *img,
-          string str);
+          string str, string img_name="");
     bool isClicked();
     void update(display_object *father, pii axis);
     void update_img(const unsigned short *img);

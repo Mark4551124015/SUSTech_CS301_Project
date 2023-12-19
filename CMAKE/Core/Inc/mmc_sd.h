@@ -1,7 +1,7 @@
 #ifndef _MMC_SD_H_
 #define _MMC_SD_H_		 
 #include "stm32f1xx.h"	 
-#include "fattester.h"	 
+// #include "fattester.h"	 
 #include "main.h"
 #ifdef __cplusplus
 extern "C" {

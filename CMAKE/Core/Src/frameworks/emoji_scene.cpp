@@ -1,6 +1,6 @@
 #include "emoji_scene.hpp"
-#include <string.h>
-#include "cstring"
+// #include <string.h>
+// #include "cstring"
 
 extern uint8_t EVENT[32];
 emoji_scene_main :: emoji_scene_main(string name, pii pos, pii shape) : dpo(name, pos, shape){

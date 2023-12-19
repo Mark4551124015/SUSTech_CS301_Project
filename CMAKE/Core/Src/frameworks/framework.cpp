@@ -1,26 +1,27 @@
 
 #include "framework.h"
-#include "scene.h"
 
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <string>
+// #include <cstdint>
+// #include <cstdio>
+// #include <cstdlib>
+// #include <cstring>
+// #include <string>
 
-#include "scene.h"
+// #include "ff.h"
+// #include "piclib.h"
+// #include "scene.h"
 
 extern pii touch;
 extern vtext* choosed;
 
-pii rotate_pos(pii pos, pii axis, int angle) {
-    float x = pos.x_p - axis.x_p;
-    float y = pos.y_p - axis.y_p;
-    float rad = angle * 3.1415926 / 180;
-    float x1 = x * cos(rad) - y * sin(rad);
-    float y1 = x * sin(rad) + y * cos(rad);
-    return {x1 + axis.x_p, y1 + axis.y_p};
-}
+// pii rotate_pos(pii pos, pii axis, int angle) {
+//     float x = pos.x_p - axis.x_p;
+//     float y = pos.y_p - axis.y_p;
+//     float rad = angle * 3.1415926 / 180;
+//     float x1 = x * cos(rad) - y * sin(rad);
+//     float y1 = x * sin(rad) + y * cos(rad);
+//     return {x1 + axis.x_p, y1 + axis.y_p};
+// }
 bool IN(pii p1, pii p2, pii p3) {
     int x1 = p1.x_p, x2 = p2.x_p, x = p3.x_p;
     int y1 = p1.y_p, y2 = p2.y_p, y = p3.y_p;
@@ -65,7 +66,7 @@ bool dpo::set_parent(dpo* parent) {
 }
 dpo* dpo::get_parent() { return this->parent; }
 
-bool dpo::add_son(dpo* son) {
+bool dpo::add_son(dpo * son) {
     // Unique confirm
 
     if (son == nullptr) {
@@ -361,115 +362,115 @@ void button::reset() {
 pii keyboard_size = {230, 320 / 2};
 pii keyboard_pos = {0, 300 / 4};
 
-keyboard::keyboard() : dpo("keyboard", keyboard_pos, keyboard_size) {
-    this->backgroud = LIGHTGREEN;
-    this->key_color = LIGHTBLUE;
-    this->type = KEYBOARD;
-    this->shape = keyboard_size;
-    this->font_color = BLACK;
-    this->shifting = false;
-    this->key_shape = {17, 32};
-    this->max_col = (this->shape.x_p - 2 - this->key_shape.x_p) /
-                        (this->key_shape.x_p + 6) +
-                    1;
-    this->max_row = (this->shape.y_p - 4 - this->key_shape.y_p) /
-                        (this->key_shape.y_p + 2) +
-                    1;
-    this->start = {(-this->shape.x_p / 2) + 2 + (this->key_shape.x_p / 2),
-                   (-this->shape.y_p / 2) + 2 + (this->key_shape.y_p / 2)};
-    printf("max col: %d, max row %d\n", this->max_col, this->max_row);
-}
-void keyboard::init_keys() {
-    // this->my_axis = {lcddev.width / 2, lcddev.height / 2 + this->pos.y_p};
-    printf("this axis: %d, %d\n", this->my_axis.first, this->my_axis.second);
-    printf("this start: %d, %d\n", this->start.first, this->start.second);
-    for (int i = 0; i < 26; i++) {
-        pii pos = this->get_pos(i);
-        char c = 97 + i;
-        string name = "key_";
-        name += c;
-        string show = "";
-        show += c;
-        this->keys[i] = new button(name, pos, this->key_shape, show);
-        this->add_son(this->keys[i]);
-    }
-    pii big_key = {this->key_shape.x_p * 2 + 6, this->key_shape.y_p};
-    pii space_key = {this->key_shape.x_p * 4 + 18, this->key_shape.y_p};
+// keyboard::keyboard() : dpo("keyboard", keyboard_pos, keyboard_size) {
+//     this->backgroud = LIGHTGREEN;
+//     this->key_color = LIGHTBLUE;
+//     this->type = KEYBOARD;
+//     this->shape = keyboard_size;
+//     this->font_color = BLACK;
+//     this->shifting = false;
+//     this->key_shape = {17, 32};
+//     this->max_col = (this->shape.x_p - 2 - this->key_shape.x_p) /
+//                         (this->key_shape.x_p + 6) +
+//                     1;
+//     this->max_row = (this->shape.y_p - 4 - this->key_shape.y_p) /
+//                         (this->key_shape.y_p + 2) +
+//                     1;
+//     this->start = {(-this->shape.x_p / 2) + 2 + (this->key_shape.x_p / 2),
+//                    (-this->shape.y_p / 2) + 2 + (this->key_shape.y_p / 2)};
+//     printf("max col: %d, max row %d\n", this->max_col, this->max_row);
+// }
+// void keyboard::init_keys() {
+//     // this->my_axis = {lcddev.width / 2, lcddev.height / 2 + this->pos.y_p};
+//     printf("this axis: %d, %d\n", this->my_axis.first, this->my_axis.second);
+//     printf("this start: %d, %d\n", this->start.first, this->start.second);
+//     for (int i = 0; i < 26; i++) {
+//         pii pos = this->get_pos(i);
+//         char c = 97 + i;
+//         string name = "key_";
+//         name += c;
+//         string show = "";
+//         show += c;
+//         this->keys[i] = new button(name, pos, this->key_shape, show);
+//         this->add_son(this->keys[i]);
+//     }
+//     pii big_key = {this->key_shape.x_p * 2 + 6, this->key_shape.y_p};
+//     pii space_key = {this->key_shape.x_p * 4 + 18, this->key_shape.y_p};
 
-    pii pos = this->get_pos(26);
-    pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
-    this->left = new button("key_left", pos, big_key, "<<");
-    this->add_son(this->left);
+//     pii pos = this->get_pos(26);
+//     pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
+//     this->left = new button("key_left", pos, big_key, "<<");
+//     this->add_son(this->left);
 
-    pos = this->get_pos(28);
-    pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
-    this->right = new button("key_right", pos, big_key, ">>");
-    this->add_son(this->right);
+//     pos = this->get_pos(28);
+//     pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
+//     this->right = new button("key_right", pos, big_key, ">>");
+//     this->add_son(this->right);
 
-    pos = this->get_pos(30);
-    pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
-    this->shift = new button("key_shift", pos, big_key, "sft");
-    this->add_son(this->shift);
+//     pos = this->get_pos(30);
+//     pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
+//     this->shift = new button("key_shift", pos, big_key, "sft");
+//     this->add_son(this->shift);
 
-    pos = this->get_pos(38);
-    pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
-    this->del = new button("key_del", pos, big_key, "del");
-    this->add_son(this->del);
+//     pos = this->get_pos(38);
+//     pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
+//     this->del = new button("key_del", pos, big_key, "del");
+//     this->add_son(this->del);
 
-    pos = this->get_pos(34);
-    pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
-    this->space = new button("key_space", pos, space_key, "space");
-    this->add_son(this->space);
-}
+//     pos = this->get_pos(34);
+//     pos = {pos.x_p + this->key_shape.x_p / 2 + 3, pos.y_p};
+//     this->space = new button("key_space", pos, space_key, "space");
+//     this->add_son(this->space);
+// }
 
-pii keyboard::get_pos(int index) {
-    pii target;
-    target = {(index % this->max_col) * (this->key_shape.x_p + 6) + 2,
-              (index / this->max_col) * (this->key_shape.y_p + 2) + 2};
-    target = adding(target, this->start);
-    return target;
-}
+// pii keyboard::get_pos(int index) {
+//     pii target;
+//     target = {(index % this->max_col) * (this->key_shape.x_p + 6) + 2,
+//               (index / this->max_col) * (this->key_shape.y_p + 2) + 2};
+//     target = adding(target, this->start);
+//     return target;
+// }
 
-void keyboard::update(dpo* father, pii axis) {
-    this->my_axis = adding(axis, this->pos);
-    pii p1 = {this->my_axis.x_p - this->shape.x_p / 2,
-              this->my_axis.y_p - this->shape.y_p / 2};
-    pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
-              this->my_axis.y_p + this->shape.y_p / 2};
-    if (this->need_render) {
-        LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, this->backgroud);
-        LCD_DrawRectangle(p1.x_p, p1.y_p, p2.x_p, p2.y_p);
-    }
+// void keyboard::update(dpo* father, pii axis) {
+//     this->my_axis = adding(axis, this->pos);
+//     pii p1 = {this->my_axis.x_p - this->shape.x_p / 2,
+//               this->my_axis.y_p - this->shape.y_p / 2};
+//     pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
+//               this->my_axis.y_p + this->shape.y_p / 2};
+//     if (this->need_render) {
+//         LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, this->backgroud);
+//         LCD_DrawRectangle(p1.x_p, p1.y_p, p2.x_p, p2.y_p);
+//     }
 
-    if (this->shift->isClicked()) {
-        if (this->shifting) {
-            this->shift->backgroud = YELLOW;
-            this->shift->need_render = true;
-            this->shifting = false;
-        } else {
-            this->shift->backgroud = BLUE;
-            this->shift->need_render = true;
-            this->shifting = true;
-        }
-    }
+//     if (this->shift->isClicked()) {
+//         if (this->shifting) {
+//             this->shift->backgroud = YELLOW;
+//             this->shift->need_render = true;
+//             this->shifting = false;
+//         } else {
+//             this->shift->backgroud = BLUE;
+//             this->shift->need_render = true;
+//             this->shifting = true;
+//         }
+//     }
 
-    dpo::update(father, axis);
-}
+//     dpo::update(father, axis);
+// }
 
-char keyboard::typing() {
-    for (int i = 0; i < 26; i++) {
-        if (this->keys[i]->isClicked()) {
-            if (this->shifting)
-                return i + 65;
-            else
-                return i + 97;
-        }
-    }
-    if (this->space->isClicked()) {
-        return 32;
-    }
-    return 0;
-}
+// char keyboard::typing() {
+//     for (int i = 0; i < 26; i++) {
+//         if (this->keys[i]->isClicked()) {
+//             if (this->shifting)
+//                 return i + 65;
+//             else
+//                 return i + 97;
+//         }
+//     }
+//     if (this->space->isClicked()) {
+//         return 32;
+//     }
+//     return 0;
+// }
 
 stext::static_text(string name, pii pos, pii shape, char* str,
                    bool text_aligned, uint8_t font_size)
@@ -493,7 +494,8 @@ stext::static_text(string name, pii pos, pii shape, char* str,
         font_size * ((this->len - 1) / this->max_col + 1)};
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
-    if(text_aligned) this->start = {(-this->shape.x_p)/2, (-this->shape.y_p)/2};
+    if (text_aligned)
+        this->start = {(-this->shape.x_p) / 2, (-this->shape.y_p) / 2};
 }
 void stext::clear() {
     for (int i = 0; i < this->len; i++) {
@@ -517,7 +519,8 @@ void stext::update_str(char* str, uint8_t font_size, uint16_t font_color,
         font_size * ((this->len - 1) / this->max_col + 1)};
     if (this->len == 0) font_shape = {0, 0};
     this->start = {(-font_shape.x_p) / 2, (-font_shape.y_p) / 2};
-    if(this->text_aligned) this->start = {(-this->shape.x_p)/2, (-this->shape.y_p)/2};
+    if (this->text_aligned)
+        this->start = {(-this->shape.x_p) / 2, (-this->shape.y_p) / 2};
     this->backgroud = backgroud;
     this->need_render = true;
 }
@@ -557,7 +560,7 @@ void stext::update(dpo* father, pii axis) {
 }
 
 image::image(string name, pii pos, pii shape, const unsigned short* img,
-             string str)
+             string str, string img_name)
     : dpo(name, pos, shape) {
     this->str = str;
     this->font_color = BLACK;
@@ -566,6 +569,15 @@ image::image(string name, pii pos, pii shape, const unsigned short* img,
     this->touching = false;
     this->type = BUTTON;
     this->click_cnt = 0;
+
+    // this->picfileinfo = (FILINFO*)mymalloc(sizeof(FILINFO));	//申请内存
+    if (img_name != "") {
+        // this->image_path = (char*)mymalloc(_MAX_LFN * 2 + 1);
+        strcpy(this->image_path, "0:/PICTURE/");
+        strcat(this->image_path, img_name.c_str());
+    } else {
+        this->img = img;
+    }
 }
 void image::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
@@ -578,8 +590,16 @@ void image::update(dpo* father, pii axis) {
 
     if (this->need_render && this->isVisible) {
         POINT_COLOR = BLACK;
-        LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
-                        this->img);
+
+        if (this->image_path != nullptr) {
+            printf("loading %s\n", this->image_path);
+            // ai_load_picfile((u8 *)this->image_path, p1.x_p, p1.y_p, this->shape.x_p,
+            //                 this->shape.y_p, 1);
+                            
+        } else if (this->img != nullptr) {
+            LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
+                            this->img);
+        }
         int width = this->font_size / 2 * this->str.length();
         int height = this->font_size;
         POINT_COLOR = this->font_color;

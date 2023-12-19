@@ -573,7 +573,9 @@ void LCD_ShowChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
                       // '就是对应字符的字库）
     for (t = 0; t < csize; t++) {
         if (size == 12)
-            temp = asc2_1206[num][t];  // 调用1206字体
+            // temp = asc2_1206[num][t];  // 调用1206字体
+            return;
+
         else if (size == 16)
             temp = asc2_1608[num][t];  // 调用1608字体
         else if (size == 24)
@@ -609,7 +611,8 @@ void LCD_ShowRotateChar(uint16_t x, uint16_t y, uint8_t num, uint8_t size,
                       // '就是对应字符的字库）
     for (t = 0; t < csize; t++) {
         if (size == 12)
-            temp = asc2_1206[num][t];  // 调用1206字体
+            // temp = asc2_1206[num][t];  // 调用1206字体
+            return;
         else if (size == 16)
             temp = asc2_1608[num][t];  // 调用1608字体
         else if (size == 24)
