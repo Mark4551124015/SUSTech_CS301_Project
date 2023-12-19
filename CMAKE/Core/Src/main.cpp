@@ -108,7 +108,7 @@ bool fly = false;
  */
 char *users[3] = {(char *)"User0", (char *)"User1", (char *)""};
 
-int SCENE = CHAT_SCENE;
+int SCENE = MAIN;
 
 int main(void) {
     /* USER CODE BEGIN 1 */
@@ -210,8 +210,16 @@ int main(void) {
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
         else
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
-        if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
-        if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
+        if (EVENT[RETURN_BACK]) {
+            printf("[EVENT] Press Back\n");
+            SCENE = CHAT_SCENE;
+            EVENT[RETURN_BACK] = 0;
+        }
+        if (EVENT[RETURN_HOME]) {
+            printf("[EVENT] Press Home\n");
+            SCENE = CALC;
+            EVENT[RETURN_HOME] = 0;
+        }
         if (EVENT[EMOJI_SELECT]) {
             printf("[EVENT] Press Emoji\n");
             chat_sc->setVisbility(false);
@@ -230,17 +238,20 @@ int main(void) {
         }
 
         if (SCENE == CALC) {
+            LCD_Clear(WHITE);
+            canvas.need_render = true;
             if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
             if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
-            window_view->sub_object_cnt = 0;
-            window_view->add_son(cal_sc);
-            if (cal_sc == nullptr)
+            if (cal_sc == nullptr) {
                 cal_sc =
                     new calc_main("calc_main", {0, 0}, {lcddev.width, 280});
-            window_view->add_son(cal_sc);
-            cal_sc->setVisbility(true);
+                window_view->sub_object_cnt = 0;
+                window_view->add_son(cal_sc);
+                cal_sc->setVisbility(true);
+            }
+            SCENE = 0;
         }
 
         // if (SCENE == CHAT_SELECT) {
@@ -254,6 +265,8 @@ int main(void) {
         // }
 
         if (SCENE == CHAT_SCENE) {
+            LCD_Clear(WHITE);
+            canvas.need_render = true;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
             if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
@@ -261,10 +274,11 @@ int main(void) {
             if (chat_sc == nullptr) {
                 chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
                                               {lcddev.width, 280}, users);
+                window_view->sub_object_cnt = 0;
+                window_view->add_son(chat_sc);
+                chat_sc->setVisbility(true);
             }
-            window_view->sub_object_cnt = 0;
-            window_view->add_son(chat_sc);
-            chat_sc->setVisbility(true);
+
             SCENE = 0;
         }
 
