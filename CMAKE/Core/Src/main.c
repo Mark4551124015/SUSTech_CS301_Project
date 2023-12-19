@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
+
 #include <cstdint>
 #include <cstdio>
 #include <string>
@@ -31,6 +32,7 @@
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
+
 
 /* USER CODE END Includes */
 
@@ -92,7 +94,7 @@ LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
-
+bool fly = false;
 /* USER CODE END 0 */
 
 /**
@@ -136,7 +138,6 @@ int main(void)
     //   printf("LCD shape %u %u", lcddev.height, lcddev.width);
     leddev.Init();
     LCD_Init();
-    // MX_I2C1_Init();
     LCD_Clear(WHITE);
     HAL_TIM_Base_Start_IT(&htim3);
     tp_dev.init();
@@ -148,23 +149,30 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-    // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
 
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
+    calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
 
     // canvas.add_son(&m);
     canvas.add_son(&bottom_bar);
+    canvas.add_son(&window_view);
+    window_view.add_son(&cal_sc);
+
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
+        fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
-        
+        if (!fly)
+            HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
+        else
+            HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
         if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
-        
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -425,18 +433,34 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, CS_Pin|CE_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : IRQ_Pin */
+  GPIO_InitStruct.Pin = IRQ_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(IRQ_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : KEY_WK_Pin */
   GPIO_InitStruct.Pin = KEY_WK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(KEY_WK_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : CS_Pin CE_Pin */
+  GPIO_InitStruct.Pin = CS_Pin|CE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PA3 */
   GPIO_InitStruct.Pin = GPIO_PIN_3;
