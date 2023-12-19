@@ -128,60 +128,7 @@ void dpo::update(display_object* father, pii axis) {
     for (int i = 0; i < this->sub_object_cnt; i++) {
         dpo* son = this->sub_object[i];
         if (!son->getVisbility()) continue;
-        // printf("son type: %d\n", (int)son->type);
-        switch (son->type) {
-            case (DPO): {
-                son->update(this, this->my_axis);
-                break;
-            }
-            case (BUTTON): {
-                button* a = (button*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (V_TEXT): {
-                var_text* a = (var_text*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (KEYBOARD): {
-                keyboard* a = (keyboard*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (S_TEXT): {
-                stext* a = (stext*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (IMAGE): {
-                image* a = (image*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (BAR): {
-                bar* a = (bar*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (MOVIMG): {
-                mov_img* a = (mov_img*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (RECT): {
-                rect* a = (rect*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            case (MARKER): {
-                marker* a = (marker*)son;
-                a->update(this, this->my_axis);
-                break;
-            }
-            default:
-                son->update(this, this->my_axis);
-        }
+        son->update(this, this->my_axis);
     }
 }
 
