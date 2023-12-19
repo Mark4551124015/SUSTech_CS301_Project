@@ -218,9 +218,9 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     temp_pos = this->get_key_pos(3);
     key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
     key_pos.y_p = (key_pos.y_p + temp_pos.y_p) / 2;
-    this->ex_mode_s = stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", 12);
-    this->eq_mode_s = stext("eq", key_pos, {80, 30}, (char*)"EQUATION", 12);
-    this->bin_mode_s = stext("eq", key_pos, {80, 30}, (char*)"BINARY", 12);
+    this->ex_mode_s = stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", false, 12);
+    this->eq_mode_s = stext("eq", key_pos, {80, 30}, (char*)"EQUATION", false, 12);
+    this->bin_mode_s = stext("eq", key_pos, {80, 30}, (char*)"BINARY", false, 12);
 
     for (int i = 0; i <= 9; ++i) {
         char c = '0' + i;

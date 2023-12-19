@@ -108,6 +108,12 @@ target_sources(
     "Core/Src/frameworks/calc_scene.cpp"
     "Core/Src/frameworks/framework.cpp"
     "Core/Src/frameworks/scene.cpp"
+<<<<<<< Updated upstream
+=======
+    "Core/Src/frameworks/chat_select_scene.cpp"
+    "Core/Src/frameworks/chat_scene.cpp"
+    "Core/Src/frameworks/emoji_scene.cpp"
+>>>>>>> Stashed changes
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
     "Core/Src/lib/delay.c"

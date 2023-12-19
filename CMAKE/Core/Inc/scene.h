@@ -12,7 +12,7 @@ extern "C" {
 class main_menu : public dpo {
    public:
     main_menu(string name, pii pos, pii shape);
-    stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", 24);
+    stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", false, 24);
     button btn = button("test", {0, 80}, {120, 80}, "test");
     void update(display_object *father, pii axis) override;
 };

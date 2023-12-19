@@ -30,7 +30,7 @@
 #include "framework.h"
 #include "led.h"
 #include "scene.h"
-
+#include "emoji_scene.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,6 +92,7 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 bool fly = false;
+int emoji_number = 0;
 /* USER CODE END 0 */
 
 /**
@@ -144,10 +145,11 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+    char* users[3] = {(char *)"User0", (char *)"User1", (char *)"User2"};
     // main_menu m = main_menu("main_menu", {0, 0}, {0, 0});
     dpo canvas = dpo("canvas", {lcddev.width / 2, lcddev.height / 2},
                      {lcddev.width, lcddev.height});
+<<<<<<< Updated upstream
 
     bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
@@ -157,16 +159,71 @@ int main(void)
     canvas.add_son(&bottom_bar);
     canvas.add_son(&window_view);
     window_view.add_son(&cal_sc);
+=======
+    bar bottom_bar = bar("bar1", {0, 140}, {lcddev.width, 40});
+    dpo window_view = dpo("window_view", {0, -20}, {lcddev.width, 280});
+    calc_main cal_sc = calc_main("calc_main", {0, 0}, {lcddev.width, 280});
+    chat_select_main chat_sel_sc = chat_select_main("chat_select_main", {0, 0}, {lcddev.width, 280});
+    chat_scene_main chat_sc = chat_scene_main("chat_scene_main", {0, 0}, {lcddev.width, 280}, users);
+    emoji_scene_main emoji_sc = emoji_scene_main("emoji_scene_main", {0, 0}, {lcddev.width, 280});
+    // canvas.add_son(&m);
+    canvas.add_son(&bottom_bar);
+    canvas.add_son(&window_view);
+    window_view.add_son(&chat_sc);
+//    chat_sc.setVisbility(true);
+    window_view.add_son(&chat_sel_sc);
+    chat_sel_sc.setVisbility(false);
+//
+//    window_view.add_son(&cal_sc);
+//    cal_sc.setVisbility(false);
+    printf("Start\n");
+    window_view.add_son(&emoji_sc);
+    emoji_sc.setVisbility(false);
+
+    HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
+>>>>>>> Stashed changes
 
     while (1) {
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
+<<<<<<< Updated upstream
+=======
+        if(rx_flag)
+        {
+//          chat_sc.updateMessage(RX_DATA);
+          chat_sc.addMessageToPage(RX_DATA);
+          rx_flag = 0;
+        }
+>>>>>>> Stashed changes
         if(!fly) HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_SET);
         else HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin,GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) printf("[EVENT] Press Back\n");
         if (EVENT[RETURN_HOME]) printf("[EVENT] Press Home\n");
+
+        if (EVENT[EMOJI_SELECT]) {
+            printf("[EVENT] Press Emoji\n");
+            emoji_sc.setVisbility(true);
+            chat_sc.setVisbility(false);
+            EVENT[EMOJI_SELECT] = 0;
+            canvas.need_render = true;
+        }
+        if (EVENT[EMOJI_SELECTED]){
+            printf("[EVENT] Emoji Selected\n");
+            emoji_sc.setVisbility(false);
+            chat_sc.setVisbility(true);
+            emoji_number = emoji_sc.emoji_num;
+//            char num = emoji_number + '0';
+//            char* emoji_name = new char[20];
+//            strcpy(emoji_name, "emoji");
+//            emoji_name[12] = num;
+//            emoji_name[13] = '\0';
+            chat_sc.addImageToPage(emoji_number);
+            printf("emoji name: %d\n", emoji_number);
+            EVENT[EMOJI_SELECTED] = 0;
+            canvas.need_render = true;
+        }
         
     /* USER CODE END WHILE */
 

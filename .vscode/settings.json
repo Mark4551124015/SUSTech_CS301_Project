@@ -1,4 +1,5 @@
 {
+<<<<<<< Updated upstream
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureOnOpen": true,
     "clangd.fallbackFlags": [
@@ -16,4 +17,79 @@
         "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc", // 第三方依赖的头文件目录
         "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy", // 第三方依赖的头文件目录
     ]
+=======
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "cmake.configureOnOpen": true,
+  "clangd.fallbackFlags": [
+    "-I${workspaceFolder}",
+    "-D STM32F103xE",
+    "-D USE_HAL_DRIVER",
+    "-D _CRT_SECURE_NO_WARNINGS",
+    "-D offset",
+    "-D __GNUC__",
+    "-I${workspaceFolder}/Core/Inc",
+    "-I${workspaceFolder}/Drivers/CMSIS/Include",
+    "-I${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+    "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc",
+    "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy"
+  ],
+  "C_Cpp_Runner.cCompilerPath": "gcc",
+  "C_Cpp_Runner.cppCompilerPath": "g++",
+  "C_Cpp_Runner.debuggerPath": "gdb",
+  "C_Cpp_Runner.cStandard": "",
+  "C_Cpp_Runner.cppStandard": "",
+  "C_Cpp_Runner.msvcBatchPath": "",
+  "C_Cpp_Runner.useMsvc": false,
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wformat=2",
+    "-Wcast-align",
+    "-Wconversion",
+    "-Wsign-conversion",
+    "-Wnull-dereference"
+  ],
+  "C_Cpp_Runner.msvcWarnings": [
+    "/W4",
+    "/permissive-",
+    "/w14242",
+    "/w14287",
+    "/w14296",
+    "/w14311",
+    "/w14826",
+    "/w44062",
+    "/w44242",
+    "/w14905",
+    "/w14906",
+    "/w14263",
+    "/w44265",
+    "/w14928"
+  ],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.compilerArgs": [],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.includePaths": [],
+  "C_Cpp_Runner.includeSearch": [
+    "*",
+    "**/*"
+  ],
+  "C_Cpp_Runner.excludeSearch": [
+    "**/build",
+    "**/build/**",
+    "**/.*",
+    "**/.*/**",
+    "**/.vscode",
+    "**/.vscode/**"
+  ],
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp_Runner.useUndefinedSanitizer": false,
+  "C_Cpp_Runner.useLeakSanitizer": false,
+  "C_Cpp_Runner.showCompilationTime": false,
+  "C_Cpp_Runner.useLinkTimeOptimization": false,
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+  "cmake.sourceDirectory": "C:/Users/25375/Desktop/CS301_compile/CMAKE"
+>>>>>>> Stashed changes
 }

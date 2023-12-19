@@ -39,6 +39,8 @@ extern "C" {
 #define RETURN_BACK 0
 #define RETURN_HOME 1
 #define SHUTDOWN 2
+#define EMOJI_SELECT 3
+#define EMOJI_SELECTED 4
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
