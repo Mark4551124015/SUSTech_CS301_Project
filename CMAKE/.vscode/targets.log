@@ -1,0 +1,337 @@
+make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-pc-mingw32
+ 
+
+# Make data base, printed on Tue Dec 19 20:59:05 2023
+
+# ����
+
+# �Զ�
+<D = $(patsubst %/,%,$(dir $<))
+# �Զ�
+?F = $(notdir $?)
+# ����
+WSLENV = BASH_ENV/u
+# ����
+VSCODE_CRASH_REPORTER_PROCESS_TYPE = extensionHost
+# makefile
+MAKEFLAGS = Rrqp
+# �Զ�
+?D = $(patsubst %/,%,$(dir $?))
+# �Զ�
+@D = $(patsubst %/,%,$(dir $@))
+# ����
+HOMEDRIVE = C:
+# �Զ�
+@F = $(notdir $@)
+# �Զ�
+^D = $(patsubst %/,%,$(dir $^))
+# makefile
+CURDIR := d:/WORKSPACE_WIN/SUSTech_CS301_Project/CMAKE
+# Ĭ��
+SHELL := sh.exe
+# ����
+WINDIR = C:\WINDOWS
+# ����
+VSCODE_NLS_CONFIG = {"locale":"en-us","osLocale":"zh-cn","availableLanguages":{},"_languagePackSupport":true}
+# ����
+ONEDRIVE = C:\Users\Mark455\OneDrive - �Ϸ��Ƽ���ѧ
+# ����
+PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+# makefile
+MAKEFILE_LIST := 
+# ����
+FPS_BROWSER_USER_PROFILE_STRING = Default
+# ����
+TMP = C:\Users\Mark455\AppData\Local\Temp
+# ����
+PROGRAMW6432 = C:\Program Files
+# ����
+PROGRAMDATA = C:\ProgramData
+# ����
+VSCODE_CWD = C:\WINDOWS\system32
+# ����
+PATH = C:\Program Files\VanDyke Software\Clients\;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\libnvvp;C:\Applications\JEnv;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\ProgramData\chocolatey\bin;C:\Library\BIND9;C:\Program Files\Neovim\bin;C:\Xilinx\Vivado\2017.4\bin;C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.2.0\;C:\Program Files (x86)\NetSarang\Xftp 7\;C:\Program Files (x86)\NetSarang\Xshell 7\;C:\Program Files\Docker\Docker\resources\bin;C:\Library\netcat;C:\Program Files\Git\mingw64\bin;C:\Program Files\Pandoc\;C:\Program Files (x86)\GnuWin32\bin;C:\Library\android-platform-tools;C:\Library\Ninja;C:\Program Files\CMake\bin;C:\Library\SFWT;C:\Library\CubeIDE_tools;C:\Users\Mark455\scoop\shims;C:\Users\Mark455\AppData\Local\Microsoft\WindowsApps;C:\Users\Mark455\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\Mark455\.dotnet\tools;C:\Users\Mark455\AppData\Local\Programs\Microsoft VS Code\bin;C:\ProgramData\Anaconda3\condabin;C:\ProgramData\Anaconda3\Scripts;C:\Users\Mark455\AppData\Local\GitHubDesktop\bin;C:\Users\Mark455\AppData\Local\Programs\oh-my-posh\bin;
+# ����
+COMMONPROGRAMW6432 = C:\Program Files\Common Files
+# ����
+ZES_ENABLE_SYSMAN = 1
+# ����
+CHOCOLATEYLASTPATHUPDATE = 133226021281684011
+# ����
+PROCESSOR_ARCHITECTURE = x86
+# ����
+USERPROFILE = C:\Users\Mark455
+# ����
+CHOCOLATEYINSTALL = C:\ProgramData\chocolatey
+# ����
+BASH_ENV = /etc/bash.bashrc
+# ����
+ALLUSERSPROFILE = C:\ProgramData
+# ����
+NUMBER_OF_PROCESSORS = 20
+# ����
+ELECTRON_RUN_AS_NODE = 1
+# Ĭ��
+.FEATURES := target-specific order-only second-expansion else-if archives
+# ����
+NVTOOLSEXT_PATH = C:\Program Files\NVIDIA Corporation\NvToolsExt\
+# �Զ�
+%F = $(notdir $%)
+# ����
+POSH_THEMES_PATH = C:\Users\Mark455\AppData\Local\Programs\oh-my-posh\themes
+# ����
+DISPLAY = localhost:0
+# ����
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_27260_PQWPGAGBQKTFSRXI
+# ����
+COMPUTERNAME = MARK455-LAPTOP
+# ����
+PROGRAMFILES = C:\Program Files (x86)
+# ����
+DRIVERDATA = C:\Windows\System32\Drivers\DriverData
+# ����
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# ����
+USERNAME = Mark455
+# ����
+PUBLIC = C:\Users\Public
+# ����
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# ����
+EFC_7852 = 1
+# ����
+VSCODE_CODE_CACHE_PATH = C:\Users\Mark455\AppData\Roaming\Code\CachedData\0ee08df0cf4527e40edc9aa28f4b5bd38bbff2b2
+# ����
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# ����
+COMMONPROGRAMFILES = C:\Program Files (x86)\Common Files
+# ����
+LOGONSERVER = \\MARK455-LAPTOP
+# ����
+ONEDRIVECONSUMER = C:\Users\Mark455\OneDrive
+# ����
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# ����
+USERDOMAIN = MARK455-LAPTOP
+# ����
+STM32CUBEMX_PATH = C:\Program Files\STMicroelectronics\STM32Cube\STM32CubeMX
+# Ĭ��
+MAKECMDGOALS := all
+# ����
+JAVA_HOME = C:\Program Files\Java\jdk-11.0.17
+# ����
+ONEDRIVECOMMERCIAL = C:\Users\Mark455\OneDrive - �Ϸ��Ƽ���ѧ
+# Ĭ��
+MAKE_VERSION := 3.81
+# ����
+NODE_UNC_HOST_ALLOWLIST = wsl-unc\wsl.localhost\wsl$
+# makefile
+.DEFAULT_GOAL := 
+# Ĭ��
+MAKE = $(MAKE_COMMAND)
+# ����
+PROGRAMFILES(X86) = C:\Program Files (x86)
+# �Զ�
+%D = $(patsubst %/,%,$(dir $%))
+# ����
+LOCALAPPDATA = C:\Users\Mark455\AppData\Local
+# ����
+PSMODULEPATH = C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+# Ĭ��
+MAKE_COMMAND := make.exe
+# ����
+PROCESSOR_ARCHITEW6432 = AMD64
+# Ĭ��
+.VARIABLES := 
+# �Զ�
+*F = $(notdir $*)
+# ����
+PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 154 Stepping 3, GenuineIntel
+# ����
+OS = Windows_NT
+# ����
+VSCODE_IPC_HOOK = \\.\pipe\79ffcc356b12bcc46ea684a8cb734d88-1.85.1-main-sock
+# ����
+HOMEPATH = \Users\Mark455
+# ����
+COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
+# ����
+PROMPT = $P$G
+# ����
+MFLAGS = -Rrqp
+# �Զ�
+*D = $(patsubst %/,%,$(dir $*))
+# ����
+SYSTEMROOT = C:\WINDOWS
+# �Զ�
++D = $(patsubst %/,%,$(dir $+))
+# ����
+VSCODE_L10N_BUNDLE_LOCATION = 
+# �Զ�
++F = $(notdir $+)
+# ����
+APPDATA = C:\Users\Mark455\AppData\Roaming
+# ����
+TEMP = C:\Users\Mark455\AppData\Local\Temp
+# ����
+COMSPEC = C:\WINDOWS\system32\cmd.exe
+# Ĭ��
+MAKEFILES := 
+# �Զ�
+<F = $(notdir $<)
+# ����
+LC_ALL = C
+# �Զ�
+^F = $(notdir $^)
+# ����
+CUDA_PATH = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7
+# Ĭ��
+SUFFIXES := 
+# ����
+SYSTEMDRIVE = C:
+# ����
+SESSIONNAME = Console
+# ����
+PROCESSOR_REVISION = 9a03
+# ����
+MAKELEVEL := 0
+# ����
+CUDA_PATH_V11_7 = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7
+# ����
+LANG = C
+# ����
+PROCESSOR_LEVEL = 6
+# ����
+FPS_BROWSER_APP_PROFILE_STRING = Internet Explorer
+# ����
+VSCODE_PID = 27260
+# ����
+USERDOMAIN_ROAMINGPROFILE = MARK455-LAP 
+TOP
+# variable set hash-table stats:
+# Load=101/1024=10%, Rehash=0, Collisions=10/118=8%
+
+# Pattern-specific Variable Values
+
+# û�� pattern-specific ������ֵ��
+
+# Ŀ¼
+
+# C:\Users\Mark455\.dotnet\tools���޷�������� stat ������
+# C:\Program Files\Common Files\Oracle\Java\javapath (�ؼ��� C:/Program Files/Common Files/Oracle/Java/javapath���޸�ʱ�� 1689773320)��6 �ļ��� �� impossibilities.
+# C:\Program Files\Docker\Docker\resources\bin (�ؼ��� C:/Program Files/Docker/Docker/resources/bin���޸�ʱ�� 1688980831)��14 �ļ��� �� impossibilities.
+# C:\Users\Mark455\scoop\shims (�ؼ��� C:/Users/Mark455/scoop/shims���޸�ʱ�� 1678794435)��8 �ļ��� �� impossibilities.
+# C:\Library\SFWT (�ؼ��� C:/Library/SFWT���޸�ʱ�� 1698045974)��3 �ļ��� �� impossibilities.
+# C:\Library\BIND9 (�ؼ��� C:/Library/BIND9���޸�ʱ�� 1678879016)��55 �ļ��� �� impossibilities.
+# C:\Program Files\Pandoc\ (�ؼ��� C:/Program Files/Pandoc/���޸�ʱ�� 1689863453)��6 �ļ��� �� impossibilities.
+# C:\Windows\System32\WindowsPowerShell\v1.0\ (�ؼ��� C:/Windows/System32/WindowsPowerShell/v1.0/���޸�ʱ�� 1700053285)��30 �ļ��� �� impossibilities.
+# C:\Program Files (x86)\NetSarang\Xshell 7\ (�ؼ��� C:/Program Files (x86)/NetSarang/Xshell 7/���޸�ʱ�� 1698052380)��40 �ļ��� �� impossibilities.
+# C:\Windows\System32\Wbem (�ؼ��� C:/Windows/System32/Wbem���޸�ʱ�� 1702527462)��171 �ļ��� �� impossibilities.
+# . (�ؼ��� d:/WORKSPACE_WIN/SUSTech_CS301_Project/CMAKE���޸�ʱ�� 1702975930)��20 �ļ��� �� impossibilities.
+# C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\libnvvp (�ؼ��� C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/libnvvp���޸�ʱ�� 1683100850)��14 �ļ��� �� impossibilities.
+# C:\Users\Mark455\AppData\Local\Programs\Microsoft VS Code\bin (�ؼ��� C:/Users/Mark455/AppData/Local/Programs/Microsoft VS Code/bin���޸�ʱ�� 1702522122)��5 �ļ��� �� impossibilities.
+# C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common (�ؼ��� C:/Program Files (x86)/NVIDIA Corporation/PhysX/Common���޸�ʱ�� 1660050416)��10 �ļ��� �� impossibilities.
+# C:\Program Files\Git\mingw64\bin (�ؼ��� C:/Program Files/Git/mingw64/bin���޸�ʱ�� 1678115761)��140 �ļ��� �� impossibilities.
+# C:\Program Files (x86)\NetSarang\Xftp 7\ (�ؼ��� C:/Program Files (x86)/NetSarang/Xftp 7/���޸�ʱ�� 1692606474)��27 �ļ��� �� impossibilities.
+# C:\ProgramData\chocolatey\bin (�ؼ��� C:/ProgramData/chocolatey/bin���޸�ʱ�� 1678128528)��11 �ļ��� �� impossibilities.
+# C:\Applications\JEnv (�ؼ��� C:/Applications/JEnv���޸�ʱ�� 1678157120)��5 �ļ��� �� impossibilities.
+# C:\Program Files\NVIDIA Corporation\Nsight Compute 2022.2.0\ (�ؼ��� C:/Program Files/NVIDIA Corporation/Nsight Compute 2022.2.0/���޸�ʱ�� 1683100818)��12 �ļ��� �� impossibilities.
+# C:\Users\Mark455\AppData\Local\Programs\oh-my-posh\bin (�ؼ��� C:/Users/Mark455/AppData/Local/Programs/oh-my-posh/bin���޸�ʱ�� 1678529202)��3 �ļ��� �� impossibilities.
+# C:\Program Files\VanDyke Software\Clients\ (�ؼ��� C:/Program Files/VanDyke Software/Clients/���޸�ʱ�� 1684321715)��122 �ļ��� �� impossibilities.
+# C:\ProgramData\Anaconda3\condabin (�ؼ��� C:/ProgramData/Anaconda3/condabin���޸�ʱ�� 1678278765)��9 �ļ��� �� impossibilities.
+# C:\Windows\System32\OpenSSH\���޷�������� stat ������
+# C:\ProgramData\Anaconda3\Scripts (�ؼ��� C:/ProgramData/Anaconda3/Scripts���޸�ʱ�� 1678278782)��355 �ļ��� �� impossibilities.
+# C:\Program Files (x86)\Common Files\Oracle\Java\javapath (�ؼ��� C:/Program Files (x86)/Common Files/Oracle/Java/javapath���޸�ʱ�� 1681908391)��5 �ļ��� �� impossibilities.
+# C:\Xilinx\Vivado\2017.4\bin���޷�������� stat ������
+# C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin (�ؼ��� C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/bin���޸�ʱ�� 1683100856)��45 �ļ��� �� impossibilities.
+# C:\Users\Mark455\AppData\Local\GitHubDesktop\bin (�ؼ��� C:/Users/Mark455/AppData/Local/GitHubDesktop/bin���޸�ʱ�� 1678360829)��4 �ļ��� �� impossibilities.
+# C:\Windows (�ؼ��� C:/Windows���޸�ʱ�� 1702527460)��144 �ļ��� �� impossibilities.
+# C:\Users\Mark455\AppData\Local\JetBrains\Toolbox\scripts (�ؼ��� C:/Users/Mark455/AppData/Local/JetBrains/Toolbox/scripts���޸�ʱ�� 1695697391)��6 �ļ��� �� impossibilities.
+# C:\Library\netcat (�ؼ��� C:/Library/netcat���޸�ʱ�� 1689092164)��13 �ļ��� �� impossibilities.
+# C:\Program Files\Neovim\bin (�ؼ��� C:/Program Files/Neovim/bin���޸�ʱ�� 1679329231)��31 �ļ��� �� impossibilities.
+# C:\Program Files\dotnet\ (�ؼ��� C:/Program Files/dotnet/���޸�ʱ�� 1678117781)��12 �ļ��� �� impossibilities.
+# C:\Library\CubeIDE_tools (�ؼ��� C:/Library/CubeIDE_tools���޸�ʱ�� 1698051155)��34 �ļ��� �� impossibilities.
+# C:\Library\android-platform-tools (�ؼ��� C:/Library/android-platform-tools���޸�ʱ�� 1695697082)��17 �ļ��� �� impossibilities.
+# C:\Users\Mark455\AppData\Local\Microsoft\WindowsApps (�ؼ��� C:/Users/Mark455/AppData/Local/Microsoft/WindowsApps���޸�ʱ�� 1702550817)��46 �ļ��� �� impossibilities.
+# C:\Library\Ninja (�ؼ��� C:/Library/Ninja���޸�ʱ�� 1697954260)��3 �ļ��� �� impossibilities.
+# C:\Program Files\Git\cmd (�ؼ��� C:/Program Files/Git/cmd���޸�ʱ�� 1678115761)��9 �ļ��� �� impossibilities.
+# C:\Windows\system32 (�ؼ��� C:/Windows/system32���޸�ʱ�� 1702973758)��3082 �ļ��� �� impossibilities.
+# C:\Program Files\CMake\bin (�ؼ��� C:/Program Files/CMake/bin���޸�ʱ�� 1697955357)��7 �ļ��� �� impossibilities.
+# C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR (�ؼ��� C:/Program Files/NVIDIA Corporation/NVIDIA NvDLISR���޸�ʱ�� 1660050401)��5 �ļ��� �� impossibilities.
+# C:\Program Files (x86)\GnuWin32\bin (�ؼ��� C:/Program Files (x86)/GnuWin32/bin���޸�ʱ�� 1691216398)��5 �ļ��� �� impossibilities.
+
+# 4534 �ļ��� �� impossibilities in 42 directories.
+
+# Implicit Rules
+
+# û����������
+
+# �ļ�
+
+# ����һ��Ŀ�꣺
+all:
+#  ������Ŀ�ꡣ
+#  �������������������ɡ�
+#  �ļ������ڡ�
+#  �ļ���δ�����¡�
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# ����һ��Ŀ�꣺
+.DEFAULT:
+#  �����������������δ��ɡ�
+#  �Ӳ�����޸�ʱ�䡣
+#  �ļ���δ�����¡�
+
+# ����һ��Ŀ�꣺
+makefile:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  
+ �������������������ɡ�
+#  �ļ������ڡ�
+#  �ļ��Ѿ������¡�
+#  ����ʧ�ܡ�
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# ����һ��Ŀ�꣺
+.SUFFIXES:
+#  �����������������δ��ɡ�
+#  �Ӳ�����޸�ʱ�䡣
+#  �ļ���δ�����¡�
+
+# ����һ��Ŀ�꣺
+GNUmakefile:
+#  A default, MAKEFILES, or -include/sinclude makefile.
+#  �������������������ɡ�
+#  �ļ������ڡ�
+#  �ļ��Ѿ������¡�
+#  ����ʧ�ܡ�
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# files hash-table stats:
+# Load=5/1024=0%, Rehash=0, Collisions=0/16=0%
+# VPATH ����·��
+
+# û�С�vpath������·����
+
+# û��ͨ������·��(��VPATH������)��
+
+# # of strings in strcache: 0
+# # of strcache buffers: 0
+# strcache size: total = 0 / max = 0 / min = 4096 / avg = 0
+# strcache free: total = 0 / max = 0 / min = 4096 / avg = 0
+
+# Finished Make data base on Tue Dec 19 20:59:05 2023
+
+ 
+make.exe: *** û�й�����Դ���Ŀ�ꡰall���� ֹͣ��
+
