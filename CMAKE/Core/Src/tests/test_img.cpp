@@ -31,12 +31,13 @@
 #include <utility>
 
 #include "24l01.h"
+#include "album_scene.h"
 #include "framework.h"
 #include "led.h"
 #include "mmc_sd.h"
 #include "piclib.h"
+#include "remote.h"
 #include "scene.h"
-#include "album_scene.h"
 
 /* USER CODE END Includes */
 
@@ -47,11 +48,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MAIN 1
-#define CALC 2
-#define CHAT_SELECT 3
-#define CHAT_SCENE 4
-#define EMOJI_SCENE 5
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -87,6 +84,7 @@ static void MX_TIM3_Init(void);
 static void MX_SDIO_SD_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
+static bool Key_Scan(void);
 
 /* USER CODE END PFP */
 
@@ -105,7 +103,8 @@ uint8_t EVENT[32];
 bool fly = false;
 string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
 int SCENE = MAIN;
-
+string remote_key = "";
+u8 key;
 /* USER CODE END 0 */
 
 /**
@@ -151,6 +150,7 @@ int main(void) {
     //   printf("LCD shape %u %u", lcddev.height, lcddev.width);
     // leddev.Init();
     LCD_Init();
+    Remote_Init();
     LCD_Clear(WHITE);
     HAL_TIM_Base_Start_IT(&htim3);
 
@@ -212,20 +212,26 @@ int main(void) {
     exfuns_init();
     piclib_init();
 
-    album_scene_main alb = album_scene_main("album", {0, 0}, {lcddev.width, 280});
+    album_scene_main alb =
+        album_scene_main("album", {0, 0}, {lcddev.width, 280});
     window_view->add_son(&alb);
-    
+
     f_mount(fs[0], "0:", 1);  // 挂载SD卡
     f_mount(fs[1], "1:", 1);  // 挂载FLASH.
 
     while (1) {
         LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
         tp_dev.scan(0);
+        if (Key_Scan()) {
+            printf("Remote Key %s\n", remote_key.c_str());
+            EVENT[REMOTE_KEY] = 1;
+        } else {
+            EVENT[REMOTE_KEY] = 0;
+        }
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
 
-        
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -524,6 +530,88 @@ PUTCHAR_PROTOTYPE {
     HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
     return ch;
 }
+
+bool Key_Scan(void) {
+    static bool last_state = false;
+    key = Remote_Scan();
+    if (key) {
+        switch (key) {
+            case 0:
+                remote_key = "ERROR";
+                break;
+            case 162:
+                remote_key = "POWER";
+                break;
+            case 98:
+                remote_key = "UP";
+                break;
+            case 2:
+                remote_key = "PLAY";
+                break;
+            case 226:
+                remote_key = "ALIENTEK";
+                break;
+            case 194:
+                remote_key = "RIGHT";
+                break;
+            case 34:
+                remote_key = "LEFT";
+                break;
+            case 224:
+                remote_key = "VOL-";
+                break;
+            case 168:
+                remote_key = "DOWN";
+                break;
+            case 144:
+                remote_key = "VOL+";
+                break;
+            case 104:
+                remote_key = "1";
+                break;
+            case 152:
+                remote_key = "2";
+                break;
+            case 176:
+                remote_key = "3";
+                break;
+            case 48:
+                remote_key = "4";
+                break;
+            case 24:
+                remote_key = "5";
+                break;
+            case 122:
+                remote_key = "6";
+                break;
+            case 16:
+                remote_key = "7";
+                break;
+            case 56:
+                remote_key = "8";
+                break;
+            case 90:
+                remote_key = "9";
+                break;
+            case 66:
+                remote_key = "0";
+                break;
+            case 82:
+                remote_key = "DELETE";
+                break;
+            default:
+                remote_key = "NONE";
+                break;
+        }
+    }
+    if (last_state && !key) {
+        last_state = key;
+        return true;
+    }
+    last_state = key;
+    return false;
+}
+
 /* USER CODE END 4 */
 
 /**

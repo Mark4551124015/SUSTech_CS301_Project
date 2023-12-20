@@ -457,8 +457,7 @@ image::image(string name, pii pos, pii shape, const unsigned short* img,
 
     // this->picfileinfo = (FILINFO*)mymalloc(sizeof(FILINFO));	//申请内存
     if (img_name != "") {
-        // this->image_path = (char*)mymalloc(_MAX_LFN * 2 + 1);
-        this->image_path += "0:/PICTURE/";
+        this->image_path += "0:/IMAGE/";
         this->image_path += img_name.c_str();
     } else {
         this->img = img;
@@ -478,7 +477,7 @@ void image::update(dpo* father, pii axis) {
 
         if (this->image_path != "") {
             printf("loading %s\n", this->image_path.c_str());
-            int res = ai_load_picfile((u8*)this->image_path.c_str(), 10, 10,
+            int res = ai_load_picfile((u8*)this->image_path.c_str(), p1.first, p1.second,
                                       this->shape.x_p, this->shape.y_p, 0);
             if (res) printf("Wrong AI drawing %d\n", res);
 

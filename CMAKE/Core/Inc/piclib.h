@@ -3,7 +3,7 @@
 #include "bmp.h"
 #include "../../FATFS/exfuns/exfuns.h"
 #include "../../FATFS/src/ff.h"
-// #include "gif.h"
+#include "gif.h"
 #include "lcd.h"
 #include "main.h"
 #include "malloc.h"

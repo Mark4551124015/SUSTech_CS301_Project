@@ -35,11 +35,23 @@ extern "C" {
 #include "stdio.h"
 #include "touch.h"
 
+// EVENT
 #define RETURN_BACK 0
 #define RETURN_HOME 1
 #define SHUTDOWN 2
 #define EMOJI_SELECT 3
 #define EMOJI_SELECTED 4
+#define REMOTE_KEY 5
+
+
+//SCENE
+#define NONE_SCENE 0
+#define MAIN 1
+#define CALC 2
+#define CHAT_SELECT 3
+#define CHAT_SCENE 4
+#define EMOJI_SCENE 5
+#define ALBUM_SCENE 6
 
 /* USER CODE END Includes */
 

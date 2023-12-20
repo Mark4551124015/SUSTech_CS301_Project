@@ -53,7 +53,7 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim)
     GPIO_Initure.Speed=GPIO_SPEED_FREQ_HIGH;//高速
     HAL_GPIO_Init(GPIOA,&GPIO_Initure);
 
-    HAL_NVIC_SetPriority(TIM5_IRQn,1,3); 	//设置中断优先级，抢占优先级1，子优先级3
+    HAL_NVIC_SetPriority(TIM5_IRQn,1,1); 	//设置中断优先级，抢占优先级1，子优先级3
     HAL_NVIC_EnableIRQ(TIM5_IRQn);       	//开启ITM4中断
 }
 
@@ -63,7 +63,7 @@ void HAL_TIM_IC_MspInit(TIM_HandleTypeDef *htim)
 //[5]:保留	
 //[4]:标记上升沿是否已经被捕获								   
 //[3:0]:溢出计时器
-u8 	RmtSta=0;	  	  
+u8 RmtSta = 0;	  	  
 u16 Dval;		//下降沿时计数器的值
 u32 RmtRec=0;	//红外接收到的数据	   		    
 u8  RmtCnt=0;	//按键按下的次数	 
@@ -75,23 +75,23 @@ void TIM5_IRQHandler(void)
 } 
 
 //定时器更新（溢出）中断回调函数
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if(htim->Instance==TIM5)
-	{
- 		if(RmtSta&0x80)//上次有数据被接收到了
-		{	
-			RmtSta&=~0X10;						//取消上升沿已经被捕获标记
-			if((RmtSta&0X0F)==0X00)RmtSta|=1<<6;//标记已经完成一次按键的键值信息采集
-			if((RmtSta&0X0F)<14)RmtSta++;
-			else
-			{
-				RmtSta&=~(1<<7);//清空引导标识
-				RmtSta&=0XF0;	//清空计数器	
-			}						 	   	
-		}	
-	}
-}
+// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+// {
+	// if(htim->Instance==TIM5)
+	// {
+ 	// 	if(RmtSta&0x80)//上次有数据被接收到了
+	// 	{	
+	// 		RmtSta&=~0X10;						//取消上升沿已经被捕获标记
+	// 		if((RmtSta&0X0F)==0X00)RmtSta|=1<<6;//标记已经完成一次按键的键值信息采集
+	// 		if((RmtSta&0X0F)<14)RmtSta++;
+	// 		else
+	// 		{
+	// 			RmtSta&=~(1<<7);//清空引导标识
+	// 			RmtSta&=0XF0;	//清空计数器	
+	// 		}						 	   	
+	// 	}	
+	// }
+// }
 
 //定时器输入捕获中断回调函数
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)//捕获中断发生时执行

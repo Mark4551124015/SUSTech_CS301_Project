@@ -168,19 +168,7 @@ int main(void) {
     printf("Done Creating\n");
     bar *bottom_bar = new bar("bar1", {0, 140}, {lcddev.width, 40});
     dpo *window_view = new dpo("window_view", {0, -20}, {lcddev.width, 280});
-    // calc_main *cal_sc = new calc_main("calc_main", {0, 0}, {lcddev.width,
-    // 280});
 
-    // chat_select_main *chat_sel_sc =
-    //     new chat_select_main("chat_select_main", {0, 0}, {lcddev.width,
-    //     280});
-    // chat_scene_main *chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
-    //                                            {lcddev.width, 280}, users);
-    // canvas.add_son(&m);
-
-    // emoji_scene_main *emoji_sc =
-    //     new emoji_scene_main("emoji_scene_main", {0, 0}, {lcddev.width,
-    //     280});
     calc_main *cal_sc = nullptr;
     chat_select_main *chat_sel_sc = nullptr;
     emoji_scene_main *emoji_sc = nullptr;

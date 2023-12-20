@@ -106,7 +106,7 @@
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/lib/remote.c|Src/lib/gif.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="FATFS"/>
 					</sourceEntries>
@@ -201,7 +201,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/lib/remote.c|Src/lib/gif.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="FATFS"/>
 					</sourceEntries>

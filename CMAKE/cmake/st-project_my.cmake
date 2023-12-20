@@ -134,8 +134,8 @@ target_sources(
     "Core/Src/lib/piclib.c"
     "Core/Src/lib/fontupd.c"
     "Core/Src/lib/text.c"
-    # "Core/Src/lib/gif.c"
-    # "Core/Src/lib/bmp.c"
+    "Core/Src/lib/gif.c"
+    "Core/Src/lib/remote.c"
     "Core/Src/lib/tjpgd.c"
     "Core/Src/lib/bmp.c"
     

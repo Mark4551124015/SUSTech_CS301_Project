@@ -152,7 +152,7 @@ u8 ai_load_picfile(const u8 *filename,u16 x,u16 y,u16 width,u16 height,u8 fast)
             printf("Decoding Result: %d\r\n", res); 	  
 			break;
 		case T_GIF:
-			// res=gif_decode(filename,x,y,width,height);	//解码gif  	  
+			res=gif_decode(filename,x,y,width,height);	//解码gif  	  
 			break;
 		default:
 	 		res=PIC_FORMAT_ERR;  						//非图片格式!!!  
