@@ -37,7 +37,6 @@
 #include "piclib.h"
 #include "scene.h"
 
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +50,7 @@
 #define CALC 2
 #define CHAT_SELECT 3
 #define CHAT_SCENE 4
+#define EMOJI_SCENE 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -102,7 +102,7 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 bool fly = false;
-char *users[3] = {(char *)"User0", (char *)"User1", (char *)""};
+string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
 int SCENE = MAIN;
 
 /* USER CODE END 0 */
@@ -200,11 +200,11 @@ int main(void) {
     HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
     u32 total, free;
 
-    // mem_init();
-    // exfuns_init();
-    // SD_Init();                // 检测不到SD卡
-    // f_mount(fs[0], "0:", 1);  // 挂载SD卡
-    // f_mount(fs[1], "1:", 1);  // 挂载FLASH.
+    mem_init();
+    exfuns_init();
+    SD_Init();                // 检测不到SD卡
+    f_mount(fs[0], "0:", 1);  // 挂载SD卡
+    f_mount(fs[1], "1:", 1);  // 挂载FLASH.
 
     while (1) {
         LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
@@ -244,8 +244,10 @@ int main(void) {
         }
         if (EVENT[EMOJI_SELECT]) {
             printf("[EVENT] Press Emoji\n");
-            chat_sc->setVisbility(false);
-            emoji_sc->setVisbility(true);
+
+            // chat_sc->setVisbility(false);
+            // emoji_sc->setVisbility(true);
+            SCENE = EMOJI_SCENE;
             EVENT[EMOJI_SELECT] = 0;
             canvas.need_render = true;
         }
@@ -286,6 +288,23 @@ int main(void) {
         //     chat_sel_sc->setVisbility(true);
         // }
 
+        if (SCENE == EMOJI_SCENE) {
+            LCD_Clear(WHITE);
+            canvas.need_render = true;
+            if (chat_sel_sc != nullptr)
+                delete (chat_sel_sc), chat_sel_sc = nullptr;
+            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
+            if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
+            if (emoji_sc == nullptr) {
+                emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
+                                                {lcddev.width, 280});
+                window_view->sub_object_cnt = 0;
+                window_view->add_son(emoji_sc);
+            }
+            emoji_sc->setVisbility(true);
+            SCENE = 0;
+        }
+
         if (SCENE == CHAT_SCENE) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
@@ -296,11 +315,12 @@ int main(void) {
             if (chat_sc == nullptr) {
                 chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
                                               {lcddev.width, 280}, users);
-                printf("Done creating\n");
+
                 window_view->sub_object_cnt = 0;
                 window_view->add_son(chat_sc);
-                chat_sc->setVisbility(true);
+                printf("Done creating\n");
             }
+            chat_sc->setVisbility(true);
 
             SCENE = 0;
         }

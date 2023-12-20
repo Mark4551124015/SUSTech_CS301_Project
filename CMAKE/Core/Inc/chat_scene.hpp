@@ -31,8 +31,8 @@ class page : public dpo {
 
    public:
     page(string name, pii pos, pii shape);
-    bool addMessage(char *str, char *userName);
-    bool addImage(int num, char *userName);
+    bool addMessage(char *str, const char *userName);
+    bool addImage(int num, char const *userName);
     void clear();
     void update(display_object *father, pii axis);
 };
@@ -41,7 +41,8 @@ class chat_scene_main : public dpo {
    public:
     stext userInfo = stext("userInfo", {0, -130}, {240, 30},
                            (char *)"Chatting with ", false, 16);
-    char *users[3];  // 0: master 1, 2: slave
+    // char *users[3];  // 0: master 1, 2: slave
+    string users[3];
     button pre = button("previous_page", {-60, 125}, {120, 30}, "Previous");
     button nxt = button("next_page", {60, 125}, {120, 30}, "Next");
     button emoji = button("emoji", {0, 95}, {240, 30}, "Emoji");
@@ -55,7 +56,7 @@ class chat_scene_main : public dpo {
         page("page_4", {0, -20}, {240, 180}),
     };
    public:
-    chat_scene_main(string name, pii pos, pii shape, char *users[3]);
+    chat_scene_main(string name, pii pos, pii shape, string users[3]);
     void addMessageToPage(char *message, int user_num);
     void addImageToPage(int num, int user_num);
     void update(display_object *father, pii axis) override;

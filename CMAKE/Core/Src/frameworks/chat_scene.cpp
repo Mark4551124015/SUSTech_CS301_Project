@@ -1,6 +1,7 @@
 #include "chat_scene.hpp"
 
 #include <string.h>
+#include <cstdio>
 
 #include "cstring"
 #include "emoji.hpp"
@@ -18,7 +19,7 @@ page ::page(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     }
 }
 
-bool page ::addMessage(char *str, char *userName) {
+bool page ::addMessage(char *str, const char *userName) {
     if (this->cnt >= 6) return false;
     int str_len = strlen(str);
     int name_len = strlen(userName);
@@ -31,7 +32,7 @@ bool page ::addMessage(char *str, char *userName) {
     return true;
 }
 
-bool page ::addImage(int num, char *userName) {
+bool page ::addImage(int num, const char *userName) {
     if (this->cnt >= 6) return false;
     // this->emojis[this->cnt].update_img((unsigned short *)emoji_arr[num-1]);
     this->emojis[this->cnt].setVisbility(true);
@@ -47,15 +48,15 @@ void page ::update(display_object *father, pii axis) {
 }
 
 chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
-                                  char *users[3])
+                                  string users[3])
     : dpo(name, pos, shape) {
-    // char* newStr = new char[30];
     string new_str = userInfo.str;
     for (int i = 0; i < 3; i++) this->users[i] = users[i];
+    printf("Addded user \n");
     // strcpy(newStr, userInfo.str);
     new_str += users[1];
     // strcat(newStr, users[1]);
-    if (strcmp(users[2], "")) {
+    if ((users[2] != "")) {
         // strcat(newStr, ", ");
         // strcat(newStr, users[2]);
         new_str += ", ";
@@ -63,8 +64,12 @@ chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
     }
     userInfo.update_str(new_str, 16, BLACK, WHITE);
     this->page_cnt = 0;
-    this->pages[0].setVisbility(true);
-    for (int i = 1; i < 5; i++) this->pages[i].setVisbility(false);
+    this->pages[0].isVisible = (true);
+    for (int i = 1; i < 5; i++) {
+        this->pages[i].isVisible = (false);
+        printf("setted page %d\n", i);
+    }
+    printf("Done\n");
     this->add_son(&this->userInfo);
     this->add_son(&pre);
     this->add_son(&nxt);
@@ -76,22 +81,22 @@ chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
 // }
 
 void chat_scene_main ::addMessageToPage(char *message, int user_num) {
-    if (!this->pages[page_cnt].addMessage(message, this->users[user_num])) {
+    if (!this->pages[page_cnt].addMessage(message, this->users[user_num].c_str())) {
         if (page_cnt >= 6) return;
         this->pages[page_cnt].setVisbility(false);
         now_page = ++page_cnt;
         this->pages[page_cnt].setVisbility(true);
-        this->pages[page_cnt].addMessage(message, this->users[user_num]);
+        this->pages[page_cnt].addMessage(message, this->users[user_num].c_str());
     }
 }
 
 void chat_scene_main ::addImageToPage(int num, int user_num) {
-    if (!this->pages[page_cnt].addImage(num, this->users[user_num])) {
+    if (!this->pages[page_cnt].addImage(num, this->users[user_num].c_str())) {
         if (page_cnt >= 6) return;
         this->pages[page_cnt].setVisbility(false);
         now_page = ++page_cnt;
         this->pages[page_cnt].setVisbility(true);
-        this->pages[page_cnt].addImage(num, this->users[user_num]);
+        this->pages[page_cnt].addImage(num, this->users[user_num].c_str());
     }
 }
 
