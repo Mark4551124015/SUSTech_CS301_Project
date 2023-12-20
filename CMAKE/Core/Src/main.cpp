@@ -91,7 +91,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char RX_DATA[1024] = "test";
+string RX_DATA;
 char uLength = 0;
 extern unsigned char rxBuffer[1024];
 extern bool rx_flag;
@@ -100,11 +100,10 @@ bool button_click[8];
 // LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
-uint8_t EVENT[32];
+uint8_t EVENT[8];
 bool fly = false;
 string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
 int SCENE = MAIN;
-
 /* USER CODE END 0 */
 
 /**
@@ -207,27 +206,24 @@ int main(void) {
     f_mount(fs[1], "1:", 1);  // 挂载FLASH.
 
     while (1) {
-        LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
+        // LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
 
         POINT_COLOR = BLUE;  // 设置字体为蓝色
-        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
-        LCD_ShowString(30, 170, 200, 16, 16,
-                       (uint8_t *)"SD Total Size:     MB");
-        LCD_ShowString(30, 190, 200, 16, 16,
-                       (uint8_t *)"SD  Free Size:     MB");
+        // LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
+        // LCD_ShowString(30, 170, 200, 16, 16,
+        //                (uint8_t *)"SD Total Size:     MB");
+        // LCD_ShowString(30, 190, 200, 16, 16,
+        //                (uint8_t *)"SD  Free Size:     MB");
 
-        exf_getfree((uint8_t *)"0:", &total, &free);
-        LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
-        LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
-                    16);  // 显示SD卡剩余容量 MB
-        // if (rx_flag) {
-        //     chat_sc.addMessageToPage(RX_DATA, 1);
-        //     rx_flag = 0;
-        // }
+        // exf_getfree((uint8_t *)"0:", &total, &free);
+        // LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
+        // LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
+        //             16);  // 显示SD卡剩余容量 MB
+        
         if (!fly)
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
         else
@@ -249,13 +245,14 @@ int main(void) {
             // emoji_sc->setVisbility(true);
             SCENE = EMOJI_SCENE;
             EVENT[EMOJI_SELECT] = 0;
-            canvas.need_render = true;
+            //canvas.need_render = true;
         }
         if (EVENT[EMOJI_SELECTED]) {
             printf("[EVENT] Emoji Selected\n");
-            emoji_sc->setVisbility(false);
-            chat_sc->setVisbility(true);
-            chat_sc->addImageToPage(emoji_sc->emoji_num, 1);
+            // emoji_sc->setVisbility(false);
+            // chat_sc->setVisbility(true);
+            SCENE = CHAT_SCENE;
+            //chat_sc->addImageToPage(emoji_sc->emoji_num, 1);
             printf("emoji name: %d\n", emoji_sc->emoji_num);
             EVENT[EMOJI_SELECTED] = 0;
             canvas.need_render = true;
@@ -293,7 +290,8 @@ int main(void) {
             canvas.need_render = true;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
+            if (chat_sc != nullptr) 
+                delete (chat_sc), chat_sc = nullptr;
             if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
             if (emoji_sc == nullptr) {
                 emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
@@ -301,28 +299,37 @@ int main(void) {
                 window_view->sub_object_cnt = 0;
                 window_view->add_son(emoji_sc);
             }
-            emoji_sc->setVisbility(true);
             SCENE = 0;
         }
 
         if (SCENE == CHAT_SCENE) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
+            int emoji_num = 0;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
+            if (emoji_sc != nullptr) {
+                emoji_num = emoji_sc->emoji_num;
+                delete (emoji_sc), emoji_sc = nullptr;
+            }
             if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
             if (chat_sc == nullptr) {
                 chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
                                               {lcddev.width, 280}, users);
-
                 window_view->sub_object_cnt = 0;
                 window_view->add_son(chat_sc);
                 printf("Done creating\n");
             }
             chat_sc->setVisbility(true);
-
+            printf("emoji_num:%d\n", emoji_num);
+            if(emoji_num)
+                chat_sc->addImageToPage(emoji_num, 1);
             SCENE = 0;
+        }
+        if (rx_flag && chat_sc != nullptr) {
+            printf("executed");
+            chat_sc->addMessageToPage(RX_DATA, 1);
+            rx_flag = 0;
         }
 
         /* USER CODE END WHILE */

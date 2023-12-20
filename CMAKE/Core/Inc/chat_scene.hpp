@@ -31,8 +31,8 @@ class page : public dpo {
 
    public:
     page(string name, pii pos, pii shape);
-    bool addMessage(char *str, const char *userName);
-    bool addImage(int num, char const *userName);
+    string addMessage(string str, const char *userName);
+    int addImage(int num, char const *userName);
     void clear();
     void update(display_object *father, pii axis);
 };
@@ -48,16 +48,13 @@ class chat_scene_main : public dpo {
     button emoji = button("emoji", {0, 95}, {240, 30}, "Emoji");
     int page_cnt = 0;
     int now_page = 0;
-    page pages[5] = {
-        page("page_0", {0, -20}, {240, 180}),
-        page("page_1", {0, -20}, {240, 180}),
-        page("page_2", {0, -20}, {240, 180}),
-        page("page_3", {0, -20}, {240, 180}),
-        page("page_4", {0, -20}, {240, 180}),
-    };
+    page showPage = page("page", {0, -20}, {240, 180});
+    string pageMessage[5][6];
+    int pageEmoji[5][6];
+    
    public:
     chat_scene_main(string name, pii pos, pii shape, string users[3]);
-    void addMessageToPage(char *message, int user_num);
+    void addMessageToPage(string message, int user_num);
     void addImageToPage(int num, int user_num);
     void update(display_object *father, pii axis) override;
 };

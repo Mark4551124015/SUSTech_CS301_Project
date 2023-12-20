@@ -454,6 +454,7 @@ image::image(string name, pii pos, pii shape, const unsigned short* img,
     this->touching = false;
     this->type = BUTTON;
     this->click_cnt = 0;
+    this->click = false;
 
     // this->picfileinfo = (FILINFO*)mymalloc(sizeof(FILINFO));	//申请内存
     if (img_name != "") {
@@ -486,6 +487,9 @@ void image::update(dpo* father, pii axis) {
             LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
                             this->img);
         }
+        else{
+            LCD_Fill(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p, WHITE);
+        }
         int width = this->font_size / 2 * this->str.length();
         int height = this->font_size;
         POINT_COLOR = this->font_color;
@@ -501,7 +505,9 @@ void image::update(dpo* father, pii axis) {
     if (this->isVisible) {
         if (this->touching && fly) this->click = true;
         if (IN(p1, p2, touch))
-            this->touching = true;
+            {
+                this->touching = true;
+            }
         else
             this->touching = false;
     }

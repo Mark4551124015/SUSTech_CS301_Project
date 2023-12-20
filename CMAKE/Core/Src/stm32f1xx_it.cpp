@@ -45,10 +45,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-extern unsigned char RX_DATA[1024];
+extern string RX_DATA;
 unsigned char rxBuffer[20];
 // extern LED leddev;
-bool rx_flag;
+bool rx_flag = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -353,15 +353,12 @@ void DMA2_Channel4_5_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        static char uRx_Data[1024] = {0};
         static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            uRx_Data[--uLength] = '\0';
-            memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
             uLength = 0;
             rx_flag = 1;
         } else {
-            uRx_Data[uLength] = rxBuffer[0];
+            RX_DATA[uLength] = rxBuffer[0];
             uLength++;
         }
     }
