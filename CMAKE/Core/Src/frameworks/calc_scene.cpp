@@ -218,9 +218,12 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     temp_pos = this->get_key_pos(3);
     key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
     key_pos.y_p = (key_pos.y_p + temp_pos.y_p) / 2;
-    this->ex_mode_s = stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", false, 12);
-    this->eq_mode_s = stext("eq", key_pos, {80, 30}, (char*)"EQUATION", false, 12);
-    this->bin_mode_s = stext("eq", key_pos, {80, 30}, (char*)"BINARY", false, 12);
+    this->ex_mode_s =
+        stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", false, 12);
+    this->eq_mode_s =
+        stext("eq", key_pos, {80, 30}, (char*)"EQUATION", false, 12);
+    this->bin_mode_s =
+        stext("eq", key_pos, {80, 30}, (char*)"BINARY", false, 12);
 
     for (int i = 0; i <= 9; ++i) {
         char c = '0' + i;
@@ -299,6 +302,34 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
 
     // set_mode(EX);
     this->cmode = EX;
+}
+
+calc_main::~calc_main() {
+    for (int i = 0; i < 10; ++i) {
+        if (num_keys[i] != nullptr) {
+            delete num_keys[i];
+            op_keys[i] = nullptr;
+        }
+    }
+    for (int i = 0; i < 3; ++i) {
+        if (eq_keys[i] != nullptr) {
+            delete eq_keys[i];
+            op_keys[i] = nullptr;
+        }
+    }
+    for (int i = 0; i < 7; ++i) {
+        if (op_keys[i] != nullptr) {
+            delete op_keys[i];
+            op_keys[i] = nullptr;
+        }
+    }
+
+    delete equal;
+    delete mov_l;
+    delete mov_r;
+    delete clear;
+    delete del;
+    delete mode_btn;
 }
 
 void calc_main::set_mode(calc_mode mode) {
