@@ -1,7 +1,7 @@
 #ifndef __EXFUNS_H
 #define __EXFUNS_H
 // #include <sys.h>
-#include "ff.h"
+#include "../src/ff.h"
 #include "main.h"
 #ifdef __cplusplus
 extern "C" {

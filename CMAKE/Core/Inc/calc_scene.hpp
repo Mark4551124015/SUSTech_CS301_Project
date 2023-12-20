@@ -11,7 +11,7 @@ extern pii touch;
 
 class calc_var_text : public dpo {
    public:
-    char str[255];
+    char str[64];
     uint16_t len;
     uint16_t backgroud;
     uint16_t font_color;

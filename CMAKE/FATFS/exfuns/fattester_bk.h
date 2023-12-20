@@ -1,6 +1,6 @@
 #ifndef __FATTESTER_H__
 #define __FATTESTER_H__
-#include "ff.h"
+#include "../src/ff.h"
 #include "main.h"
 
 #ifdef __cplusplus

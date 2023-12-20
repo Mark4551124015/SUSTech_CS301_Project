@@ -20,10 +20,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "lcd.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
 #include "led.h"
+#include "scene.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,9 +46,9 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern unsigned char RX_DATA[1024];
-int8_t rxBuffer[20];
+unsigned char rxBuffer[20];
 // extern LED leddev;
-
+bool rx_flag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -68,7 +70,7 @@ extern DMA_HandleTypeDef hdma_usart1_rx;
 extern DMA_HandleTypeDef hdma_usart1_tx;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
-
+extern chat_scene_main chat_sc;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -316,23 +318,23 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
   /* USER CODE END USART1_IRQn 1 */
 }
 
 /**
   * @brief This function handles SDIO global interrupt.
   */
-void SDIO_IRQHandler(void)
-{
-  /* USER CODE BEGIN SDIO_IRQn 0 */
+// void SDIO_IRQHandler(void)
+// {
+//   /* USER CODE BEGIN SDIO_IRQn 0 */
 
-  /* USER CODE END SDIO_IRQn 0 */
-  HAL_SD_IRQHandler(&hsd);
-  /* USER CODE BEGIN SDIO_IRQn 1 */
+//   /* USER CODE END SDIO_IRQn 0 */
+//   HAL_SD_IRQHandler(&hsd);
+//   /* USER CODE BEGIN SDIO_IRQn 1 */
 
-  /* USER CODE END SDIO_IRQn 1 */
-}
+//   /* USER CODE END SDIO_IRQn 1 */
+// }
 
 /**
   * @brief This function handles DMA2 channel4 and channel5 global interrupts.
@@ -351,12 +353,13 @@ void DMA2_Channel4_5_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        static unsigned char uRx_Data[1024] = {0};
-        static unsigned char uLength = 0;
+        static char uRx_Data[1024] = {0};
+        static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            // LCD_Clear(WHITE);
-            uLength = 0;
+            uRx_Data[--uLength] = '\0';
             memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
+            uLength = 0;
+            rx_flag = 1;
         } else {
             uRx_Data[uLength] = rxBuffer[0];
             uLength++;

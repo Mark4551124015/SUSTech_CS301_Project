@@ -33,8 +33,10 @@
 #include "24l01.h"
 #include "framework.h"
 #include "led.h"
-// #include "piclib.h"
+#include "mmc_sd.h"
+#include "piclib.h"
 #include "scene.h"
+
 
 /* USER CODE END Includes */
 
@@ -100,15 +102,15 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[32];
 bool fly = false;
+char *users[3] = {(char *)"User0", (char *)"User1", (char *)""};
+int SCENE = MAIN;
+
 /* USER CODE END 0 */
 
 /**
  * @brief  The application entry point.
  * @retval int
  */
-char *users[3] = {(char *)"User0", (char *)"User1", (char *)""};
-
-int SCENE = MAIN;
 
 int main(void) {
     /* USER CODE BEGIN 1 */
@@ -151,8 +153,7 @@ int main(void) {
     // piclib_init();
     LCD_Clear(WHITE);
     HAL_TIM_Base_Start_IT(&htim3);
-    // f_mount(fs[0], "0:", 1);  // 挂载SD卡
-    // f_mount(fs[1], "1:", 1);  // 挂载FLASH.
+
     tp_dev.init();
     // leddev.append(BLINK_BOTH);
     // leddev.append(BLINK_BOTH);
@@ -197,11 +198,32 @@ int main(void) {
     // chat_sc.setVisbility(true);
 
     HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
+    u32 total, free;
+
+    // mem_init();
+    // exfuns_init();
+    // SD_Init();                // 检测不到SD卡
+    // f_mount(fs[0], "0:", 1);  // 挂载SD卡
+    // f_mount(fs[1], "1:", 1);  // 挂载FLASH.
+
     while (1) {
+        LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
+
+        POINT_COLOR = BLUE;  // 设置字体为蓝色
+        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
+        LCD_ShowString(30, 170, 200, 16, 16,
+                       (uint8_t *)"SD Total Size:     MB");
+        LCD_ShowString(30, 190, 200, 16, 16,
+                       (uint8_t *)"SD  Free Size:     MB");
+
+        exf_getfree((uint8_t *)"0:", &total, &free);
+        LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
+        LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
+                    16);  // 显示SD卡剩余容量 MB
         // if (rx_flag) {
         //     chat_sc.addMessageToPage(RX_DATA, 1);
         //     rx_flag = 0;
@@ -274,6 +296,7 @@ int main(void) {
             if (chat_sc == nullptr) {
                 chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
                                               {lcddev.width, 280}, users);
+                printf("Done creating\n");
                 window_view->sub_object_cnt = 0;
                 window_view->add_son(chat_sc);
                 chat_sc->setVisbility(true);

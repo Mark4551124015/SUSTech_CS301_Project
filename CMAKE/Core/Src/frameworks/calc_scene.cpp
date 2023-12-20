@@ -9,7 +9,7 @@ using std::max;
 using std::min;
 
 cvtext::calc_var_text(string name, pii pos, pii shape) : dpo(name, pos, shape) {
-    memset(this->str, 0, 256);
+    memset(this->str, 0, 64);
     this->len = 0;
     this->backgroud = WHITE;
     this->font_color = BLACK;
@@ -139,7 +139,7 @@ void cvtext::delete_on_cursor() {
 bool cvtext::isClicked() { return this->click; }
 
 void cvtext::clear() {
-    memset(this->str, 0, 256);
+    memset(this->str, 0, 64);
     this->len = 0;
     this->v_begin_id = 0;
 

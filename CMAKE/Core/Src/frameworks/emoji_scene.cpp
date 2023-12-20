@@ -2,7 +2,7 @@
 // #include <string.h>
 // #include "cstring"
 
-extern uint8_t EVENT[32];
+extern uint8_t EVENT[8];
 emoji_scene_main :: emoji_scene_main(string name, pii pos, pii shape) : dpo(name, pos, shape){
     this->emoji1.img = (unsigned short *)gImage_emoji1;
     this->emoji2.img = (unsigned short *)gImage_emoji2;

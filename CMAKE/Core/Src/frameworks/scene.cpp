@@ -4,8 +4,8 @@
 #include <cstdint>
 #include <cstdio>
 
-extern unsigned char IMAGE_back[9448];
-extern uint8_t EVENT[32];
+// extern unsigned char IMAGE_back[9448];
+extern uint8_t EVENT[8];
 main_menu::main_menu(string name, pii pos, pii shape) : dpo(name, pos, shape) {}
 void main_menu::update(display_object *father, pii axis) {
 

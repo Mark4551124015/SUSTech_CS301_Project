@@ -1,8 +1,8 @@
-#include "fattester.h"     
+#include "fattester_bk.h"
 #include "MMC_SD.h"
 #include "exfuns.h"
 #include "malloc.h"          
-#include "ff.h"
+
 #include "string.h"
 
 //////////////////////////////////////////////////////////////////////////////////	 

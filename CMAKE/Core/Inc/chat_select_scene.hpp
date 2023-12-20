@@ -16,8 +16,11 @@ class chat_select_main : public dpo{
         stext operationCol = stext("operation", {80, -130}, {200, 30}, (char *)"Operation", false, 16);
         pii invite_key_size = {40, 30};
         pii group_key_size = {240, 40};
-        button *invite_key[2];
-        button *group_key;
+        button invite_key[2] = {
+             button("invite_user_0", {80, -90}, this->invite_key_size, "Chat" ),
+             button("invite_user_1", {80, -50}, this->invite_key_size, "Chat")
+        };
+        button group_key = button("group_chat", {0, 120}, this->group_key_size, "Group Chat");
         stext userName[2] = {
             stext("userName_0", {-80, -90}, {200, 30}, (char *)"User0", false, 16),
             stext("userName_1", {-80, -50}, {200, 30}, (char *)"User1", false, 16)

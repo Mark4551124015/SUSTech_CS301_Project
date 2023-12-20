@@ -8,6 +8,7 @@
 // #include <cstdint>
 // #include <cstdio>
 #include <string.h>
+#include <cstdint>
 #include <string>
 // #include <pair>
 // #include <vector>
@@ -36,7 +37,7 @@ struct pii {
 #define y_p second
 #endif
 
-
+#define STR_SIZE 32
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 
@@ -55,7 +56,7 @@ enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, SLD, MOVIMG, 
 
 class display_object {
    public:
-    int id;
+    uint8_t id;
     dpo_type type;
     display_object *parent;
     pii pos;
@@ -89,15 +90,15 @@ class display_object {
     void setVisbility(bool flag);
     bool getVisbility();
 
-    int get_id();
-    void move(pair<int, int> pos);
+    uint8_t get_id();
+    void move(pii pos);
     virtual void update(display_object *father, pii axis);
 };
 
 using dpo = display_object;
 typedef class var_text : public dpo {
    public:
-    char str[255];
+    char str[32];
     uint16_t len;
     uint16_t backgroud;
     uint16_t font_color;
@@ -109,7 +110,6 @@ typedef class var_text : public dpo {
     bool touching;
     bool choosing;
     bool click;
-    int click_cnt;
     uint8_t cursor;
 
    public:
@@ -134,7 +134,6 @@ typedef class button : public dpo {
     uint16_t font_color;
     uint8_t font_size;
     bool click;
-    int click_cnt;
 
    public:
     button(string name, pii pos, pii shape, string str);
@@ -143,39 +142,9 @@ typedef class button : public dpo {
     void reset();
 } button;
 
-// typedef class keyboard : public dpo {
-//    public:
-//     button *keys[26];
-//     button *shift;
-//     button *del;
-//     button *left;
-//     button *right;
-//     button *space;
-
-//     uint16_t backgroud;
-//     uint16_t key_color;
-//     uint16_t font_color;
-//     pii key_shape;
-//     pii start;
-
-//     uint8_t max_col;
-//     uint8_t max_row;
-//     bool shifting;
-//     char output;
-
-//    public:
-//     keyboard();
-//     bool isClicked();
-//     void init_keys();
-//     char typing();
-//     pii get_pos(int index);
-//     void update(display_object *father, pii axis);
-//     // void setVisbility(bool flag);
-// } keyboard;
-
 typedef class static_text : public dpo {
    public:
-    char * str;
+    string str;
     uint16_t len;
     uint16_t font_color;
     uint16_t backgroud;
@@ -187,10 +156,10 @@ typedef class static_text : public dpo {
     bool text_aligned;
 
    public:
-    static_text(string name, pii pos, pii shape, char *str, bool text_aligned, uint8_t font_size);
+    static_text(string name, pii pos, pii shape, string str, bool text_aligned, uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis);
-    void update_str(char *str, uint8_t font_size, uint16_t font_color,
+    void update_str(string str, uint8_t font_size, uint16_t font_color,
                     uint16_t backgroud);
     void render_char(int index, pii axis, bool clean);
     void clear();
@@ -208,7 +177,7 @@ typedef class image : public dpo {
     const unsigned short *img;
 
     // FILINFO * picfileinfo;
-    char * image_path;
+    string image_path;
 
    public:
     image(string name, pii pos, pii shape, const unsigned short *img,

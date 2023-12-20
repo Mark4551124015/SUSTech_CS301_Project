@@ -1,8 +1,8 @@
 #ifndef __PICLIB_H
 #define __PICLIB_H
 #include "bmp.h"
-#include "exfuns.h"
-#include "ff.h"
+#include "../../FATFS/exfuns/exfuns.h"
+#include "../../FATFS/src/ff.h"
 // #include "gif.h"
 #include "lcd.h"
 #include "main.h"
