@@ -73,6 +73,7 @@ class calc_main : public dpo {
 
    public:
     calc_main(string name, pii pos, pii shape);
+    ~calc_main();
     pii get_key_pos(int index);
     void set_mode(calc_mode mode);
     void update(display_object *father, pii axis) override;
