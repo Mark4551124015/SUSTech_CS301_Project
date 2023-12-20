@@ -15,8 +15,8 @@
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 	 
  					     
-void Get_HzMat(unsigned char *code,unsigned char *mat,u8 size);			//得到汉字的点阵码
-void Show_Font(u16 x,u16 y,u8 *font,u8 size,u8 mode);					//在指定位置显示一个汉字
-void Show_Str(u16 x,u16 y,u16 width,u16 height,u8*str,u8 size,u8 mode);	//在指定位置显示一个字符串 
-void Show_Str_Mid(u16 x,u16 y,u8*str,u8 size,u8 len);
+void Get_HzMat(unsigned char *code,unsigned char *mat,uint8_t size);			//得到汉字的点阵码
+void Show_Font(uint16_t x,uint16_t y,uint8_t *font,uint8_t size,uint8_t mode);					//在指定位置显示一个汉字
+void Show_Str(uint16_t x,uint16_t y,uint16_t width,uint16_t height,uint8_t size,uint8_t*str,uint8_t mode);	//在指定位置显示一个字符串 
+void Show_Str_Mid(uint16_t x,uint16_t y,uint8_t size,uint8_t*str,uint8_t len);
 #endif
