@@ -1,5 +1,6 @@
 
 #include "lcd.h"
+#include <cstdio>
 
 #include "font.h"
 #include "framework.h"

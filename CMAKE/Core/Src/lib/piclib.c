@@ -141,26 +141,31 @@ u8 ai_load_picfile(const u8 *filename,u16 x,u16 y,u16 width,u16 height,u8 fast)
 	switch(temp)
 	{											  
 		case T_BMP:
-			res=stdbmp_decode(filename); 				//解码bmp	  	  
+            printf("Decoding BMP file...\r\n");
+			res=stdbmp_decode(filename); 				//解码bmp
+            printf("Decoding Result: %d\r\n", res); 	  
 			break;
 		case T_JPG:
 		case T_JPEG:
-			// res=jpg_decode(filename,fast);				//解码JPG/JPEG	  	  
+            printf("Decoding JPG file...\r\n");
+			res=jpg_decode(filename,fast);				//解码JPG/JPEG	  	  
+            printf("Decoding Result: %d\r\n", res); 	  
 			break;
 		case T_GIF:
 			// res=gif_decode(filename,x,y,width,height);	//解码gif  	  
 			break;
 		default:
 	 		res=PIC_FORMAT_ERR;  						//非图片格式!!!  
-			break;
+	 		printf("Not Image!\n");
+	 		break;
 	}  											   
 	return res;
 }
 //动态分配内存
 void *pic_memalloc (u32 size)			
 {
-	// return (void*)mymalloc(size);
-	return malloc(size);
+	return (void*)mymalloc(size);
+	// return malloc(size);
 }
 //释放内存
 void pic_memfree (void* mf)		 
@@ -168,6 +173,30 @@ void pic_memfree (void* mf)
 	myfree(mf);
 }
 
+u16 pic_get_tnum(u8 *path)
+{	  
+	u8 res;
+	u16 rval=0;
+ 	DIR tdir;	 		//临时目录
+	FILINFO *tfileinfo;	//临时文件信息	    			     
+	tfileinfo=(FILINFO*)mymalloc(sizeof(FILINFO));//申请内存
+    res=f_opendir(&tdir,(const TCHAR*)path); 	//打开目录 
+	if(res==FR_OK&&tfileinfo)
+	{
+		while(1)//查询总的有效文件数
+		{
+	        res=f_readdir(&tdir,tfileinfo);       		//读取目录下的一个文件  	 
+	        if(res!=FR_OK||tfileinfo->fname[0]==0)break;//错误了/到末尾了,退出	 		 
+			res=f_typetell((u8*)tfileinfo->fname);
+			if((res&0XF0)==0X50)//取高四位,看看是不是图片文件	
+			{
+				rval++;//有效文件数增加1
+			}	    
+		}  
+	}  
+	myfree(tfileinfo);//释放内存
+	return rval;
+}
 
 
 

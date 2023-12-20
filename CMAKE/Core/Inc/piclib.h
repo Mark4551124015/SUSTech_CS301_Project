@@ -7,7 +7,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "malloc.h"
-// #include "tjpgd.h"
+#include "tjpgd.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 // 本程序只供学习使用，未经作者许可，不得用于其它任何用途
@@ -92,6 +92,7 @@ u8 ai_load_picfile(const u8 *filename, u16 x, u16 y, u16 width, u16 height,
                    u8 fast);   // 智能画图
 void *pic_memalloc(u32 size);  // pic申请内存
 void pic_memfree(void *mf);    // pic释放内存
+u16 pic_get_tnum(u8 *path);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
 }

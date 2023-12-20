@@ -36,6 +36,7 @@
 #include "mmc_sd.h"
 #include "piclib.h"
 #include "scene.h"
+#include "album_scene.h"
 
 /* USER CODE END Includes */
 
@@ -154,6 +155,7 @@ int main(void) {
     HAL_TIM_Base_Start_IT(&htim3);
 
     tp_dev.init();
+    LCD_Clear(WHITE);
     // leddev.append(BLINK_BOTH);
     // leddev.append(BLINK_BOTH);
 
@@ -207,9 +209,12 @@ int main(void) {
         LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"Please Check! ");
         delay_ms(5000);
     }
-    piclib_init();
     exfuns_init();
+    piclib_init();
 
+    album_scene_main alb = album_scene_main("album", {0, 0}, {lcddev.width, 280});
+    window_view->add_son(&alb);
+    
     f_mount(fs[0], "0:", 1);  // 挂载SD卡
     f_mount(fs[1], "1:", 1);  // 挂载FLASH.
 
@@ -220,118 +225,7 @@ int main(void) {
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
 
-        POINT_COLOR = BLUE;  // 设置字体为蓝色
-        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
-        LCD_ShowString(30, 170, 200, 16, 16,
-                       (uint8_t *)"SD Total Size:     MB");
-        LCD_ShowString(30, 190, 200, 16, 16,
-                       (uint8_t *)"SD  Free Size:     MB");
-
-        exf_getfree((uint8_t *)"0:", &total, &free);
-        LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
-        LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
-                    16);  // 显示SD卡剩余容量 MB
-        // if (rx_flag) {
-        //     chat_sc.addMessageToPage(RX_DATA, 1);
-        //     rx_flag = 0;
-        // }
-        if (!fly)
-            HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
-        else
-            HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
-        if (EVENT[RETURN_BACK]) {
-            printf("[EVENT] Press Back\n");
-            SCENE = CHAT_SCENE;
-            EVENT[RETURN_BACK] = 0;
-        }
-        if (EVENT[RETURN_HOME]) {
-            printf("[EVENT] Press Home\n");
-            SCENE = CALC;
-            EVENT[RETURN_HOME] = 0;
-        }
-        if (EVENT[EMOJI_SELECT]) {
-            printf("[EVENT] Press Emoji\n");
-
-            // chat_sc->setVisbility(false);
-            // emoji_sc->setVisbility(true);
-            SCENE = EMOJI_SCENE;
-            EVENT[EMOJI_SELECT] = 0;
-            canvas.need_render = true;
-        }
-        if (EVENT[EMOJI_SELECTED]) {
-            printf("[EVENT] Emoji Selected\n");
-            emoji_sc->setVisbility(false);
-            chat_sc->setVisbility(true);
-            chat_sc->addImageToPage(emoji_sc->emoji_num, 1);
-            printf("emoji name: %d\n", emoji_sc->emoji_num);
-            EVENT[EMOJI_SELECTED] = 0;
-            canvas.need_render = true;
-        }
-
-        if (SCENE == CALC) {
-            LCD_Clear(WHITE);
-            canvas.need_render = true;
-            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (cal_sc == nullptr) {
-                cal_sc =
-                    new calc_main("calc_main", {0, 0}, {lcddev.width, 280});
-                window_view->sub_object_cnt = 0;
-                window_view->add_son(cal_sc);
-                cal_sc->setVisbility(true);
-            }
-            SCENE = 0;
-        }
-
-        // if (SCENE == CHAT_SELECT) {
-        //     if (chat_sc!=nullptr) delete (chat_sc), chat_sc = nullptr;
-        //     if (emoji_sc!=nullptr) delete (emoji_sc), emoji_sc = nullptr;
-        //     if (cal_sc!=nullptr) delete (cal_sc), cal_sc = nullptr;
-        //     if (chat_sel_sc==nullptr) chat_sel_sc = new
-        //     chat_select_main("chat_select_main", {0, 0}, {lcddev.width,
-        //     280}); window_view->add_son(chat_sel_sc);
-        //     chat_sel_sc->setVisbility(true);
-        // }
-
-        if (SCENE == EMOJI_SCENE) {
-            LCD_Clear(WHITE);
-            canvas.need_render = true;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
-            if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
-            if (emoji_sc == nullptr) {
-                emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
-                                                {lcddev.width, 280});
-                window_view->sub_object_cnt = 0;
-                window_view->add_son(emoji_sc);
-            }
-            emoji_sc->setVisbility(true);
-            SCENE = 0;
-        }
-
-        if (SCENE == CHAT_SCENE) {
-            LCD_Clear(WHITE);
-            canvas.need_render = true;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
-            if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
-            if (chat_sc == nullptr) {
-                chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
-                                              {lcddev.width, 280}, users);
-
-                window_view->sub_object_cnt = 0;
-                window_view->add_son(chat_sc);
-                printf("Done creating\n");
-            }
-            chat_sc->setVisbility(true);
-
-            SCENE = 0;
-        }
-
+        
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -518,7 +412,7 @@ static void MX_USART1_UART_Init(void) {
 
     /* USER CODE END USART1_Init 1 */
     huart1.Instance = USART1;
-    huart1.Init.BaudRate = 115200;
+    huart1.Init.BaudRate = 460800;
     huart1.Init.WordLength = UART_WORDLENGTH_8B;
     huart1.Init.StopBits = UART_STOPBITS_1;
     huart1.Init.Parity = UART_PARITY_NONE;

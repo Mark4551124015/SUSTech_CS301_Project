@@ -107,7 +107,8 @@ FILE(GLOB_RECURSE LIBS
 )
 target_sources(
     ${TARGET_NAME} PRIVATE
-    "Core/Src/main.cpp"
+    # "Core/Src/main.cpp"
+    "Core/Src/tests/test_img.cpp"
     "Core/Src/config.c"
     "Core/Src/calc_algo.cpp"
     "Core/Src/frameworks/calc_scene.cpp"
@@ -116,6 +117,7 @@ target_sources(
     "Core/Src/frameworks/chat_scene.cpp"
     "Core/Src/frameworks/chat_select_scene.cpp"
     "Core/Src/frameworks/emoji_scene.cpp"
+    "Core/Src/frameworks/album_scene.cpp"
 
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
@@ -130,9 +132,11 @@ target_sources(
     "Core/Src/lib/fatfs.cpp"
     "Core/Src/lib/24l01.c"
     "Core/Src/lib/piclib.c"
+    "Core/Src/lib/fontupd.c"
+    "Core/Src/lib/text.c"
     # "Core/Src/lib/gif.c"
     # "Core/Src/lib/bmp.c"
-    # "Core/Src/lib/tjpgd.c"
+    "Core/Src/lib/tjpgd.c"
     "Core/Src/lib/bmp.c"
     
     "Core/Src/stm32f1xx_hal_msp.c"

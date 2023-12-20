@@ -162,7 +162,8 @@ u8 stdbmp_decode(const u8 *filename)
 						if(is_element_ok(realx,realy,1)&&yok)//符合条件
 						{						 				 	  	       
 							pic_phy.draw_point(realx+picinfo.S_XOFF,realy+picinfo.S_YOFF-1,color);//显示图片	 
-						}   									    
+                            
+                        }   									    
 					}
 					x++;//x轴增加一个像素 
 					color=0x00; 

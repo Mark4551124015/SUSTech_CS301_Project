@@ -2,7 +2,7 @@
 #include "framework.h"
 
 #include <cstdint>
-
+#include <cstdio>
 
 // #include <cstdint>
 // #include <cstdio>
@@ -478,9 +478,9 @@ void image::update(dpo* father, pii axis) {
 
         if (this->image_path != "") {
             printf("loading %s\n", this->image_path.c_str());
-            // ai_load_picfile((u8 *)this->image_path, p1.x_p, p1.y_p,
-            // this->shape.x_p,
-            //                 this->shape.y_p, 1);
+            int res = ai_load_picfile((u8*)this->image_path.c_str(), 10, 10,
+                                      this->shape.x_p, this->shape.y_p, 0);
+            if (res) printf("Wrong AI drawing %d\n", res);
 
         } else if (this->img != nullptr) {
             LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
@@ -525,6 +525,10 @@ void image::update_img(const unsigned short* img) {
     this->need_render = 1;
 }
 
+void image::set_image(string img_name) {
+    this->image_path = img_name;
+    this->need_render = 1;
+}
 void rect::update(dpo* father, pii axis) {
     this->my_axis = adding(axis, this->pos);
     if (father != nullptr) {

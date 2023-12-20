@@ -2,3 +2,6 @@ Middlewares/Third_Party/FatFs/
 
 FATFS/App/
 FATFS/Target/
+
+Release/
+Debug/

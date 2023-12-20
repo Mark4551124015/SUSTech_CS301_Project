@@ -1403,7 +1403,7 @@ DWORD clmt_clust (	/* <2:Error, >=2:Cluster number */
 /* Directory handling - Set directory index                              */
 /*-----------------------------------------------------------------------*/
 
-static
+//static
 FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 	DIR* dp,		/* Pointer to directory object */
 	DWORD ofs		/* Offset of directory table */
@@ -3716,7 +3716,7 @@ FRESULT f_close (
 			unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
 		}
-		LEAVE_FF(fp->fs,res);			//FATFSÐÂ°æ±¾µÄbug,±ØÐë¼ÓÉÏÕâ¾ä,·ñÔòÔÚÊ¹ÓÃOSµÄÊ±ºò,¿ÉÄÜµ¼ÖÂ¹Ø±ÕÖÐ¶Ïºó,Ò»Ö±²»¿ªÆô,´Ó¶ø¼ÙËÀ.
+		LEAVE_FF(fp->fs,res);			//FATFSï¿½Â°æ±¾ï¿½ï¿½bug,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½OSï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½Üµï¿½ï¿½Â¹Ø±ï¿½ï¿½Ð¶Ïºï¿½,Ò»Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½.
 	}
 	return res;
 }
@@ -4131,7 +4131,7 @@ FRESULT f_closedir (
 		unlock_fs(fs, FR_OK);		/* Unlock volume */
 #endif
 	}
-	LEAVE_FF(dp->fs,res);		//FATFSÐÂ°æ±¾µÄbug,±ØÐë¼ÓÉÏÕâ¾ä,·ñÔòÔÚÊ¹ÓÃOSµÄÊ±ºò,¿ÉÄÜµ¼ÖÂ¹Ø±ÕÖÐ¶Ïºó,Ò»Ö±²»¿ªÆô,´Ó¶ø¼ÙËÀ.
+	LEAVE_FF(dp->fs,res);		//FATFSï¿½Â°æ±¾ï¿½ï¿½bug,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½OSï¿½ï¿½Ê±ï¿½ï¿½,ï¿½ï¿½ï¿½Üµï¿½ï¿½Â¹Ø±ï¿½ï¿½Ð¶Ïºï¿½,Ò»Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½.
 	//return res;
 }
 
