@@ -31,7 +31,7 @@ class page : public dpo {
 
    public:
     page(string name, pii pos, pii shape);
-    string addMessage(string str, const char *userName);
+    string addMessage(string str);
     int addImage(int num, char const *userName);
     void clear();
     void update(display_object *father, pii axis);
@@ -39,7 +39,8 @@ class page : public dpo {
 
 class chat_scene_main : public dpo {
    public:
-    stext userInfo = stext("userInfo", {0, -130}, {240, 30},
+    emoji_scene_main emoji_sc = emoji_scene_main("emoji_scene", {0, 0}, {240, 280});
+    stext userInfo = stext("userInfo", {0, -130}, {240, 20},
                            (char *)"Chatting with ", false, 16);
     // char *users[3];  // 0: master 1, 2: slave
     string users[3];

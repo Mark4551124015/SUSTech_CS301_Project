@@ -108,6 +108,8 @@ void dpo::setVisbility(bool flag) {
         pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
                   this->my_axis.y_p + this->shape.y_p / 2};
         LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, WHITE);
+        printf("my_axis: %d %d, shape: %d %d\n", my_axis.x_p, my_axis.y_p, this->shape.x_p, this->shape.y_p);
+        printf("%s clear %d %d %d %d", this->name.c_str(), p1.x_p, p1.y_p, p2.x_p, p2.y_p);
         this->parent->need_render = true;
     }
 }
@@ -488,7 +490,7 @@ void image::update(dpo* father, pii axis) {
                             this->img);
         }
         else{
-            LCD_Fill(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p, WHITE);
+            LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, WHITE);
         }
         int width = this->font_size / 2 * this->str.length();
         int height = this->font_size;

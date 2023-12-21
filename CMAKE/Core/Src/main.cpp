@@ -104,6 +104,7 @@ uint8_t EVENT[8];
 bool fly = false;
 string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
 int SCENE = MAIN;
+int user_self = 0;
 /* USER CODE END 0 */
 
 /**
@@ -183,7 +184,7 @@ int main(void) {
     //     280});
     calc_main *cal_sc = nullptr;
     chat_select_main *chat_sel_sc = nullptr;
-    emoji_scene_main *emoji_sc = nullptr;
+   // emoji_scene_main *emoji_sc = nullptr;
     chat_scene_main *chat_sc = nullptr;
 
     canvas.add_son(bottom_bar);
@@ -238,31 +239,28 @@ int main(void) {
             SCENE = CALC;
             EVENT[RETURN_HOME] = 0;
         }
-        if (EVENT[EMOJI_SELECT]) {
-            printf("[EVENT] Press Emoji\n");
-
-            // chat_sc->setVisbility(false);
-            // emoji_sc->setVisbility(true);
-            SCENE = EMOJI_SCENE;
-            EVENT[EMOJI_SELECT] = 0;
-            //canvas.need_render = true;
-        }
-        if (EVENT[EMOJI_SELECTED]) {
-            printf("[EVENT] Emoji Selected\n");
-            // emoji_sc->setVisbility(false);
-            // chat_sc->setVisbility(true);
-            SCENE = CHAT_SCENE;
-            //chat_sc->addImageToPage(emoji_sc->emoji_num, 1);
-            printf("emoji name: %d\n", emoji_sc->emoji_num);
-            EVENT[EMOJI_SELECTED] = 0;
-            canvas.need_render = true;
-        }
+        // if (EVENT[EMOJI_SELECT]) {
+        //     printf("[EVENT] Press Emoji\n");
+        //     chat_sc->userInfo.setVisbility(false);
+        //     chat_sc->showPage.setVisbility(false);
+        //     chat_sc->emoji_sc.setVisbility(true);
+        //     EVENT[EMOJI_SELECT] = 0;
+        // }
+        // if (EVENT[EMOJI_SELECTED]) {
+        //     printf("[EVENT] Emoji Selected\n");
+        //     chat_sc->emoji_sc.setVisbility(false);
+        //     chat_sc->userInfo.setVisbility(true);
+        //     chat_sc->showPage.setVisbility(true);
+        //     chat_sc->addImageToPage(chat_sc->emoji_sc.emoji_num, user_self);
+        //     printf("emoji name: %d\n", chat_sc->emoji_sc.emoji_num);
+        //     EVENT[EMOJI_SELECTED] = 0;
+        //     chat_sc->need_render = true;
+        // }
 
         if (SCENE == CALC) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
             if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
             if (cal_sc == nullptr) {
@@ -285,33 +283,29 @@ int main(void) {
         //     chat_sel_sc->setVisbility(true);
         // }
 
-        if (SCENE == EMOJI_SCENE) {
-            LCD_Clear(WHITE);
-            canvas.need_render = true;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (chat_sc != nullptr) 
-                delete (chat_sc), chat_sc = nullptr;
-            if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
-            if (emoji_sc == nullptr) {
-                emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
-                                                {lcddev.width, 280});
-                window_view->sub_object_cnt = 0;
-                window_view->add_son(emoji_sc);
-            }
-            SCENE = 0;
-        }
+        // if (SCENE == EMOJI_SCENE) {
+        //     LCD_Clear(WHITE);
+        //     canvas.need_render = true;
+        //     if (chat_sel_sc != nullptr)
+        //         delete (chat_sel_sc), chat_sel_sc = nullptr;
+        //     if (chat_sc != nullptr) 
+        //         delete (chat_sc), chat_sc = nullptr;
+        //     if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
+        //     if (emoji_sc == nullptr) {
+        //         emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
+        //                                         {lcddev.width, 280});
+        //         window_view->sub_object_cnt = 0;
+        //         window_view->add_son(emoji_sc);
+        //     }
+        //     SCENE = 0;
+        // }
 
         if (SCENE == CHAT_SCENE) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
-            int emoji_num = 0;
+            //int emoji_num = 0;
             if (chat_sel_sc != nullptr)
                 delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (emoji_sc != nullptr) {
-                emoji_num = emoji_sc->emoji_num;
-                delete (emoji_sc), emoji_sc = nullptr;
-            }
             if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
             if (chat_sc == nullptr) {
                 chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
@@ -321,14 +315,18 @@ int main(void) {
                 printf("Done creating\n");
             }
             chat_sc->setVisbility(true);
-            printf("emoji_num:%d\n", emoji_num);
-            if(emoji_num)
-                chat_sc->addImageToPage(emoji_num, 1);
+            // printf("emoji_num:%d\n", emoji_num);
+            // if(emoji_num)
+            //     chat_sc->addImageToPage(emoji_num, 1);
             SCENE = 0;
         }
         if (rx_flag && chat_sc != nullptr) {
-            printf("executed");
-            chat_sc->addMessageToPage(RX_DATA, 1);
+            chat_sc->addMessageToPage(RX_DATA, user_self);
+            RX_DATA = "";
+            rx_flag = 0;
+        }
+        else if(rx_flag){
+            RX_DATA = "";
             rx_flag = 0;
         }
 

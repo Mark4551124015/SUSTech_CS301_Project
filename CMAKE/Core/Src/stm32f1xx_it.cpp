@@ -353,13 +353,16 @@ void DMA2_Channel4_5_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        static char uLength = 0;
+        //static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            uLength = 0;
+            //uLength = 0;
+            int str_len = RX_DATA.length();
+            RX_DATA.erase(str_len - 1);
             rx_flag = 1;
+            printf("%s", RX_DATA.c_str());
         } else {
-            RX_DATA[uLength] = rxBuffer[0];
-            uLength++;
+            RX_DATA += rxBuffer[0];
+            //uLength++;
         }
     }
 }
