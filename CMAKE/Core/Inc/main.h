@@ -41,7 +41,11 @@ extern "C" {
 #define SHUTDOWN 2
 #define EMOJI_SELECT 3
 #define EMOJI_SELECTED 4
-#define REMOTE_KEY 5
+#define CREAT_CHAT 5
+#define CHAT_SELECTED 6
+#define CALC_SELECTED 7
+#define PHOTO_SELECTED 8
+#define REMOTE_KEY 9
 
 
 //SCENE

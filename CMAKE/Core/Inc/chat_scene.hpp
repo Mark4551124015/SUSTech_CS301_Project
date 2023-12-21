@@ -2,6 +2,7 @@
 #define __CHAT_SCENE_HPP__
 
 #include <cstdio>
+#include <string>
 #include "emoji_scene.hpp"
 #include "framework.h"
 
@@ -10,6 +11,21 @@ extern "C" {
 #endif
 
 extern pii touch;
+
+class chat_scene_storage{
+    public:
+        string users[3];
+        int page_cnt;
+        int now_page;
+        string pageMessage[5][6];
+        int pageEmoji[5][6];
+        int cntInPage;
+    public:
+        chat_scene_storage(int page_cnt, int now_page, string pageMessage[5][6], int pageEmoji[5][6], int cntInPage);
+};
+
+
+
 
 class page : public dpo {
    public:
@@ -31,15 +47,16 @@ class page : public dpo {
 
    public:
     page(string name, pii pos, pii shape);
-    bool addMessage(char *str, const char *userName);
-    bool addImage(int num, char const *userName);
+    string addMessage(string str);
+    int addImage(int num, char const *userName);
     void clear();
     void update(display_object *father, pii axis);
 };
 
 class chat_scene_main : public dpo {
    public:
-    stext userInfo = stext("userInfo", {0, -130}, {240, 30},
+    emoji_scene_main emoji_sc = emoji_scene_main("emoji_scene", {0, 0}, {240, 280});
+    stext userInfo = stext("userInfo", {0, -130}, {240, 20},
                            (char *)"Chatting with ", false, 16);
     // char *users[3];  // 0: master 1, 2: slave
     string users[3];
@@ -48,16 +65,14 @@ class chat_scene_main : public dpo {
     button emoji = button("emoji", {0, 95}, {240, 30}, "Emoji");
     int page_cnt = 0;
     int now_page = 0;
-    page pages[5] = {
-        page("page_0", {0, -20}, {240, 180}),
-        page("page_1", {0, -20}, {240, 180}),
-        page("page_2", {0, -20}, {240, 180}),
-        page("page_3", {0, -20}, {240, 180}),
-        page("page_4", {0, -20}, {240, 180}),
-    };
+    page showPage = page("page", {0, -20}, {240, 180});
+    string pageMessage[5][6];
+    int pageEmoji[5][6];
+    
    public:
     chat_scene_main(string name, pii pos, pii shape, string users[3]);
-    void addMessageToPage(char *message, int user_num);
+    chat_scene_main(string name, pii pos, pii shape, string users[3], chat_scene_storage* store);
+    void addMessageToPage(string message, int user_num);
     void addImageToPage(int num, int user_num);
     void update(display_object *father, pii axis) override;
 };

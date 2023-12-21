@@ -50,7 +50,7 @@
 #define CALC 2
 #define CHAT_SELECT 3
 #define CHAT_SCENE 4
-#define EMOJI_SCENE 5
+#define PHOTO 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -91,7 +91,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-char RX_DATA[1024] = "test";
+string RX_DATA;
 char uLength = 0;
 extern unsigned char rxBuffer[1024];
 extern bool rx_flag;
@@ -100,11 +100,12 @@ bool button_click[8];
 // LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
-uint8_t EVENT[32];
+uint8_t EVENT[10];
 bool fly = false;
-string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
+string users[3];
+chat_scene_storage* chat_sc_store[3];
+int selected_chat;
 int SCENE = MAIN;
-
 /* USER CODE END 0 */
 
 /**
@@ -171,8 +172,9 @@ int main(void) {
 
     calc_main *cal_sc = nullptr;
     chat_select_main *chat_sel_sc = nullptr;
-    emoji_scene_main *emoji_sc = nullptr;
+   // emoji_scene_main *emoji_sc = nullptr;
     chat_scene_main *chat_sc = nullptr;
+    main_scene *main_sc = nullptr;
 
     canvas.add_son(bottom_bar);
     canvas.add_son(window_view);
@@ -200,124 +202,192 @@ int main(void) {
 
     f_mount(fs[0], "0:", 1);  // 挂载SD卡
     f_mount(fs[1], "1:", 1);  // 挂载FLASH.
-
+    SCENE = MAIN;
     while (1) {
-        LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
+        // LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
         tp_dev.scan(0);
         touch = {(int)tp_dev.x[0], (int)tp_dev.y[0]};
         fly = equal_pii(touch, {65535, 65535});
         canvas.update(nullptr, {0, 0});
-
         POINT_COLOR = BLUE;  // 设置字体为蓝色
-        LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
-        LCD_ShowString(30, 170, 200, 16, 16,
-                       (uint8_t *)"SD Total Size:     MB");
-        LCD_ShowString(30, 190, 200, 16, 16,
-                       (uint8_t *)"SD  Free Size:     MB");
+        // LCD_ShowString(30, 150, 200, 16, 16, (uint8_t *)"FATFS OK!");
+        // LCD_ShowString(30, 170, 200, 16, 16,
+        //                (uint8_t *)"SD Total Size:     MB");
+        // LCD_ShowString(30, 190, 200, 16, 16,
+        //                (uint8_t *)"SD  Free Size:     MB");
 
-        exf_getfree((uint8_t *)"0:", &total, &free);
-        LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
-        LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
-                    16);  // 显示SD卡剩余容量 MB
-        // if (rx_flag) {
-        //     chat_sc.addMessageToPage(RX_DATA, 1);
-        //     rx_flag = 0;
-        // }
+        // exf_getfree((uint8_t *)"0:", &total, &free);
+        // LCD_ShowNum(30 + 8 * 14, 170, total >> 10, 5, 16);  // 显示SD卡总容量 MB
+        // LCD_ShowNum(30 + 8 * 14, 190, free >> 10, 5,
+        //             16);  // 显示SD卡剩余容量 MB
+        
         if (!fly)
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
         else
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) {
             printf("[EVENT] Press Back\n");
-            SCENE = CHAT_SCENE;
+            if(chat_sc != nullptr)
+                SCENE = CHAT_SELECT;
+            else SCENE = MAIN;
             EVENT[RETURN_BACK] = 0;
         }
         if (EVENT[RETURN_HOME]) {
             printf("[EVENT] Press Home\n");
-            SCENE = CALC;
+            SCENE = MAIN;
             EVENT[RETURN_HOME] = 0;
         }
-        if (EVENT[EMOJI_SELECT]) {
-            printf("[EVENT] Press Emoji\n");
-
-            // chat_sc->setVisbility(false);
-            // emoji_sc->setVisbility(true);
-            SCENE = EMOJI_SCENE;
-            EVENT[EMOJI_SELECT] = 0;
-            canvas.need_render = true;
+        if (EVENT[CHAT_SELECTED]){
+            printf("[EVENT] Chat Select\n");
+            SCENE = CHAT_SELECT;
+            EVENT[CHAT_SELECTED] = 0;
         }
-        if (EVENT[EMOJI_SELECTED]) {
-            printf("[EVENT] Emoji Selected\n");
-            emoji_sc->setVisbility(false);
-            chat_sc->setVisbility(true);
-            chat_sc->addImageToPage(emoji_sc->emoji_num, 1);
-            printf("emoji name: %d\n", emoji_sc->emoji_num);
-            EVENT[EMOJI_SELECTED] = 0;
-            canvas.need_render = true;
+        if (EVENT[CALC_SELECTED]){
+            printf("[EVENT] Calc Select\n");
+            SCENE = CALC;
+            EVENT[CALC_SELECTED] = 0;
+        }
+        if (EVENT[PHOTO_SELECTED]){
+            printf("[EVENT] Photo Select\n");
+            SCENE = PHOTO;
+            EVENT[PHOTO_SELECTED] = 0;
         }
 
+        if(EVENT[CREAT_CHAT])
+        {
+            printf("[EVENT] Create Chat\n");
+            SCENE = CHAT_SCENE;
+            EVENT[CREAT_CHAT] = 0;
+        }
+        if (SCENE == MAIN)
+        {
+            LCD_Clear(WHITE);
+            canvas.need_render = true;
+            if (chat_sc != nullptr) 
+            {
+                chat_sc_store[selected_chat] = new chat_scene_storage(
+                chat_sc->page_cnt, 
+                chat_sc->now_page, 
+                chat_sc->pageMessage, 
+                chat_sc->pageEmoji, 
+                chat_sc->showPage.cnt);
+                delete (chat_sc), chat_sc = nullptr;
+            }
+            if (chat_sel_sc != nullptr) delete (chat_sel_sc), chat_sel_sc = nullptr;
+            if (cal_sc!=nullptr) delete (cal_sc), cal_sc = nullptr;
+            if (main_sc == nullptr)
+            {
+                printf("MAIN\n");
+                main_sc = new main_scene("main_scene", {0, 0}, {lcddev.width, 280});
+                window_view->sub_object_cnt = 0;
+                memset(window_view->sub_object, 0, sizeof(window_view->sub_object));
+                window_view->add_son(main_sc);
+                main_sc->setVisbility(true);
+            }
+            SCENE = 0;
+        }
         if (SCENE == CALC) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
-            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (cal_sc == nullptr) {
+            if(main_sc != nullptr) delete (main_sc), main_sc = nullptr;
+            if (chat_sc != nullptr) 
+            {
+                chat_sc_store[selected_chat] = new chat_scene_storage(
+                chat_sc->page_cnt, 
+                chat_sc->now_page, 
+                chat_sc->pageMessage, 
+                chat_sc->pageEmoji, 
+                chat_sc->showPage.cnt);
+                delete (chat_sc), chat_sc = nullptr;
+            }
+            if (chat_sel_sc != nullptr) delete (chat_sel_sc), chat_sel_sc = nullptr;
+            if (cal_sc == nullptr) 
+            {
                 cal_sc =
                     new calc_main("calc_main", {0, 0}, {lcddev.width, 280});
                 window_view->sub_object_cnt = 0;
+                memset(window_view->sub_object, 0, sizeof(window_view->sub_object));
                 window_view->add_son(cal_sc);
                 cal_sc->setVisbility(true);
             }
+            
             SCENE = 0;
         }
 
-        // if (SCENE == CHAT_SELECT) {
-        //     if (chat_sc!=nullptr) delete (chat_sc), chat_sc = nullptr;
-        //     if (emoji_sc!=nullptr) delete (emoji_sc), emoji_sc = nullptr;
-        //     if (cal_sc!=nullptr) delete (cal_sc), cal_sc = nullptr;
-        //     if (chat_sel_sc==nullptr) chat_sel_sc = new
-        //     chat_select_main("chat_select_main", {0, 0}, {lcddev.width,
-        //     280}); window_view->add_son(chat_sel_sc);
-        //     chat_sel_sc->setVisbility(true);
-        // }
-
-        if (SCENE == EMOJI_SCENE) {
+        if (SCENE == CHAT_SELECT) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (chat_sc != nullptr) delete (chat_sc), chat_sc = nullptr;
-            if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
-            if (emoji_sc == nullptr) {
-                emoji_sc = new emoji_scene_main("emoji_scene_main", {0, 0},
-                                                {lcddev.width, 280});
-                window_view->sub_object_cnt = 0;
-                window_view->add_son(emoji_sc);
+            if(main_sc != nullptr) delete (main_sc), main_sc = nullptr;
+            if (chat_sc!=nullptr) 
+            {
+                chat_sc_store[selected_chat] = new chat_scene_storage(
+                    chat_sc->page_cnt, 
+                    chat_sc->now_page, 
+                    chat_sc->pageMessage, 
+                    chat_sc->pageEmoji, 
+                    chat_sc->showPage.cnt);
+                delete (chat_sc), chat_sc = nullptr;
             }
-            emoji_sc->setVisbility(true);
+            if (cal_sc!=nullptr) delete (cal_sc), cal_sc = nullptr;
+            if (chat_sel_sc==nullptr) 
+            {
+                chat_sel_sc = new chat_select_main(
+                    "chat_select_main", 
+                    {0, 0}, 
+                    {lcddev.width,280});
+                window_view->sub_object_cnt = 0;
+                memset(window_view->sub_object, 0, sizeof(window_view->sub_object));
+                window_view->add_son(chat_sel_sc);
+                chat_sel_sc->setVisbility(true);
+            }
             SCENE = 0;
         }
+
+
 
         if (SCENE == CHAT_SCENE) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
-            if (chat_sel_sc != nullptr)
-                delete (chat_sel_sc), chat_sel_sc = nullptr;
-            if (emoji_sc != nullptr) delete (emoji_sc), emoji_sc = nullptr;
+            if(main_sc != nullptr) delete (main_sc), main_sc = nullptr;
+            if (chat_sel_sc != nullptr) delete (chat_sel_sc), chat_sel_sc = nullptr;   
             if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
-            if (chat_sc == nullptr) {
-                chat_sc = new chat_scene_main("chat_scene_main", {0, 0},
-                                              {lcddev.width, 280}, users);
-
+            if (chat_sc == nullptr) 
+            {
+                if(chat_sc_store[selected_chat] == nullptr)
+                {
+                    chat_sc = new chat_scene_main(
+                        "chat_scene_main", 
+                        {0, 0},
+                        {lcddev.width, 280}, 
+                        users);
+                }
+                else
+                {
+                    chat_sc = new chat_scene_main(
+                        "chat_scene_main",
+                        {0, 0},
+                        {lcddev.width, 280},
+                        users,
+                        chat_sc_store[selected_chat]
+                    );
+                }
                 window_view->sub_object_cnt = 0;
+                memset(window_view->sub_object, 0, sizeof(window_view->sub_object));
                 window_view->add_son(chat_sc);
                 printf("Done creating\n");
+                chat_sc->setVisbility(true);
             }
-            chat_sc->setVisbility(true);
-
+            
             SCENE = 0;
+        }
+        if (rx_flag && chat_sc != nullptr) {
+            chat_sc->addMessageToPage(RX_DATA, 0);
+            RX_DATA = "";
+            rx_flag = 0;
+        }
+        else if(rx_flag){
+            RX_DATA = "";
+            rx_flag = 0;
         }
 
         /* USER CODE END WHILE */
