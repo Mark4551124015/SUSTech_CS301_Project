@@ -8,7 +8,7 @@
 #include "emoji.hpp"
 
 const unsigned char* emoji_arr[4] = {gImage_emoji1, gImage_emoji2,gImage_emoji3, gImage_emoji4};
-extern uint8_t EVENT[8];
+extern uint8_t EVENT[10];
 extern int emoji_number;
 
 

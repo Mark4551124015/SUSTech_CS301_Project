@@ -1,5 +1,5 @@
 #include "chat_select_scene.hpp"
-extern uint8_t EVENT[8];
+extern uint8_t EVENT[10];
 extern string users[3];
 extern int selected_chat;
 chat_select_main::chat_select_main(string name, pii pos, pii shape) : dpo (name, pos, shape){

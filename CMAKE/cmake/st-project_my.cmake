@@ -116,6 +116,7 @@ target_sources(
     "Core/Src/frameworks/chat_scene.cpp"
     "Core/Src/frameworks/chat_select_scene.cpp"
     "Core/Src/frameworks/emoji_scene.cpp"
+    "Core/Src/frameworks/main_scene.cpp"
 
     "Core/Src/lib/w25qxx.c"
     "Core/Src/lib/24cxx.c"
