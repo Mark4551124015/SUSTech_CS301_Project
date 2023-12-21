@@ -2,6 +2,7 @@
 #define __CHAT_SCENE_HPP__
 
 #include <cstdio>
+#include <string>
 #include "emoji_scene.hpp"
 #include "framework.h"
 
@@ -10,6 +11,21 @@ extern "C" {
 #endif
 
 extern pii touch;
+
+class chat_scene_storage{
+    public:
+        string users[3];
+        int page_cnt;
+        int now_page;
+        string pageMessage[5][6];
+        int pageEmoji[5][6];
+        int cntInPage;
+    public:
+        chat_scene_storage(int page_cnt, int now_page, string pageMessage[5][6], int pageEmoji[5][6], int cntInPage);
+};
+
+
+
 
 class page : public dpo {
    public:
@@ -55,6 +71,7 @@ class chat_scene_main : public dpo {
     
    public:
     chat_scene_main(string name, pii pos, pii shape, string users[3]);
+    chat_scene_main(string name, pii pos, pii shape, string users[3], chat_scene_storage* store);
     void addMessageToPage(string message, int user_num);
     void addImageToPage(int num, int user_num);
     void update(display_object *father, pii axis) override;

@@ -10,12 +10,27 @@
 const unsigned char* emoji_arr[4] = {gImage_emoji1, gImage_emoji2,gImage_emoji3, gImage_emoji4};
 extern uint8_t EVENT[8];
 extern int emoji_number;
-extern int user_self;
+
+
+chat_scene_storage :: chat_scene_storage(int page_cnt, int now_page, string pageMessage[5][6], int pageEmoji[5][6], int cntInPage)
+{
+    this->page_cnt = page_cnt;
+    this->now_page = now_page;
+    for(int i=0; i<5; i++)
+        for(int j=0; j<6; j++)
+        {
+            this->pageMessage[i][j] = pageMessage[i][j];
+            this->pageEmoji[i][j] = pageEmoji[i][j];
+        }
+    this->cntInPage = cntInPage;
+}
+
+
 page ::page(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->cnt = 0;
     for (int i = 0; i < 6; i++) {
         this->add_son(&this->messages[i]);
-        this->emojis[i].isVisible = false;
+        //this->emojis[i].isVisible = false;
         this->add_son(&this->emojis[i]);
     }
 }
@@ -77,6 +92,43 @@ chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
     this->add_son(&emoji_sc);
 }
 
+
+chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
+                                  string users[3], chat_scene_storage* store)
+    : dpo(name, pos, shape) {
+    string new_str = userInfo.str;
+    for (int i = 0; i < 3; i++) this->users[i] = users[i];
+    printf("Addded user \n");
+    new_str += users[1];
+    if ((users[2] != "")) {
+        new_str += ", ";
+        new_str += users[2];
+    }
+    userInfo.update_str(new_str, 16, BLACK, WHITE);
+    this->page_cnt = store->page_cnt;
+    this->now_page = store->now_page;
+    this->showPage.cnt = store->cntInPage;
+    for(int i=0; i<5; i++)
+        for(int j=0; j<6; j++)
+        {
+            this->pageMessage[i][j] = store->pageMessage[i][j];
+            this->pageEmoji[i][j] = store->pageEmoji[i][j];
+        }
+    for(int i=0; i<6; i++)
+    {
+        this->showPage.messages[i].update_str(pageMessage[now_page][i], 16, BLACK, WHITE);
+        this->showPage.emojis[i].update_img(pageEmoji[now_page][i]?(unsigned short *)emoji_arr[pageEmoji[now_page][i] - 1]:NULL);
+    }
+
+    printf("Done\n");
+    this->add_son(&userInfo);
+    this->add_son(&pre);
+    this->add_son(&nxt);
+    this->add_son(&emoji);
+    this->add_son(&showPage);
+    this->emoji_sc.isVisible = false;
+    this->add_son(&emoji_sc);
+}
 // void chat_scene_main :: updateMessage(char * RX_DATA){
 //     message.update_str(RX_DATA, 16, BLACK, WHITE);
 // }
@@ -92,7 +144,7 @@ void chat_scene_main :: addMessageToPage(string message, int user_num) {
     }
     else 
     {
-        if(page_cnt >=6) return;
+        if(page_cnt >=4) return;
         //这里要分开写，因为在切换页面的时候cnt要保留
         showPage.cnt = 0;
         showPage.clear();
@@ -115,7 +167,7 @@ void chat_scene_main ::addImageToPage(int num, int user_num) {
     }
     else 
     {
-        if(page_cnt >= 6) return;
+        if(page_cnt >= 4) return;
         showPage.cnt = 0;
         showPage.clear();
         now_page = ++page_cnt;
@@ -169,7 +221,7 @@ void chat_scene_main ::update(display_object *father, pii axis) {
             emoji_sc.setVisbility(false);
             userInfo.setVisbility(true);
             showPage.setVisbility(true);
-            addImageToPage(emoji_sc.emoji_num, user_self);
+            addImageToPage(emoji_sc.emoji_num, 0);
             printf("emoji name: %d\n", emoji_sc.emoji_num);
             EVENT[EMOJI_SELECTED] = 0;
             need_render = true;
