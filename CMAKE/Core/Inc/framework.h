@@ -22,7 +22,7 @@
 // #include "piclib.h"
 using namespace std;
 
-extern uint8_t EVENT[10];
+extern uint8_t EVENT[16];
 extern string remote_press;
 
 // using std::pair;

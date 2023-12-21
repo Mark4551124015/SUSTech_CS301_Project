@@ -104,13 +104,17 @@ bool button_click[8];
 // LED leddev = LED();  // led_dev
 char *tmp = new char[1];
 vtext *choosed;
-uint8_t EVENT[10];
+uint8_t EVENT[16];
 bool fly = false;
 string users[3];
 chat_scene_storage *chat_sc_store[3];
 int selected_chat;
 int SCENE = MAIN;
 string remote_press;
+
+bool sliding = false;
+pii slide_start_pos;
+pii slide_prev_pos;
 /* USER CODE END 0 */
 
 /**
@@ -237,6 +241,32 @@ int main(void) {
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_SET);
         else
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
+        if (!fly) {
+            if (!sliding) {
+                sliding = true;
+                slide_start_pos = touch;
+            } else {
+                slide_prev_pos = touch;
+            }
+        } else {
+            if (sliding) {
+                sliding = false;
+                int x_delta = slide_prev_pos.first - slide_start_pos.first;
+                if (abs(x_delta) > 30) {
+                    if (x_delta < 0) {
+                        EVENT[SLIDE_LEFT] = 1;
+                    } else {
+                        EVENT[SLIDE_RIGHT] = 1;
+                    }
+                }
+            }
+        }
+        if (EVENT[SLIDE_LEFT]) {
+            printf("[EVENT] Slide Left\n");
+        }
+        if (EVENT[SLIDE_RIGHT]) {
+            printf("[EVENT] Slide Right\n");
+        }
         if (EVENT[RETURN_BACK]) {
             printf("[EVENT] Press Back\n");
             if (chat_sc != nullptr)

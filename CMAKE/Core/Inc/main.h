@@ -51,6 +51,8 @@ extern "C" {
 #define CALC_SELECTED 7
 #define PHOTO_SELECTED 8
 #define REMOTE_KEY 9
+#define SLIDE_LEFT 10
+#define SLIDE_RIGHT 11
 
 
 //SCENE
