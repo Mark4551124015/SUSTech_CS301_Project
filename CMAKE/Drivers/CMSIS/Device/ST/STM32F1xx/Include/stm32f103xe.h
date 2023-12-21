@@ -151,7 +151,6 @@ typedef enum
 
 /** @addtogroup Peripheral_registers_structures
   * @{
-    
   */   
 
 /** 

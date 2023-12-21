@@ -20,12 +20,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
-#include "lcd.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "string.h"
 #include "led.h"
 #include "scene.h"
+#include "string.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,10 +45,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-extern unsigned char RX_DATA[1024];
+extern string RX_DATA;
 unsigned char rxBuffer[20];
 // extern LED leddev;
-bool rx_flag;
+bool rx_flag = false;
+extern u8 RmtSta;
+extern u16 Dval;        // 下降沿时计数器的�?
+extern u32 RmtRec;  // 红外接收到的数据
+extern u8 RmtCnt;   // 按键按下的次�?
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,6 +68,7 @@ bool rx_flag;
 
 /* External variables --------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c1;
+extern RTC_HandleTypeDef hrtc;
 extern DMA_HandleTypeDef hdma_sdio;
 extern SD_HandleTypeDef hsd;
 extern TIM_HandleTypeDef htim3;
@@ -211,6 +217,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles RTC global interrupt.
+  */
+void RTC_IRQHandler(void)
+{
+  /* USER CODE BEGIN RTC_IRQn 0 */
+
+  /* USER CODE END RTC_IRQn 0 */
+  HAL_RTCEx_RTCIRQHandler(&hrtc);
+  /* USER CODE BEGIN RTC_IRQn 1 */
+
+  /* USER CODE END RTC_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line0 interrupt.
   */
 void EXTI0_IRQHandler(void)
@@ -318,23 +338,23 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
+    HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
   /* USER CODE END USART1_IRQn 1 */
 }
 
 /**
   * @brief This function handles SDIO global interrupt.
   */
-// void SDIO_IRQHandler(void)
-// {
-//   /* USER CODE BEGIN SDIO_IRQn 0 */
+void SDIO_IRQHandler(void)
+{
+  /* USER CODE BEGIN SDIO_IRQn 0 */
 
-//   /* USER CODE END SDIO_IRQn 0 */
-//   HAL_SD_IRQHandler(&hsd);
-//   /* USER CODE BEGIN SDIO_IRQn 1 */
+  /* USER CODE END SDIO_IRQn 0 */
+  HAL_SD_IRQHandler(&hsd);
+  /* USER CODE BEGIN SDIO_IRQn 1 */
 
-//   /* USER CODE END SDIO_IRQn 1 */
-// }
+  /* USER CODE END SDIO_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA2 channel4 and channel5 global interrupts.
@@ -353,26 +373,38 @@ void DMA2_Channel4_5_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     if (huart->Instance == USART1) {
-        static char uRx_Data[1024] = {0};
-        static char uLength = 0;
+        //static char uLength = 0;
         if (rxBuffer[0] == '\n') {
-            uRx_Data[--uLength] = '\0';
-            memcpy(RX_DATA, uRx_Data,sizeof(RX_DATA));
-            uLength = 0;
+            //uLength = 0;
+            int str_len = RX_DATA.length();
+            RX_DATA.erase(str_len - 1);
             rx_flag = 1;
+            printf("%s", RX_DATA.c_str());
         } else {
-            uRx_Data[uLength] = rxBuffer[0];
-            uLength++;
+            RX_DATA += rxBuffer[0];
+            //uLength++;
         }
     }
 }
-
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     if (htim->Instance == TIM3) {
         // leddev.tick();
     }
-    
+    if (htim->Instance == TIM5) {
+        if (RmtSta & 0x80)  // 上次有数据被接收到了
+        {
+            RmtSta &= ~0X10;  // 取消上升沿已经被捕获标记
+            if ((RmtSta & 0X0F) == 0X00)
+                RmtSta |= 1 << 6;  // 标记已经完成�?次按键的键�?�信息采�?
+            if ((RmtSta & 0X0F) < 14)
+                RmtSta++;
+            else {
+                RmtSta &= ~(1 << 7);  // 清空引导标识
+                RmtSta &= 0XF0;       // 清空计数�?
+            }
+        }
+    }
 }
 //  void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 // {
@@ -384,16 +416,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 // 	case KEY0_Pin:
 // 			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 // 			 sprintf(output, "KEY0 Pressed");
-// 			HAL_UART_Transmit(&huart1, output, strlen(output), 0xffff);
-// 		break;
-// 	case KEY1_Pin:
+// 			HAL_UART_Transmit(&huart1, output, strlen(output),
+// 0xffff); 		break; 	case KEY1_Pin:
 //             sprintf(output, "KEY1 Pressed");
-// 			HAL_UART_Transmit(&huart1, output, strlen(output), 0xffff);
-// 		break;
-// 	case KEY_WK_Pin:
-// 			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
-// 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-// 			HAL_Delay(100);
+// 			HAL_UART_Transmit(&huart1, output, strlen(output),
+// 0xffff); 		break; 	case KEY_WK_Pin: 			HAL_GPIO_TogglePin(LED0_GPIO_Port,
+// LED0_Pin); 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin); 			HAL_Delay(100);
 // 			HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 // 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 // 			HAL_Delay(100);

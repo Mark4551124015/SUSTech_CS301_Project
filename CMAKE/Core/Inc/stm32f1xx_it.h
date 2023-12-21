@@ -56,6 +56,7 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
+void RTC_IRQHandler(void);
 void EXTI0_IRQHandler(void);
 void DMA1_Channel4_IRQHandler(void);
 void DMA1_Channel5_IRQHandler(void);
@@ -64,7 +65,7 @@ void TIM3_IRQHandler(void);
 void I2C1_EV_IRQHandler(void);
 void I2C1_ER_IRQHandler(void);
 void USART1_IRQHandler(void);
-// void SDIO_IRQHandler(void);
+void SDIO_IRQHandler(void);
 void DMA2_Channel4_5_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 

@@ -71,6 +71,8 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src/drivers"/>
+									<listOptionValue builtIn="false" value="../FATFS/Target"/>
+									<listOptionValue builtIn="false" value="../FATFS/App"/>
 								</option>
 								<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.languagestandard.622833592" name="Language standard" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.languagestandard" useByScannerDiscovery="true" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.option.languagestandard.value.isocpp11" valueType="enumerated"/>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp.1971156707" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.cpp.compiler.input.cpp"/>
@@ -106,7 +108,7 @@
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/stm32f1xx_it.c|Src/tests/test_img.cpp|Src/lib/led.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="FATFS"/>
 					</sourceEntries>
@@ -201,7 +203,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Src/frameworks/calc_scene.cpp|Src/frameworks/chat_select_scene.cpp|Src/frameworks/emoji_scene.cpp|Src/lib/led.cpp|Src/main.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+						<entry excluding="Src/stm32f1xx_it.c|Src/tests/test_img.cpp|Src/lib/led.cpp|Src/lib/usart.c|Src/tests/test_sd.cpp|Src/tests/test_pic.c|Src/tests/test_24.cpp|Src/main.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="FATFS"/>
 					</sourceEntries>
