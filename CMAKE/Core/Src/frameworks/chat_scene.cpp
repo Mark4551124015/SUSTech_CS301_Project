@@ -108,6 +108,7 @@ void chat_scene_main ::addImageToPage(int num, int user_num) {
     if(showPage.cnt < 6)
     {
         pageEmoji[page_cnt][showPage.cnt] = num;
+        printf("pageEmoji[%d][%d]:%d", page_cnt, showPage.cnt, num);
         pageMessage[page_cnt][showPage.cnt] = users[user_num];
         if(now_page == page_cnt) showPage.addImage(num, users[user_num].c_str());
         showPage.cnt++;
@@ -146,6 +147,7 @@ void chat_scene_main ::update(display_object *father, pii axis) {
             for(int i=0; i<6; i++)
             {
                 this->showPage.messages[i].update_str(pageMessage[now_page][i], 16, BLACK, WHITE);
+                this->showPage.emojis[i].setVisbility(true);
                 this->showPage.emojis[i].update_img(pageEmoji[now_page][i]?(unsigned short *)emoji_arr[pageEmoji[now_page][i] - 1]:NULL);
             }
         }
