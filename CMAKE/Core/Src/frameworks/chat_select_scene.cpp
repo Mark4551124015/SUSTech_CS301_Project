@@ -1,9 +1,8 @@
 #include "chat_select_scene.hpp"
-
+extern uint8_t EVENT[8];
+extern string users[3];
+extern int selected_chat;
 chat_select_main::chat_select_main(string name, pii pos, pii shape) : dpo (name, pos, shape){
-    // this->invite_key[0] = new button("invite_user_0", {80, -90}, this->invite_key_size, "Chat" );
-    // this->invite_key[1] = new button("invite_user_1", {80, -50}, this->invite_key_size, "Chat");
-    // this->group_key = new button("group_chat", {0, 120}, this->group_key_size, "Group Chat");
     for(int i = 0; i < 2; i++)
     {
         this->add_son(&invite_key[i]);
@@ -19,5 +18,31 @@ chat_select_main::chat_select_main(string name, pii pos, pii shape) : dpo (name,
 }
 
 void chat_select_main::update(display_object *father, pii axis){
+    if(invite_key[0].isClicked())
+    {
+        EVENT[CREAT_CHAT] = 1;
+        selected_chat = 0;
+        users[0] = "User0";
+        users[1] = "User1";
+        users[2] = "";
+    }
+
+    if(invite_key[1].isClicked())
+    {
+        EVENT[CREAT_CHAT] = 1;
+        selected_chat = 1;
+        users[0] = "User0";
+        users[1] = "User2";
+        users[2] = "";
+    }
+    if(group_key.isClicked())
+    {
+        EVENT[CREAT_CHAT] = 1;
+        selected_chat = 2;
+        users[0] = "User0";
+        users[1] = "User1";
+        users[2] = "User2";
+    }
+
     dpo::update(father, axis);
 }

@@ -76,16 +76,17 @@ bool dpo::add_son(dpo* son) {
         printf("bad ptr\n");
         return false;
     }
+
+    if (!son->set_parent(this)) {
+        printf("%s", son->name.c_str());
+        printf("parent unique %s %d\n", son->name.c_str(), son->id);
+        return false;
+    }    
     // for (dpo* i : this->sub_object)
     //     if (i->id == son->id) {
     //         printf("bad unique %s %d %s %d\n", son->name.c_str(), son->id, i->name.c_str(), i->id);
     //         return false;
     //     };
-    if (!son->set_parent(this)) {
-        printf("%s", son->name.c_str());
-        printf("parent unique %s %d\n", son->name.c_str(), son->id);
-        return false;
-    }
     
     this->sub_object[this->sub_object_cnt++] = son;
     return true;

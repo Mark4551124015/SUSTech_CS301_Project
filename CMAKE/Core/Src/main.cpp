@@ -101,8 +101,9 @@ char *tmp = new char[1];
 vtext *choosed;
 uint8_t EVENT[8];
 bool fly = false;
-string users[3] = {(char *)"User0", (char *)"User1", (char *)""};
+string users[3];
 chat_scene_storage* chat_sc_store[3];
+int selected_chat;
 int SCENE = MAIN;
 /* USER CODE END 0 */
 
@@ -230,7 +231,7 @@ int main(void) {
             HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, GPIO_PIN_RESET);
         if (EVENT[RETURN_BACK]) {
             printf("[EVENT] Press Back\n");
-            SCENE = CHAT_SCENE;
+            SCENE = CHAT_SELECT;
             EVENT[RETURN_BACK] = 0;
         }
         if (EVENT[RETURN_HOME]) {
@@ -238,13 +239,19 @@ int main(void) {
             SCENE = CALC;
             EVENT[RETURN_HOME] = 0;
         }
+        if(EVENT[CREAT_CHAT])
+        {
+            printf("[EVENT] Create Chat\n");
+            SCENE = CHAT_SCENE;
+            EVENT[CREAT_CHAT] = 0;
+        }
 
         if (SCENE == CALC) {
             LCD_Clear(WHITE);
             canvas.need_render = true;
             if (chat_sc != nullptr) 
             {
-                chat_sc_store[0] = new chat_scene_storage(
+                chat_sc_store[selected_chat] = new chat_scene_storage(
                 chat_sc->page_cnt, 
                 chat_sc->now_page, 
                 chat_sc->pageMessage, 
@@ -267,9 +274,11 @@ int main(void) {
         }
 
         if (SCENE == CHAT_SELECT) {
+            LCD_Clear(WHITE);
+            canvas.need_render = true;
             if (chat_sc!=nullptr) 
             {
-                chat_sc_store[0] = new chat_scene_storage(
+                chat_sc_store[selected_chat] = new chat_scene_storage(
                     chat_sc->page_cnt, 
                     chat_sc->now_page, 
                     chat_sc->pageMessage, 
@@ -289,6 +298,7 @@ int main(void) {
                 window_view->add_son(chat_sel_sc);
                 chat_sel_sc->setVisbility(true);
             }
+            SCENE = 0;
         }
 
 
@@ -301,7 +311,7 @@ int main(void) {
             if (cal_sc != nullptr) delete (cal_sc), cal_sc = nullptr;
             if (chat_sc == nullptr) 
             {
-                if(chat_sc_store[0] == nullptr)
+                if(chat_sc_store[selected_chat] == nullptr)
                 {
                     chat_sc = new chat_scene_main(
                         "chat_scene_main", 
@@ -316,7 +326,7 @@ int main(void) {
                         {0, 0},
                         {lcddev.width, 280},
                         users,
-                        chat_sc_store[0]
+                        chat_sc_store[selected_chat]
                     );
                 }
                 window_view->sub_object_cnt = 0;

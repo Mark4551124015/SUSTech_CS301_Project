@@ -40,6 +40,7 @@ extern "C" {
 #define SHUTDOWN 2
 #define EMOJI_SELECT 3
 #define EMOJI_SELECTED 4
+#define CREAT_CHAT 5
 
 /* USER CODE END Includes */
 
