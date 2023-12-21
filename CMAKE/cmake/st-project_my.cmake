@@ -113,6 +113,7 @@ target_sources(
     "Core/Src/calc_algo.cpp"
     "Core/Src/frameworks/calc_scene.cpp"
     "Core/Src/frameworks/framework.cpp"
+    "Core/Src/frameworks/album_scene.cpp"
     "Core/Src/frameworks/scene.cpp"
     "Core/Src/frameworks/chat_scene.cpp"
     "Core/Src/frameworks/chat_select_scene.cpp"

@@ -8,8 +8,10 @@
 // #include <cstdint>
 // #include <cstdio>
 #include <string.h>
+
 #include <cstdint>
 #include <string>
+
 // #include <pair>
 // #include <vector>
 #include <cmath>
@@ -19,6 +21,9 @@
 // #include "ff.h"
 // #include "piclib.h"
 using namespace std;
+
+extern uint8_t EVENT[10];
+extern string remote_press;
 
 // using std::pair;
 using std::string;
@@ -50,9 +55,21 @@ extern "C" {
 bool IN(pii p1, pii p2, pii p3);
 bool equal_pii(pii a, pii b);
 
-
-
-enum dpo_type { DPO, BUTTON, V_TEXT, KEYBOARD, S_TEXT, IMAGE, BAR, SLD, MOVIMG, RECT, MARKER, CANVAS, CV_TEXT };
+enum dpo_type {
+    DPO,
+    BUTTON,
+    V_TEXT,
+    KEYBOARD,
+    S_TEXT,
+    IMAGE,
+    BAR,
+    SLD,
+    MOVIMG,
+    RECT,
+    MARKER,
+    CANVAS,
+    CV_TEXT
+};
 
 class display_object {
    public:
@@ -64,7 +81,7 @@ class display_object {
     pii shape;
     bool need_render;
     // vector<display_object *> sub_object ;
-    display_object * sub_object [32];
+    display_object *sub_object[32];
     size_t sub_object_cnt;
 
     float alpha;
@@ -82,14 +99,14 @@ class display_object {
     display_object *get_parent();
 
     bool add_son(display_object *son);
-    display_object ** get_son();
+    display_object **get_son();
 
     void setAlpha(float alpha);
     float getAlpha();
 
     void setVisbility(bool flag);
     bool getVisbility();
-
+    void clear_display(uint16_t color = WHITE);
     uint8_t get_id();
     void move(pii pos);
     virtual void update(display_object *father, pii axis);
@@ -156,7 +173,8 @@ typedef class static_text : public dpo {
     bool text_aligned;
 
    public:
-    static_text(string name, pii pos, pii shape, string str, bool text_aligned, uint8_t font_size);
+    static_text(string name, pii pos, pii shape, string str, bool text_aligned,
+                uint8_t font_size);
     pii get_pos(int index, pii axis);
     void update(display_object *father, pii axis);
     void update_str(string str, uint8_t font_size, uint16_t font_color,
@@ -181,7 +199,7 @@ typedef class image : public dpo {
 
    public:
     image(string name, pii pos, pii shape, const unsigned short *img,
-          string str, string img_name="");
+          string str, string img_name = "");
     bool isClicked();
     void update(display_object *father, pii axis);
     void update_img(const unsigned short *img);
@@ -189,10 +207,11 @@ typedef class image : public dpo {
 } image;
 
 typedef class rectangle : public dpo {
-    public:
+   public:
     uint16_t backgroud;
-     public:
-     rectangle(string name, pii pos, pii shape, uint16_t backgroud);
+
+   public:
+    rectangle(string name, pii pos, pii shape, uint16_t backgroud);
     void update(display_object *father, pii axis);
 } rect;
 
@@ -216,7 +235,6 @@ typedef class moving_image : public dpo {
 
 } mov_img;
 
-
 typedef class marker : public dpo {
    public:
     marker(string name, pii pos, pii shape, char c);
@@ -230,7 +248,7 @@ typedef class marker : public dpo {
 
     void backup_lcd();
     void restore_lcd();
-    
+
     dpo_type type = MARKER;
 
     void update(display_object *father, pii axis);

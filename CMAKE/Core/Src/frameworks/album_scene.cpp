@@ -1,4 +1,4 @@
-#include "album_scene.h"
+#include "album_scene.hpp"
 
 #include <cstdint>
 #include <cstdio>
@@ -13,6 +13,8 @@ album_scene_main::album_scene_main(string name, pii pos, pii shape)
     printf("mounted partition\n");
 
     photo_cnt = 0;
+    cur_photo = 0;
+
     picfileinfo = (FILINFO *)mymalloc(sizeof(FILINFO));
     printf("New FILINFO\n");
     picdir = DIR();
@@ -68,9 +70,17 @@ album_scene_main::album_scene_main(string name, pii pos, pii shape)
     photo.setVisbility(true);
 }
 
-album_scene_main::~album_scene_main() { free(picfileinfo); }
+album_scene_main::~album_scene_main() { myfree(picfileinfo); }
 
 void album_scene_main::update(display_object *father, pii axis) {
-    
+    if (EVENT[REMOTE_KEY]) {
+        if (remote_press=="RIGHT") {
+            cur_photo = (cur_photo + 1) % photo_cnt;
+            photo.set_image(photo_index[cur_photo]);
+        } else if (remote_press=="LEFT") {
+            cur_photo = (cur_photo - 1 + photo_cnt) % photo_cnt;
+            photo.set_image(photo_index[cur_photo]);
+        }
+    }
     dpo::update(father, axis);
 }
