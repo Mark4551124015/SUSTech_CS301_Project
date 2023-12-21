@@ -1,7 +1,11 @@
 #ifndef __CALC_SCENE_HPP__
 #define __CALC_SCENE_HPP__
 
+#include <vector>
+
 #include "framework.h"
+
+using std::vector;
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,15 +65,18 @@ class calc_main : public dpo {
     stext bin_mode_s =
         stext("bin", get_key_pos(2), {85, 30}, (char *)"BINARY",  true, 16);
     // button exit = button("exit", {60, 80}, {120, 80}, "Exit");
-    button *num_keys[10];
-    button *op_keys[7];
-    button *eq_keys[3];
-    button *del;
-    button *equal;
-    button *clear;
-    button *mov_l;
-    button *mov_r;
-    button *mode_btn;
+    vector<button> num_keys;
+    vector<button> op_keys;
+    vector<button> eq_keys;
+    button equal = button("equal", get_key_pos(29), this->key_sz, "=");
+
+    button mov_l = button("mov_l", get_key_pos(0), this->key_sz, "<<");
+    button mov_r = button("mov_r", get_key_pos(4), this->key_sz, ">>");
+
+    button mode_btn = button("mode", get_key_pos(1), this->key_sz, "MD");
+
+    button clear = button("clear", get_key_pos(6), this->key_sz, "C");
+    button del = button("delete", get_key_pos(8), this->key_sz, "del");
 
    public:
     calc_main(string name, pii pos, pii shape);
@@ -78,24 +85,6 @@ class calc_main : public dpo {
     void set_mode(calc_mode mode);
     void update(display_object *father, pii axis) override;
 };
-
-// class calc_ex : public dpo {
-//    public:
-//     calc_ex(string name, pii pos, pii shape);
-//     stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", 24);
-//     button btn = button("test", {0, 80}, {120, 80}, "test");
-//     void update(display_object *father, pii axis) override;
-// };
-
-// class calc_bin : public dpo {
-//    public:
-//     calc_bin(string name, pii pos, pii shape);
-//     stext test = stext("test", {0, 0}, {120, 40}, (char *)"Test", 24);
-//     button btn = button("test", {0, 80}, {120, 80}, "test");
-//     void update(display_object *father, pii axis) override;
-// };
-
-// v_text
 
 #ifdef __cplusplus
 }
