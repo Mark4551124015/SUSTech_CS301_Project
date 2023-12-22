@@ -108,6 +108,14 @@ string users[3];
 chat_scene_storage* chat_sc_store[3];
 int selected_chat;
 int SCENE = MAIN;
+int trans = 1;
+u8 key;
+u8 check_online_cnt = 0;
+u16 t = 0;
+u8 tmp_buf[33] = "STM32F103C8T6@ALIENTEK";
+int user_code = 0;
+RTC_TimeTypeDef sTime = {0};
+RTC_DateTypeDef DateToUpdate = {0};
 /* USER CODE END 0 */
 
 /**
@@ -126,7 +134,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-    NRF24L01_Init();
+  NRF24L01_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -204,6 +212,7 @@ int main(void)
     f_mount(fs[0], "0:", 1);  // 挂载SD�?
     f_mount(fs[1], "1:", 1);  // 挂载FLASH.
     SCENE = MAIN;
+    NRF24L01_RX_Mode();
     while (1) {
         // LCD_ShowString(2, 2, 160, 16, 16, (uint8_t *)"Mem");
         tp_dev.scan(0);
@@ -381,15 +390,91 @@ int main(void)
             
             SCENE = 0;
         }
+        if (main_sc != nullptr) {
+          HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
+          HAL_RTC_GetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD);\
+          //需要将十六进制转成十进制
+          int hour = ((sTime.Hours & 0xf0) >> 4) * 10 + (sTime.Hours & 0x0f);
+          int min = ((sTime.Minutes & 0xf0) >> 4) * 10 + (sTime.Minutes & 0x0f);
+          int sec = ((sTime.Seconds & 0xf0) >> 4) * 10 + (sTime.Seconds & 0x0f);
+          main_sc->time.update_str(to_string(hour) + ":" + to_string(min) + ":" + to_string(sec), 16, BLACK, WHITE);  
+        }
+        if (trans) {
+            NRF24L01_TX_Mode();
+            key = ' ';
+            // NRF24L01_TxPacket(tmp_buf);
+            for (int i = 0; i < RX_DATA.length(); i++) 
+            {
+                key = RX_DATA.c_str()[i];
+                tmp_buf[i] = key;
+            }
+            for(int i = RX_DATA.length(); i <= 32; i++)
+            {
+                tmp_buf[i] = 0;
+            }
+            int temp = NRF24L01_TxPacket(tmp_buf);
+            RX_DATA = "";
+            rx_flag = 0;
+            trans = false;
+            NRF24L01_RX_Mode();
+        }
+        user_code = 1;
         if (rx_flag && chat_sc != nullptr) {
             chat_sc->addMessageToPage(RX_DATA, 0);
+            canvas.need_render = true;
+            trans = true;
+        }else if(rx_flag){
             RX_DATA = "";
             rx_flag = 0;
         }
-        else if(rx_flag){
-            RX_DATA = "";
-            rx_flag = 0;
+        
+        else if (chat_sc != nullptr && check_online_cnt % 1000000 == 0) {
+            NRF24L01_TX_Mode();
+            string temp = "on" + to_string(user_code);
+            for (int i = 0; i < temp.length(); i++) {
+                // key = RX_DATA.c_str()[i];
+                tmp_buf[i] = temp.c_str()[i];
+            }
+            for(int i = 3; i <= 32; i++)
+            {
+                tmp_buf[i] = 0;
+            }
+            NRF24L01_TxPacket(tmp_buf);
+            NRF24L01_RX_Mode();
         }
+        check_online_cnt++;
+        if (NRF24L01_RxPacket(tmp_buf) == 0)  // 一旦接收到信息,则显示出来.
+        {   
+            printf("%s",tmp_buf);
+            //看看是不是发给自己的（code是不是01），不是的话就不显示
+            //看看是不是发出上线消息，是的话更新用户列表为在线
+            if (tmp_buf[0] == 'o' && tmp_buf[1] == 'n') {
+               printf("in\n");
+                if (user_code == 0 && tmp_buf[2] == '1') {
+                    chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                }else if (user_code == 0 && tmp_buf[2]  == '2') {
+                    chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);                
+                }else if (user_code == 1 && tmp_buf[2]  == '0') {
+                    chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                }else if (user_code == 1 && tmp_buf[2]  == '2') {
+                    chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);
+                }else if (user_code == 2 && tmp_buf[2]  == '0') {
+                    chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                }else if (user_code == 2 && tmp_buf[2]  == '1') {
+                    chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);
+                }
+                printf("%s\n", tmp_buf[2]);
+                continue;   
+            }
+            // if(tmp_buf[2] - ' ' != code) continue;
+            tmp_buf[32] = 0;  // 加入字符串结束符
+            string tmp = string((char*)tmp_buf);
+            chat_sc->addMessageToPage(tmp, 1);
+        }
+        if (NRF24L01_Check()) {
+            printf("NRF24L01 error\n");
+        }
+       
 
     /* USER CODE END WHILE */
 
@@ -491,8 +576,7 @@ static void MX_RTC_Init(void)
 
   /* USER CODE END RTC_Init 0 */
 
-  RTC_TimeTypeDef sTime = {0};
-  RTC_DateTypeDef DateToUpdate = {0};
+
 
   /* USER CODE BEGIN RTC_Init 1 */
 

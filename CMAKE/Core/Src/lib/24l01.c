@@ -122,7 +122,8 @@ u8 NRF24L01_TxPacket(u8 *txbuf)
 	NRF24L01_CE=0;
   	NRF24L01_Write_Buf(WR_TX_PLOAD,txbuf,TX_PLOAD_WIDTH);//写数据到TX BUF  32个字节
  	NRF24L01_CE=1;                         //启动发送	   
-	while(NRF24L01_IRQ!=0);                 //等待发送完成
+	//while(NRF24L01_IRQ!=0);                 //等待发送完成
+	 HAL_Delay(100);
 	sta=NRF24L01_Read_Reg(STATUS);          //读取状态寄存器的值	   
 	NRF24L01_Write_Reg(NRF_WRITE_REG+STATUS,sta); //清除TX_DS或MAX_RT中断标志
 	if(sta&MAX_TX)                          //达到最大重发次数

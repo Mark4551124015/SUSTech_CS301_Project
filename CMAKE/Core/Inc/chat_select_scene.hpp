@@ -29,7 +29,6 @@ class chat_select_main : public dpo{
             stext("status_0", {0, -90}, {200, 30}, (char *)"offline", false, 16),
             stext("status_1", {0, -50}, {200, 30}, (char*)"offline", false, 16)
         };
-
     public:
         chat_select_main(string name, pii pos, pii shape);
         void update(display_object *father, pii axis) override;

@@ -4,10 +4,10 @@
 
 extern uint8_t EVENT[10];
 emoji_scene_main :: emoji_scene_main(string name, pii pos, pii shape) : dpo(name, pos, shape){
-    // this->emoji1.img = (unsigned short *)gImage_emoji1;
-    // this->emoji2.img = (unsigned short *)gImage_emoji2;
-    // this->emoji3.img = (unsigned short *)gImage_emoji3;
-    // this->emoji4.img = (unsigned short *)gImage_emoji4;
+    this->emoji1.img = (unsigned short *)gImage_emoji1;
+    this->emoji2.img = (unsigned short *)gImage_emoji2;
+    this->emoji3.img = (unsigned short *)gImage_emoji3;
+    this->emoji4.img = (unsigned short *)gImage_emoji4;
     this->add_son(&this->emoji1);
     this->add_son(&this->emoji2);
     this->add_son(&this->emoji3);
