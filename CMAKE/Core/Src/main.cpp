@@ -27,8 +27,6 @@
 
 #include <cstdint>
 #include <cstdio>
-#include <string>
-#include <utility>
 
 #include "24l01.h"
 #include "framework.h"
