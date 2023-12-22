@@ -2,7 +2,6 @@
 #define __CHAT_SCENE_HPP__
 
 #include <cstdio>
-#include <string>
 #include "emoji_scene.hpp"
 #include "framework.h"
 

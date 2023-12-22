@@ -1023,9 +1023,9 @@ __align(4) u8 jpg_buffer[JPEG_WBUF_SIZE];	//定义jpeg解码工作区大小(最�
 //buf:输入数据缓冲区 (NULL:执行地址偏移)
 //num:需要从输入数据流读出的数据量/地址偏移量
 //返回值:读取到的字节数/地址偏移量
-u32 jpeg_in_func(JDEC* jd,u8* buf,u32 num) 
+UINT jpeg_in_func(JDEC* jd,u8* buf,UINT num) 
 { 
-    u32  rb; //读取到的字节数
+    UINT  rb; //读取到的字节数
     FIL *dev=(FIL*)jd->device;  //待解码的文件的信息，使用FATFS中的FIL结构类型进行定义
     if(buf)     				//读取数据有效，开始读取数据
     { 
@@ -1038,7 +1038,7 @@ u32 jpeg_in_func(JDEC* jd,u8* buf,u32 num)
 //rgbbuf:指向等待输出的RGB位图数据的指针
 //rect:等待输出的矩形图像的参数
 //返回值:0,输出成功;1,输出失败/结束输出
-u32 jpeg_out_func_fill(JDEC* jd,void* rgbbuf,JRECT* rect) 
+UINT jpeg_out_func_fill(JDEC* jd,void* rgbbuf,JRECT* rect) 
 { 
 	u16 *pencolor=(u16*)rgbbuf;
 	u16 width=rect->right-rect->left+1;		//填充的宽度
@@ -1051,7 +1051,7 @@ u32 jpeg_out_func_fill(JDEC* jd,void* rgbbuf,JRECT* rect)
 //rgbbuf:指向等待输出的RGB位图数据的指针
 //rect:等待输出的矩形图像的参数
 //返回值:0,输出成功;1,输出失败/结束输出
-u32 jpeg_out_func_point(JDEC* jd,void* rgbbuf,JRECT* rect) 
+UINT jpeg_out_func_point(JDEC* jd,void* rgbbuf,JRECT* rect) 
 { 
 	u16 i,j;
 	u16 realx=rect->left,realy=0;

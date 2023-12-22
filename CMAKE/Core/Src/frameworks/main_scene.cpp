@@ -1,5 +1,4 @@
 #include "main_scene.hpp"
-extern uint8_t EVENT[10];
 main_scene :: main_scene(string name, pii pos, pii shape) : dpo(name, pos, shape)
 {
     this->add_son(&time);

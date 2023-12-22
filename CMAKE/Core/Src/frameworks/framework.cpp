@@ -62,6 +62,14 @@ dpo::display_object(string name, pii pos, pii shape) {
            this->pos.x_p, this->pos.y_p);
 }
 
+void dpo::clear_display(uint16_t color) {
+    pii p1 = {this->my_axis.x_p - this->shape.x_p / 2,
+              this->my_axis.y_p - this->shape.y_p / 2};
+    pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
+              this->my_axis.y_p + this->shape.y_p / 2};
+    LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, color);
+    this->need_render = true;
+}
 bool dpo::set_parent(dpo* parent) {
     if (this->get_parent() != nullptr) return false;
     this->parent = parent;
@@ -81,13 +89,13 @@ bool dpo::add_son(dpo* son) {
         printf("%s", son->name.c_str());
         printf("parent unique %s %d\n", son->name.c_str(), son->id);
         return false;
-    }    
+    }
     // for (dpo* i : this->sub_object)
     //     if (i->id == son->id) {
-    //         printf("bad unique %s %d %s %d\n", son->name.c_str(), son->id, i->name.c_str(), i->id);
-    //         return false;
+    //         printf("bad unique %s %d %s %d\n", son->name.c_str(), son->id,
+    //         i->name.c_str(), i->id); return false;
     //     };
-    
+
     this->sub_object[this->sub_object_cnt++] = son;
     return true;
 }
@@ -110,8 +118,10 @@ void dpo::setVisbility(bool flag) {
         pii p2 = {this->my_axis.x_p + this->shape.x_p / 2,
                   this->my_axis.y_p + this->shape.y_p / 2};
         LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, WHITE);
-        printf("my_axis: %d %d, shape: %d %d\n", my_axis.x_p, my_axis.y_p, this->shape.x_p, this->shape.y_p);
-        printf("%s clear %d %d %d %d", this->name.c_str(), p1.x_p, p1.y_p, p2.x_p, p2.y_p);
+        printf("my_axis: %d %d, shape: %d %d\n", my_axis.x_p, my_axis.y_p,
+               this->shape.x_p, this->shape.y_p);
+        printf("%s clear %d %d %d %d", this->name.c_str(), p1.x_p, p1.y_p,
+               p2.x_p, p2.y_p);
         this->parent->need_render = true;
     }
 }
@@ -482,15 +492,15 @@ void image::update(dpo* father, pii axis) {
 
         if (this->image_path != "") {
             printf("loading %s\n", this->image_path.c_str());
-            int res = ai_load_picfile((u8*)this->image_path.c_str(), p1.first, p1.second,
-                                      this->shape.x_p, this->shape.y_p, 0);
+            int res =
+                ai_load_picfile((u8*)this->image_path.c_str(), p1.first,
+                                p1.second, this->shape.x_p, this->shape.y_p, 1);
             if (res) printf("Wrong AI drawing %d\n", res);
 
         } else if (this->img != nullptr) {
             LCD_ShowPicture(p1.x_p, p1.y_p, this->shape.x_p, this->shape.y_p,
                             this->img);
-        }
-        else{
+        } else {
             LCD_Fill(p1.x_p, p1.y_p, p2.x_p, p2.y_p, WHITE);
         }
         int width = this->font_size / 2 * this->str.length();
@@ -507,11 +517,9 @@ void image::update(dpo* father, pii axis) {
     this->click = false;
     if (this->isVisible) {
         if (this->touching && fly) this->click = true;
-        if (IN(p1, p2, touch))
-            {
-                this->touching = true;
-            }
-        else
+        if (IN(p1, p2, touch)) {
+            this->touching = true;
+        } else
             this->touching = false;
     }
 
@@ -535,6 +543,7 @@ void image::update_img(const unsigned short* img) {
 }
 
 void image::set_image(string img_name) {
+    this->clear_display();
     this->image_path = img_name;
     this->need_render = 1;
 }
