@@ -10,6 +10,7 @@ chat_select_main::chat_select_main(string name, pii pos, pii shape) : dpo (name,
         this->add_son(&this->userName[i]);
         this->add_son(&this->status[i]);
     }
+    change_status();
     this->add_son(&group_key);
     this->add_son(&this->userNameCol);
     this->add_son(&this->statusCol);
@@ -19,6 +20,35 @@ chat_select_main::chat_select_main(string name, pii pos, pii shape) : dpo (name,
     users[1] = "User1";
     users[2] = "User2";
 
+}
+
+void chat_select_main::change_status(){
+    switch (user_code) {
+        case 0:
+            if (user_status[1] == 1) {
+                this->status[0].update_str("Online", 16, BLACK, WHITE);
+            }
+            if (user_status[2] == 1) {
+                this->status[1].update_str("Online", 16, BLACK, WHITE);
+            }
+            break;
+        case 1:
+            if (user_status[0] == 1) {
+                this->status[0].update_str("Online", 16, BLACK, WHITE);
+            }
+            if (user_status[2] == 1) {
+                this->status[1].update_str("Online", 16, BLACK, WHITE);
+            }
+            break;
+        case 2:
+            if (user_status[0] == 1) {
+                this->status[0].update_str("Online", 16, BLACK, WHITE);
+            }
+            if (user_status[1] == 1) {
+                this->status[1].update_str("Online", 16, BLACK, WHITE);
+            }
+            break;
+    }
 }
 
 void chat_select_main::change_user(int user){

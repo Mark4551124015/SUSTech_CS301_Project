@@ -118,7 +118,7 @@ u8 rx_buf[33] = {0};
 u8 emoji_number = 0;
 u8 send_emoji = 0;
 
-int user_code = 1;
+int user_code = 2;
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef DateToUpdate = {0};
@@ -168,6 +168,8 @@ void send_invite(){// format in:from:to
   printf("send invite\n");
 
 }
+
+
 
 /* USER CODE END 0 */
 
@@ -599,7 +601,7 @@ int main(void) {
         }
         for(int i = 0; i<3;i++){
           on_check[i]++;
-          if (on_check[i] > 30010 && user_status[i] == 1 && i != user_code) {
+          if (on_check[i] > 50000 && user_status[i] == 1 && i != user_code) {
             user_status[i] = 0;
             string tmp = "User" +to_string(i) + " Offline!";
             LCD_ShowString(2, 230, 240, 16, 16, (uint8_t *)tmp.c_str());
@@ -608,16 +610,22 @@ int main(void) {
             if (chat_sel_sc!=nullptr) {
                 if (user_code == 0 && i == 1) {
                     chat_sel_sc->status[0].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[1] = 0;
                 } else if (user_code == 0 && i == 2) {
                     chat_sel_sc->status[1].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[2] = 0;
                 } else if (user_code == 1 && i == 0) {
                     chat_sel_sc->status[0].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[0] = 0;
                 } else if (user_code == 1 && i == 2) {
                     chat_sel_sc->status[1].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[2] = 0;
                 } else if (user_code == 2 && i == 0) {
                     chat_sel_sc->status[0].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[0] = 0;
                 } else if (user_code == 2 && i == 1) {
                     chat_sel_sc->status[1].update_str("Offline", 16, BLACK, WHITE);
+                    user_status[1] = 0;
                 }
             }
             canvas.need_render = true;
@@ -627,7 +635,9 @@ int main(void) {
         check_online_cnt>10001?check_online_cnt=0:check_online_cnt++;
         if (NRF24L01_RxPacket(rx_buf) == 0)  // 一旦接收到信息,则显示出来.
         { 
-          on_check[rx_buf[2] - '0'] = 0;
+          if (rx_buf[0] == 'o' && rx_buf[1] == 'n') {
+            on_check[rx_buf[2] - '0'] = 0;
+          }
           if (rx_buf[0] == 'o' && rx_buf[1] == 'n' && user_status[rx_buf[2] - '0'] == 0) {
             user_status[rx_buf[2] - '0'] = 1;
             printf("status in chat_sc\n");
@@ -638,16 +648,22 @@ int main(void) {
             if (chat_sel_sc!=nullptr) {
                 if (user_code == 0 && rx_buf[2] == '1') {
                     chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                    user_status[1] = 1;
                 } else if (user_code == 0 && rx_buf[2] == '2') {
                     chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);
+                    user_status[2] = 1;
                 } else if (user_code == 1 && rx_buf[2] == '0') {
                     chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                    user_status[0] = 1;
                 } else if (user_code == 1 && rx_buf[2] == '2') {
                     chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);
+                    user_status[2] = 1;
                 } else if (user_code == 2 && rx_buf[2] == '0') {
                     chat_sel_sc->status[0].update_str("Online", 16, BLACK, WHITE);
+                    user_status[0] = 1;
                 } else if (user_code == 2 && rx_buf[2] == '1') {
                     chat_sel_sc->status[1].update_str("Online", 16, BLACK, WHITE);
+                    user_status[1] = 1;
                 }
             }
             canvas.need_render = true;
@@ -661,8 +677,17 @@ int main(void) {
               LCD_Fill(2, 200, 240, 230 + 16, WHITE);
               canvas.need_render = true;
             }
+          }
+          if (rx_buf[0] == 'i' && rx_buf[1] == 'n' && rx_buf[5] == '3') {
+            if (chat_sc == nullptr || selected_chat != 2) {
+              string tmp = "User" +to_string(rx_buf[3] - '0') + " invite you to have a group chat!";
+              LCD_ShowString(2, 200, 240, 16, 16, (uint8_t *)tmp.c_str());
+              HAL_Delay(1500);
+              LCD_Fill(2, 200, 240, 230 + 16, WHITE);
+              canvas.need_render = true;
+            }
           }          
-          if(chat_sc != nullptr && rx_buf[2] - '0' == user_code){
+          if(chat_sc != nullptr && (rx_buf[2] - '0' == user_code || (rx_buf[2] - '0' == 3 && selected_chat == 2))){
             if (rx_buf[1] == 'm')
             {
               rx_buf[32] = 0;  // 加入字符串结束符
@@ -680,9 +705,8 @@ int main(void) {
               rx_buf[32] = 0;  // 加入字符串结束符
               from = rx_buf[0] - '0';
               chat_sc->addImageToPage(rx_buf[4]-'0', from);
-            
             }
-            }
+          }
         }
         if (NRF24L01_Check()) {
             printf("NRF24L01 error\n");
