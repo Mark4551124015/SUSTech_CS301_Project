@@ -73,6 +73,7 @@ class chat_scene_main : public dpo {
     chat_scene_main(string name, pii pos, pii shape, string users[3], chat_scene_storage* store);
     void addMessageToPage(string message, int user_num);
     void addImageToPage(int num, int user_num);
+    string set_user_info();
     void update(display_object *father, pii axis) override;
 };
 

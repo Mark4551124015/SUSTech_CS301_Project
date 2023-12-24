@@ -7,6 +7,7 @@
 #include "chat_scene.hpp"
 #include "main_scene.hpp"
 #include "album_scene.hpp"
+#include "remind_scene.hpp"
 
 #ifdef __cplusplus  // 使用C语言的方式编译方法名。
 extern "C" {
