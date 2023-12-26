@@ -142,7 +142,8 @@ void cvtext::clear() {
     memset(this->str, 0, 64);
     this->len = 0;
     this->v_begin_id = 0;
-
+    this->cursor = 0;
+    this->update_char(0, this->max_v_len);
     this->need_render = true;
 }
 
@@ -219,11 +220,11 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
     key_pos.y_p = (key_pos.y_p + temp_pos.y_p) / 2;
     this->ex_mode_s =
-        stext("ex", key_pos, {80, 30}, (char*)"EXPRESSION", false, 12);
+        stext("ex", key_pos, {80, 30}, "EXPRESSION", false, 12);
     this->eq_mode_s =
-        stext("eq", key_pos, {80, 30}, (char*)"EQUATION", false, 12);
+        stext("eq", key_pos, {80, 30}, "EQUATION", false, 12);
     this->bin_mode_s =
-        stext("eq", key_pos, {80, 30}, (char*)"BINARY", false, 12);
+        stext("eq", key_pos, {80, 30}, "BINARY", false, 12);
 
     for (int i = 0; i <= 9; ++i) {
         char c = '0' + i;
@@ -276,14 +277,13 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->add_son(&this->res);
 
     // set_mode(EX);
-    this->cmode = EX;
+    this->cmode = EQ;
 }
 
 calc_main::~calc_main() {}
 
 void calc_main::set_mode(calc_mode mode) {
     printf("set to %d\n", (int)mode);
-    this->input.clear();
     switch (mode) {
         case EX: {
             this->cmode = EX;
@@ -306,8 +306,6 @@ void calc_main::set_mode(calc_mode mode) {
             this->mov_l.setVisbility(true);
             this->mov_r.setVisbility(true);
             this->mode_btn.setVisbility(true);
-            this->input.clear();
-            this->res.clear();
             this->input.setVisbility(true);
             this->res.setVisbility(true);
             break;
@@ -333,8 +331,6 @@ void calc_main::set_mode(calc_mode mode) {
             this->mov_l.setVisbility(true);
             this->mov_r.setVisbility(true);
             this->mode_btn.setVisbility(true);
-            this->input.clear();
-            this->res.clear();
             this->input.setVisbility(true);
             this->res.setVisbility(true);
             break;
@@ -360,8 +356,6 @@ void calc_main::set_mode(calc_mode mode) {
             this->mov_l.setVisbility(true);
             this->mov_r.setVisbility(true);
             this->mode_btn.setVisbility(true);
-            this->input.clear();
-            this->res.clear();
             this->input.setVisbility(true);
             this->res.setVisbility(true);
             break;
@@ -378,15 +372,17 @@ void calc_main::update(display_object* father, pii axis) {
     // }
     if (this->mode_btn.isClicked()) {
         printf("set mode\n");
+        this->input.clear();
+        this->res.update_str("", 16, BLACK, WHITE);
         this->need_render = true;
         if (this->cmode == IDLE) {
             set_mode(EX);
-        } else if (this->cmode == EX) {
-            set_mode(EQ);
         } else if (this->cmode == EQ) {
+            set_mode(EX);
+        } else if (this->cmode == EX) {
             set_mode(BIN);
         } else if (this->cmode == BIN) {
-            set_mode(EX);
+            set_mode(EQ);
         }
     }
     if (this->equal.isClicked()) {
@@ -407,7 +403,7 @@ void calc_main::update(display_object* father, pii axis) {
         }
         printf("res: %s\n", (char*)res_str.c_str());
         this->res.need_render = true;
-        this->res.update_str((char*)res_str.c_str(), 24, BLACK, WHITE);
+        this->res.update_str(res_str, 16, BLACK, WHITE);
     }
     for (size_t i = 0; i < 10; i++) {
         if (this->num_keys[i].isClicked()) {
@@ -432,7 +428,7 @@ void calc_main::update(display_object* father, pii axis) {
     }
     if (this->clear.isClicked()) {
         this->input.clear();
-        this->res.clear();
+        this->res.update_str("", 16, BLACK, WHITE);
     }
     if (this->cmode == EQ) {
         if (this->eq_keys[0].isClicked()) {
@@ -446,10 +442,9 @@ void calc_main::update(display_object* father, pii axis) {
             string res_str = getEqRes(ex_str);
             printf("res: %s\n", (char*)res_str.c_str());
             this->res.need_render = true;
-            this->res.update_str((char*)res_str.c_str(), 24, BLACK, WHITE);
+            this->res.update_str(res_str, 16, BLACK, WHITE);
         }
     }
 
     dpo::update(father, axis);
 }
-
