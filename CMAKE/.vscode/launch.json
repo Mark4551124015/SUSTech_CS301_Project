@@ -1,38 +1,22 @@
 {
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch",
-            "type": "cppdbg",
+            "cwd": "${workspaceRoot}",
+            "executable": "build/debug/build/Project.elf",
+            "name": "Debug Microcontroller",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "program": "${command:cmake.launchTargetPath}",
-            "targetArchitecture": "arm",//虽然官方说弃用了，但实际上必须指明
-            "MIMode": "gdb",
-            "miDebuggerPath": "${command:vscode-embedded.st.gdb}",
-            "miDebuggerServerAddress": "localhost:2331",
-            //   "debugServerPath": "${command:vscode-embedded.st.gdbserver}",
-            //   "debugServerArgs": "--stm32cubeprogrammer-path ${command:vscode-embedded.st.cubeprogrammer} --swd --port-number 3333",
-            //   "serverStarted": "Waiting for connection on port .*\\.\\.\\.",
-            //   "stopAtConnect": true,
-            "postRemoteConnectCommands": [
-                {
-                    "text": "load build/debug/build/Project.elf"
-                }
-            ],
-            "logging": {
-                "engineLogging": true
-            },
-            "externalConsole": true,
+            "type": "cortex-debug",
+            "showDevDebugOutput": false,
+            "servertype": "openocd",
             "preLaunchTask": "Build",
-              "svdPath": "${command:vscode-embedded.st.svd}/STM32F103.svd",
-            "setupCommands": [
-                {
-                    "description": "为 gdb 启用整齐打印",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
+            "configFiles": [
+                ".vscode/cmsis-dap.cfg",
+                ".vscode/stm32f1x.cfg"
+            ]
         }
     ]
 }
