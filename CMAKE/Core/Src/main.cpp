@@ -118,7 +118,7 @@ u8 rx_buf[33] = {0};
 u8 emoji_number = 0;
 u8 send_emoji = 0;
 
-int user_code = 2;
+int user_code = 1;
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef DateToUpdate = {0};
@@ -501,7 +501,7 @@ int main(void) {
 
             SCENE = NONE_SCENE;
         }
-        if (main_sc != nullptr && check_online_cnt % 1000 == 2) {
+        if (main_sc != nullptr && check_online_cnt % 500 == 2) {
           HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
           HAL_RTC_GetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD);\
           //需要将十六进制转成十进制
