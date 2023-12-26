@@ -219,12 +219,6 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     temp_pos = this->get_key_pos(3);
     key_pos.x_p = (key_pos.x_p + temp_pos.x_p) / 2;
     key_pos.y_p = (key_pos.y_p + temp_pos.y_p) / 2;
-    this->ex_mode_s =
-        stext("ex", key_pos, {80, 30}, "EXPRESSION", false, 12);
-    this->eq_mode_s =
-        stext("eq", key_pos, {80, 30}, "EQUATION", false, 12);
-    this->bin_mode_s =
-        stext("eq", key_pos, {80, 30}, "BINARY", false, 12);
 
     for (int i = 0; i <= 9; ++i) {
         char c = '0' + i;
@@ -269,15 +263,15 @@ calc_main::calc_main(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->add_son(&this->mode_btn);
     // add stexts
 
-    this->add_son(&this->ex_mode_s);
-    this->add_son(&this->bin_mode_s);
-    this->add_son(&this->eq_mode_s);
+    this->add_son(&this->mode_s);
 
     this->add_son(&this->input);
     this->add_son(&this->res);
 
     // set_mode(EX);
     this->cmode = EQ;
+    this->mode_s.update_str("EQUATION", 16, BLACK, WHITE);
+    this->mode_s.setVisbility(true);
 }
 
 calc_main::~calc_main() {}
@@ -287,9 +281,7 @@ void calc_main::set_mode(calc_mode mode) {
     switch (mode) {
         case EX: {
             this->cmode = EX;
-            this->ex_mode_s.setVisbility(true);
-            this->eq_mode_s.setVisbility(false);
-            this->bin_mode_s.setVisbility(false);
+            this->mode_s.update_str("EXPRESS", 16, BLACK, WHITE);
 
             for (size_t i = 0; i < 10; ++i) {
                 this->num_keys[i].setVisbility(true);
@@ -300,21 +292,11 @@ void calc_main::set_mode(calc_mode mode) {
             for (size_t i = 0; i < 3; ++i) {
                 this->eq_keys[i].setVisbility(false);
             }
-            this->del.setVisbility(true);
-            this->equal.setVisbility(true);
-            this->clear.setVisbility(true);
-            this->mov_l.setVisbility(true);
-            this->mov_r.setVisbility(true);
-            this->mode_btn.setVisbility(true);
-            this->input.setVisbility(true);
-            this->res.setVisbility(true);
             break;
         }
         case EQ: {
             this->cmode = EQ;
-            this->ex_mode_s.setVisbility(false);
-            this->eq_mode_s.setVisbility(true);
-            this->bin_mode_s.setVisbility(false);
+            this->mode_s.update_str("EQUATION", 16, BLACK, WHITE);
 
             for (size_t i = 0; i < 10; ++i) {
                 this->num_keys[i].setVisbility(true);
@@ -325,21 +307,11 @@ void calc_main::set_mode(calc_mode mode) {
             for (size_t i = 0; i < 3; ++i) {
                 this->eq_keys[i].setVisbility(true);
             }
-            this->del.setVisbility(true);
-            this->equal.setVisbility(true);
-            this->clear.setVisbility(true);
-            this->mov_l.setVisbility(true);
-            this->mov_r.setVisbility(true);
-            this->mode_btn.setVisbility(true);
-            this->input.setVisbility(true);
-            this->res.setVisbility(true);
             break;
         }
         case BIN: {
             this->cmode = BIN;
-            this->ex_mode_s.setVisbility(false);
-            this->eq_mode_s.setVisbility(false);
-            this->bin_mode_s.setVisbility(true);
+            this->mode_s.update_str("BINARAY", 16, BLACK, WHITE);
 
             for (size_t i = 0; i < 10; ++i) {
                 this->num_keys[i].setVisbility((i <= 1 ? true : false));
@@ -350,19 +322,20 @@ void calc_main::set_mode(calc_mode mode) {
             for (size_t i = 0; i < 3; ++i) {
                 this->eq_keys[i].setVisbility(false);
             }
-            this->del.setVisbility(true);
-            this->equal.setVisbility(true);
-            this->clear.setVisbility(true);
-            this->mov_l.setVisbility(true);
-            this->mov_r.setVisbility(true);
-            this->mode_btn.setVisbility(true);
-            this->input.setVisbility(true);
-            this->res.setVisbility(true);
             break;
         }
         default:
-            break;
+            return;
     }
+    this->del.setVisbility(true);
+    this->equal.setVisbility(true);
+    this->clear.setVisbility(true);
+    this->mov_l.setVisbility(true);
+    this->mov_r.setVisbility(true);
+    this->mode_btn.setVisbility(true);
+    this->input.setVisbility(true);
+    this->res.setVisbility(true);
+    this->mode_s.setVisbility(true);
 }
 
 void calc_main::update(display_object* father, pii axis) {
@@ -376,7 +349,7 @@ void calc_main::update(display_object* father, pii axis) {
         this->res.update_str("", 16, BLACK, WHITE);
         this->need_render = true;
         if (this->cmode == IDLE) {
-            set_mode(EX);
+            set_mode(EQ);
         } else if (this->cmode == EQ) {
             set_mode(EX);
         } else if (this->cmode == EX) {
