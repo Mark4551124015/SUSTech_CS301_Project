@@ -29,9 +29,12 @@ class chat_select_main : public dpo{
             stext("status_0", {0, -90}, {200, 30}, "offline", false, 16),
             stext("status_1", {0, -50}, {200, 30}, "offline", false, 16)
         };
-
+        stext message = stext("message", {0,20}, {240, 60}, "Message",false, 12);
     public:
         chat_select_main(string name, pii pos, pii shape);
+        void change_user(int user);
+        void change_status();
+        bool check_can_create(int num);
         void update(display_object *father, pii axis) override;
 };
 

@@ -8,7 +8,11 @@
 #include "emoji.hpp"
 
 const unsigned char* emoji_arr[4] = {gImage_emoji1, gImage_emoji2,gImage_emoji3, gImage_emoji4};
-extern int emoji_number;
+// extern int emoji_number;
+extern int user_code;
+extern int selected_chat;
+extern u8 emoji_number;
+extern u8 send_emoji;
 
 
 chat_scene_storage :: chat_scene_storage(int page_cnt, int now_page, string pageMessage[5][6], int pageEmoji[5][6], int cntInPage)
@@ -28,9 +32,10 @@ chat_scene_storage :: chat_scene_storage(int page_cnt, int now_page, string page
 page ::page(string name, pii pos, pii shape) : dpo(name, pos, shape) {
     this->cnt = 0;
     for (int i = 0; i < 6; i++) {
+         this->add_son(&this->emojis[i]);
         this->add_son(&this->messages[i]);
         //this->emojis[i].isVisible = false;
-        this->add_son(&this->emojis[i]);
+       
     }
 }
 
@@ -64,15 +69,10 @@ void page ::update(display_object *father, pii axis) {
 chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
                                   string users[3])
     : dpo(name, pos, shape) {
-    string new_str = userInfo.str;
+    // string new_str = userInfo.str;
     for (int i = 0; i < 3; i++) this->users[i] = users[i];
     printf("Addded user \n");
-    new_str += users[1];
-    if ((users[2] != "")) {
-        new_str += ", ";
-        new_str += users[2];
-    }
-    userInfo.update_str(new_str, 16, BLACK, WHITE);
+    userInfo.update_str(set_user_info(), 16, BLACK, WHITE);
     this->page_cnt = 0;
     for(int i=0; i<5; i++)
         for(int j=0; j<6; j++)
@@ -91,6 +91,52 @@ chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
     this->add_son(&emoji_sc);
 }
 
+string chat_scene_main::set_user_info(){
+    string new_str = userInfo.str;
+    switch (user_code) {
+        case 0:
+            switch (selected_chat) {
+                case 0:
+                    new_str += "User1";
+                    break;
+                case 1:
+                    new_str += "User2";
+                    break;
+                case 2:
+                    new_str += "User1, User2";
+                    break;
+            }
+            break;
+        case 1:
+            switch (selected_chat) {
+                case 0:
+                    new_str += "User0";
+                    break;
+                case 1:
+                    new_str += "User2";
+                    break;
+                case 2:
+                    new_str += "User0, User2";
+                    break;
+            }
+            break;
+        case 2:
+            switch (selected_chat) {
+                case 0:
+                    new_str += "User0";
+                    break;
+                case 1:
+                    new_str += "User1";
+                    break;
+                case 2:
+                    new_str += "User0, User1";
+                    break;
+            }
+            break;
+    }
+    return new_str;
+}
+
 
 chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
                                   string users[3], chat_scene_storage* store)
@@ -98,12 +144,7 @@ chat_scene_main ::chat_scene_main(string name, pii pos, pii shape,
     string new_str = userInfo.str;
     for (int i = 0; i < 3; i++) this->users[i] = users[i];
     printf("Addded user \n");
-    new_str += users[1];
-    if ((users[2] != "")) {
-        new_str += ", ";
-        new_str += users[2];
-    }
-    userInfo.update_str(new_str, 16, BLACK, WHITE);
+    userInfo.update_str(set_user_info(), 16, BLACK, WHITE);
     this->page_cnt = store->page_cnt;
     this->now_page = store->now_page;
     this->showPage.cnt = store->cntInPage;
@@ -214,17 +255,20 @@ void chat_scene_main ::update(display_object *father, pii axis) {
             showPage.setVisbility(false);
             emoji_sc.setVisbility(true);
             EVENT[EMOJI_SELECT] = 0;
-        }
-        if (EVENT[EMOJI_SELECTED]) {
-            printf("[EVENT] Emoji Selected\n");
-            emoji_sc.setVisbility(false);
-            userInfo.setVisbility(true);
-            showPage.setVisbility(true);
-            addImageToPage(emoji_sc.emoji_num, 0);
-            printf("emoji name: %d\n", emoji_sc.emoji_num);
-            EVENT[EMOJI_SELECTED] = 0;
-            need_render = true;
-        }
+    }
+    if (EVENT[EMOJI_SELECTED]) {
+
+        printf("[EVENT] Emoji Selected\n");
+        emoji_sc.setVisbility(false);
+        userInfo.setVisbility(true);
+        showPage.setVisbility(true);
+        emoji_number = emoji_sc.emoji_num;
+        send_emoji = 1;
+        addImageToPage(emoji_sc.emoji_num, user_code);
+        printf("emoji name: %d\n", emoji_sc.emoji_num);
+        EVENT[EMOJI_SELECTED] = 0;
+        need_render = true;
+    }
 
     dpo::update(father, axis);
 }

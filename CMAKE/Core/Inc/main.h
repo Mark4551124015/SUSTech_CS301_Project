@@ -53,6 +53,7 @@ extern "C" {
 #define REMOTE_KEY 9
 #define SLIDE_LEFT 10
 #define SLIDE_RIGHT 11
+#define MESSAGE_VIEWD 12
 
 
 //SCENE

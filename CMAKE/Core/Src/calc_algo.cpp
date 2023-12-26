@@ -1,4 +1,8 @@
+// #define __CALC_DEMO_DEBUG
+
+#ifndef __CALC_DEMO_DEBUG
 #include "calc_algo.hpp"
+#endif
 
 #include <cmath>
 #include <cstdio>
@@ -369,6 +373,46 @@ string getExRes(string expression) {
     return double2String(res);
 }
 
+class EqCoe {
+   public:
+    double a;
+    double b;
+    double c;
+
+    EqCoe(double a, double b, double c) : a(a), b(b), c(c) {}
+};
+
+EqCoe getCoe(string eq_exp, const string &sym) {
+    string qu = sym + "^2";
+    double a = 0.0, b = 0.0, c = 0.0;
+    if (findSubstring(eq_exp, qu) != -1) {
+        int pos = findSubstring(eq_exp, qu);
+        string coe;
+        if (pos == 0 || (pos == 1 && (eq_exp[0] == '+' || eq_exp[0] == '-'))) {
+            coe += eq_exp.substr(0, pos) + "1";
+        } else {
+            coe = eq_exp.substr(0, pos);
+        }
+        a = evaluateExpression(coe);
+        eq_exp.erase(0, pos + 3);
+    }
+    if (findSubstring(eq_exp, sym) != -1) {
+        int pos = findSubstring(eq_exp, sym);
+        string coe;
+        if (pos == 0 || (pos == 1 && (eq_exp[0] == '+' || eq_exp[0] == '-'))) {
+            coe += eq_exp.substr(0, pos) + "1";
+        } else {
+            coe = eq_exp.substr(0, pos);
+        }
+        b = evaluateExpression(coe);
+        eq_exp.erase(0, pos + 1);
+    }
+    if (!eq_exp.empty()) {
+        c = evaluateExpression(eq_exp);
+    }
+    return EqCoe(a, b, c);
+}
+
 /**
  * @brief Solve the given quadratic equation
  *
@@ -381,8 +425,7 @@ pdd solveQuadraticEquation(string eq) {
     pdd res;
     int pos_a = find_ch(eq, '=');
     int pos_b = find_ch_rev(eq, '=');
-    if (pos_a == -1 || pos_a != pos_b ||
-        eq.substr(pos_a, eq.size() - pos_a) != "=0") {
+    if (pos_a == -1 || pos_a != pos_b) {
         return null_res;
     }
     int x_pp = find_ch(eq, 'x');
@@ -390,35 +433,17 @@ pdd solveQuadraticEquation(string eq) {
     if ((x_pp == -1) == (y_pp == -1)) {
         return null_res;
     }
+
     string sym = (x_pp == -1 ? "y" : "x");
-    string qu = sym + "^2";
+
     string le = eq.substr(0, pos_a);
-    double a = 0, b = 0, c = 0;
-    if (findSubstring(le, qu) != -1) {
-        int pos = findSubstring(le, qu);
-        string coe;
-        if (pos == 0 || (pos == 1 && (le[0] == '+' || le[0] == '-'))) {
-            coe += le.substr(0, pos) + "1";
-        } else {
-            coe = le.substr(0, pos);
-        }
-        a = evaluateExpression(coe);
-        le.erase(0, pos + 3);
-    }
-    if (findSubstring(le, sym) != -1) {
-        int pos = findSubstring(le, sym);
-        string coe;
-        if (pos == 0 || (pos == 1 && (le[0] == '+' || le[0] == '-'))) {
-            coe += le.substr(0, pos) + "1";
-        } else {
-            coe = le.substr(0, pos);
-        }
-        b = evaluateExpression(coe);
-        le.erase(0, pos + 1);
-    }
-    if (!le.empty()) {
-        c = evaluateExpression(le);
-    }
+    string ri = eq.substr(pos_a + 1, eq.size() - (pos_a + 1));
+    EqCoe coe_pos = getCoe(le, sym);
+    EqCoe coe_neg = getCoe(ri, sym);
+
+    double a = coe_pos.a - coe_neg.a;
+    double b = coe_pos.b - coe_neg.b;
+    double c = coe_pos.c - coe_neg.c;
 
     /*
      *  invalid
@@ -451,8 +476,9 @@ pdd solveQuadraticEquation(string eq) {
 /**
  * @brief Get the result of the given equation
  *
- * The equation must like "ax^2+bx+c=0"(a can be zero), symbol only can be 'x'
- * or 'y' Like "(2^2-4)y^2+y+4=0", "x^2+x+4=0", "-x-200/2=0"
+ * The equation must like "ax^2+bx+c=0" for both side ('a' can be zero),
+ * Symbol only can be either 'x' or 'y' Like "(2^2-4)y^2+y+4=0", "x^2+x+4=0",
+ * "-x-200/2=0"
  *
  * @param equation The equation to be solved
  * @return The double float-point number string result of the equation, or
@@ -519,11 +545,11 @@ string getBinRes(string binaryExperssion) {
     return getExRes(dec);
 }
 
-// #define __CALC_DEMO_DEBUG
 #ifdef __CALC_DEMO_DEBUG
 
 #include <iostream>
 #include <vector>
+
 using vs = std::vector<string>;
 
 int main() {
@@ -532,7 +558,8 @@ int main() {
     exs.emplace_back("11+2^(2+1)*2-6/(3-1)");
     exs.emplace_back("-1*7-9^2");
     exs.emplace_back("-3*(2*5)+2^4");
-    exs.emplace_back("-3*-1");  // format error
+    exs.emplace_back("2*256");   // too large
+    exs.emplace_back("(-3)^2");  // format error
     for (string ex : exs) {
         std::cout << ex << " = " << getExRes(ex) << std::endl;
     }
@@ -543,7 +570,9 @@ int main() {
     eqs.emplace_back("(2^2-4)y^2+y+4=0");
     eqs.emplace_back("4y^2+4y-12=0");
     eqs.emplace_back("-x^2+3x-2=0");
-    eqs.emplace_back("-x-200/2=2");        // right not =0 error
+    eqs.emplace_back("-x-200/2=2");
+    eqs.emplace_back("y^2=4");
+    eqs.emplace_back("y^2-3y=-2");
     eqs.emplace_back("(2^2)y^2+4x-12=0");  // x&y mix error
     for (string eq : eqs) {
         std::cout << eq << ": " << getEqRes(eq) << std::endl;
