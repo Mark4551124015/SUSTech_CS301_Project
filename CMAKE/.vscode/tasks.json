@@ -10,6 +10,20 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+        "label": "download",
+        "type": "shell",
+        "command": "openocd",
+        "args": [
+            "-f",
+            ".vscode/cmsis-dap.cfg",
+            "-f",
+            ".vscode/stm32f1x.cfg",
+            "-c",
+            "program build/debug/build/Project.elf verify reset exit"
+        ],
+        "group": "build"
     }
   ]
 }
