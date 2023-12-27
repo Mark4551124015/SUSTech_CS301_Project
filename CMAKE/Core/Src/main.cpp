@@ -118,7 +118,7 @@ u8 rx_buf[33] = {0};
 u8 emoji_number = 0;
 u8 send_emoji = 0;
 
-int user_code = 1;
+int user_code = 0;
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef DateToUpdate = {0};
@@ -190,7 +190,6 @@ int main(void) {
     HAL_Init();
 
     /* USER CODE BEGIN Init */
-    NRF24L01_Init();
     /* USER CODE END Init */
 
     /* Configure the system clock */
@@ -218,6 +217,7 @@ int main(void) {
     LCD_Init();
     LCD_Clear(WHITE);
     HAL_TIM_Base_Start_IT(&htim3);
+    NRF24L01_Init();
 
     tp_dev.init();
     // leddev.append(BLINK_BOTH);

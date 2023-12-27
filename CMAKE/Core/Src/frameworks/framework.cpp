@@ -453,7 +453,7 @@ void stext::update(dpo* father, pii axis) {
             this->render_char(i, this->my_axis, 1);
             this->render_char(i, this->my_axis, 0);
         }
-        printf("rendered %s len: %d\n", this->name.c_str(), this->len);
+        // printf("rendered %s len: %d\n", this->name.c_str(), this->len);
     }
     dpo::update(father, axis);
 }
