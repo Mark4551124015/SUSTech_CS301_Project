@@ -1,11 +1,14 @@
 # SUSTech CS301 Project
 
+**Our Project Final Grade: (110/100)**
+
 ## 目录结构
 
 此目录分为两个部分，`CUBE_IDE`和`CMAKE`，顾名思义为对应编译器的文件夹。
 
-* `CMAKE`使用VSCode打开，建议安装插件`clangd`, `CMake`, `CMake Tools`, `STM32 VS Code EXtension`, 参考url: [CSDN连接](https://blog.csdn.net/weixin_62701327/article/details/131744874)，我已经成功import了项目，因此只需要右键`CmakeList.txt` 选择Configure All project，会为你生成你目录下的`build`（大家的`build/`不通用，因此被ignore掉了）
+- `Docs`： 包含了本次项目的项目需求和报告，此文件夹下 `Readme.md` 文件就是本次项目 Markdown 格式的报告。**若需快速了解本项目，推荐首先阅览 [Docs 文件夹](Docs/)。**
 
+* `CMAKE`使用VSCode打开，建议安装插件`clangd`, `CMake`, `CMake Tools`, `STM32 VS Code EXtension`, 参考url: [CSDN连接](https://blog.csdn.net/weixin_62701327/article/details/131744874)，我已经成功import了项目，因此只需要右键`CmakeList.txt` 选择Configure All project，会为你生成你目录下的`build`（大家的`build/`不通用，因此被ignore掉了）
 * `CUBE_IDE`是双生STM32 Cube IDE的版本，不包含混编代码，当我们需要模块的时候，可以从CUBE IDE打开，然后复制粘贴/重构代码以获取新模块
 * P.S. 所有的模块均可通过非Cube IDE方式生成并启用，正点原子官方啊HAL库就是这么做的
 * `.clang-format`为cpp语言规范，clangd会自动识别
